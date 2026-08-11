@@ -1,0 +1,168 @@
+{
+  "suite": "SDC Tools Golden Benchmark",
+  "version": "1.0",
+  "schema_note": "Expected results encode CORRECT SDC/Tcl behavior (not current tool output). Golden cases are deterministic and high-confidence only.",
+  "references": {
+    "tcl_comments": "Tcl(n) man page Rule [10]: '#' starts a comment only at the beginning of a command (start of line or after ';'). https://www.tcl-lang.org/man/tcl8.6/TclCmd/Tcl.htm",
+    "tcl_continuation": "Tcl(n) Rule [9]: backslash-newline is replaced by a single space in a prepass, joining physical lines into one logical command.",
+    "tcl_numbers": "Tcl expr(n) 'Floating-point value': 2.1, 3., 6e4, 7.91e+16 valid; leading-dot '.25' is NOT a valid Tcl literal.",
+    "sdc_uncertainty": "set_clock_uncertainty [-setup|-hold|-rise|-fall] value objects — flags optional; value may directly follow command.",
+    "sdc_clock_groups": "set_clock_groups -asynchronous|-logically_exclusive|-physically_exclusive -group clock_list [-group clock_list ...]; braced Tcl lists valid.",
+    "sdc_input_delay": "set_input_delay [-max|-min] value ... — negative -min values are legal.",
+    "sdc_generated": "create_generated_clock -source [get_ports|get_pins ...] — source may be a pin."
+  },
+  "cases": [
+    {
+      "id": "c01", "group": "01_comments", "file": "01_comments/c01_comment_full_line.sdc",
+      "purpose": "A full-line comment mentioning create_clock must not create a phantom clock.",
+      "expected": {"errors": [], "clocks": 1, "warnings_exclude": ["SDC-024"]},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "tcl_comments"
+    },
+    {
+      "id": "c02", "group": "01_comments", "file": "01_comments/c02_comment_inline.sdc",
+      "purpose": "Trailing '#' text on a command line must not corrupt parsing.",
+      "expected": {"errors": [], "clocks": 1},
+      "classification": "expected_behavior", "confidence": "high",
+      "reference": "tcl_comments"
+    },
+    {
+      "id": "c03", "group": "02_multiline", "file": "02_multiline/c03_multiline_clock.sdc",
+      "purpose": "Backslash-newline joins create_clock lines into one command (name/period/port on continuation lines).",
+      "expected": {"errors": [], "clocks": 1, "periods": {"sys_clk": 10.0}},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "tcl_continuation"
+    },
+    {
+      "id": "c04", "group": "02_multiline", "file": "02_multiline/c04_multiline_delay.sdc",
+      "purpose": "-max/-min/-clock on continuation lines must still be detected (no false SDC-028).",
+      "expected": {"errors": [], "warnings_exclude": ["SDC-028"]},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "tcl_continuation"
+    },
+    {
+      "id": "c05", "group": "03_numeric_formats", "file": "03_numeric_formats/c05_int_float.sdc",
+      "purpose": "'10' and '10.0' both parse as 10.0.",
+      "expected": {"errors": [], "clocks": 2, "periods": {"c_int": 10.0, "c_f": 10.0}},
+      "classification": "expected_behavior", "confidence": "high",
+      "reference": "tcl_numbers"
+    },
+    {
+      "id": "c06", "group": "03_numeric_formats", "file": "03_numeric_formats/c06_sci_notation.sdc",
+      "purpose": "Scientific notation parses exactly: 2.5e-1 == 0.25; 3.0e-1 >= 0.25 → SDC-008.",
+      "expected": {"errors": ["SDC-008"], "clocks": 1, "periods": {"c": 0.25}},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "tcl_numbers"
+    },
+    {
+      "id": "c07", "group": "03_numeric_formats", "file": "03_numeric_formats/c07_negative_min.sdc",
+      "purpose": "Negative -min delay is legal and must not produce errors.",
+      "expected": {"errors": []},
+      "classification": "expected_behavior", "confidence": "high",
+      "reference": "sdc_input_delay"
+    },
+    {
+      "id": "c08", "group": "04_variables", "file": "04_variables/c08_var_period.sdc",
+      "purpose": "Tcl variables: $CLK_PERIOD=2.5, $IN_DLY=6.0 → 6.0 >= 2.5 → SDC-008 after resolution.",
+      "expected": {"errors": ["SDC-008"], "clocks": 1, "periods": {"core_clk": 2.5}},
+      "classification": "confirmed_validator_limitation", "confidence": "high",
+      "reference": "tcl_numbers"
+    },
+    {
+      "id": "c09", "group": "05_primary_clocks", "file": "05_primary_clocks/c09_primary_two_async.sdc",
+      "purpose": "Two primary clocks on different ports → 1 pair, asynchronous.",
+      "expected": {"errors": [], "clocks": 2, "pairs": 1},
+      "classification": "expected_behavior", "confidence": "high"
+    },
+    {
+      "id": "c10", "group": "05_primary_clocks", "file": "05_primary_clocks/c10_primary_same_port.sdc",
+      "purpose": "Same-port primary clocks, different periods → physically exclusive.",
+      "expected": {"errors": [], "clocks": 2, "pairs": 1, "relation": "physically_exclusive"},
+      "classification": "expected_behavior", "confidence": "high"
+    },
+    {
+      "id": "c11", "group": "06_generated_clocks", "file": "06_generated_clocks/c11_gen_div_chain.sdc",
+      "purpose": "Generated chain via -master_clock: clk→div2→div4. Checker: 1 primary + 2 generated. Converter must report 3 clocks with periods derived from the master (-divide_by 2 DOUBLES the period: div2=10.0, div4=20.0). Clock relations: 3 pairs, all synchronous, 0 missing.",
+      "expected": {"errors": [], "clocks": 1, "generated": 2, "conv_clocks": 3,
+                   "periods": {"clk": 5.0, "div2": 10.0, "div4": 20.0},
+                   "pairs": 3, "missing": 0},
+      "classification": "confirmed_validator_limitation", "confidence": "high",
+      "reference": "sdc_generated"
+    },
+    {
+      "id": "c12", "group": "06_generated_clocks", "file": "06_generated_clocks/c12_gen_pin_source.sdc",
+      "purpose": "Generated chain via -source pins only (no -master_clock): still a synchronous chain of 3 clocks; converter must derive periods from the source chain (div2=10.0, div4=20.0).",
+      "expected": {"errors": [], "clocks": 1, "generated": 2, "conv_clocks": 3,
+                   "periods": {"clk": 5.0, "div2": 10.0, "div4": 20.0},
+                   "pairs": 3, "missing": 0},
+      "classification": "confirmed_validator_limitation", "confidence": "high",
+      "reference": "sdc_generated"
+    },
+    {
+      "id": "c13", "group": "07_clock_groups", "file": "07_clock_groups/c13_groups_async_correct.sdc",
+      "purpose": "Async pair correctly declared → 0 mismatches, 0 missing.",
+      "expected": {"errors": [], "clocks": 2, "pairs": 1, "mismatches": 0, "missing": 0},
+      "classification": "expected_behavior", "confidence": "high",
+      "reference": "sdc_clock_groups"
+    },
+    {
+      "id": "c14", "group": "07_clock_groups", "file": "07_clock_groups/c14_groups_physical_wrong.sdc",
+      "purpose": "Same-port clocks declared -asynchronous → SDC-060 mismatch expected.",
+      "expected": {"errors": [], "mismatches": 1, "mismatch_codes": ["SDC-060"]},
+      "classification": "expected_behavior", "confidence": "high",
+      "reference": "sdc_clock_groups"
+    },
+    {
+      "id": "c15", "group": "07_clock_groups", "file": "07_clock_groups/c15_groups_braced_list.sdc",
+      "purpose": "Braced list '{clk_a clk_b}' = 2 clocks in one group; only clk_a/clk_b (same group) is genuinely undeclared → missing must be 1, not 3.",
+      "expected": {"errors": [], "clocks": 3, "pairs": 3, "missing": 1},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "sdc_clock_groups"
+    },
+    {
+      "id": "c16", "group": "08_io_delays", "file": "08_io_delays/c16_io_exceeds_period.sdc",
+      "purpose": "I/O delays equal/exceeding the clock period → SDC-008 and SDC-009.",
+      "expected": {"errors": ["SDC-008", "SDC-009"], "clocks": 1},
+      "classification": "expected_behavior", "confidence": "high"
+    },
+    {
+      "id": "c17", "group": "09_timing_exceptions", "file": "09_timing_exceptions/c17_mc_with_hold.sdc",
+      "purpose": "Multicycle -setup 2 with matching -hold 1 → no SDC-021.",
+      "expected": {"errors": [], "warnings_exclude": ["SDC-021"]},
+      "classification": "expected_behavior", "confidence": "high"
+    },
+    {
+      "id": "c18", "group": "10_malformed", "file": "10_malformed/c18_garbage.sdc",
+      "purpose": "Pure garbage (no command-like tokens) → SDC-001, no crash.",
+      "expected": {"errors": ["SDC-001"], "clocks": 0},
+      "classification": "expected_behavior", "confidence": "high"
+    },
+    {
+      "id": "c19", "group": "12_regressions", "file": "12_regressions/c19_comment_commands.sdc",
+      "purpose": "REG: comments containing commands must not produce phantom SDC-002/SDC-008 (currently fails).",
+      "expected": {"errors": [], "clocks": 1},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "tcl_comments"
+    },
+    {
+      "id": "c20", "group": "12_regressions", "file": "12_regressions/c20_multiline_continuation.sdc",
+      "purpose": "REG: continuation-line flags must be seen → 0 errors (currently fails with SDC-028/029).",
+      "expected": {"errors": [], "clocks": 1, "warnings_exclude": ["SDC-028", "SDC-029"]},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "tcl_continuation"
+    },
+    {
+      "id": "c21", "group": "12_regressions", "file": "12_regressions/c21_uncertainty_flag_first.sdc",
+      "purpose": "REG: flag-first uncertainty 100.0ns must trigger SDC-023 (currently missed).",
+      "expected": {"errors": [], "warnings_include": ["SDC-023"]},
+      "classification": "confirmed_bug", "confidence": "high",
+      "reference": "sdc_uncertainty"
+    },
+    {
+      "id": "c22", "group": "12_regressions", "file": "12_regressions/c22_data_port_sdc007.sdc",
+      "purpose": "REG: clock on 'data_in' must trigger SDC-007 (currently missed).",
+      "expected": {"errors": ["SDC-007"], "clocks": 1},
+      "classification": "confirmed_bug", "confidence": "high"
+    }
+  ]
+}

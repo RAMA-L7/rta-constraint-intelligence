@@ -1,0 +1,139 @@
+{
+  "total": 22,
+  "passed": 22,
+  "failed": 0,
+  "cases": [
+    {
+      "id": "c01",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c02",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c03",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c04",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c05",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c06",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c07",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c08",
+      "classification": "confirmed_validator_limitation",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c09",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c10",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c11",
+      "classification": "confirmed_validator_limitation",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c12",
+      "classification": "confirmed_validator_limitation",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c13",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c14",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c15",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c16",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c17",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c18",
+      "classification": "expected_behavior",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c19",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c20",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c21",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    },
+    {
+      "id": "c22",
+      "classification": "confirmed_bug",
+      "matches_expected": true,
+      "failures": []
+    }
+  ]
+}

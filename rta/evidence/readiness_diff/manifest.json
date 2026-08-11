@@ -1,0 +1,226 @@
+{
+  "intro": "Phase 12 — SDC Readiness Diff golden suite (RDIF01..RDIF22). Expected classifications are derived from SDC semantics, the blocker/review/advisory tier mapping, and the documented finding-identity / delta rules — NOT from validator output. The dangerous failures are: (a) harmless formatting reported as regression, (b) a new deterministic blocker hidden by unchanged baseline findings, (c) a removed warning counted as improvement while coverage worsened, (d) incompatible contexts silently compared.",
+  "cases": [
+    {
+      "id": "RDIF01",
+      "base_sdc": "RDIF01_base.sdc",
+      "cur_sdc": "RDIF01_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Identical baseline/current",
+      "expected": {"classification": "NEUTRAL_CHANGE", "compatibility": "COMPATIBLE", "new_findings": 0, "resolved_findings": 0, "overall_delta": "UNCHANGED"}
+    },
+    {
+      "id": "RDIF02",
+      "base_sdc": "RDIF02_base.sdc",
+      "cur_sdc": "RDIF02_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Whitespace-only change",
+      "note": "Identical constraints re-formatted with extra whitespace/comments. Same SDC-008 blocker present in BOTH revisions → UNCHANGED, never NEW.",
+      "expected": {"classification": "NEUTRAL_CHANGE", "compatibility": "COMPATIBLE", "new_findings": 0, "resolved_findings": 0}
+    },
+    {
+      "id": "RDIF03",
+      "base_sdc": "RDIF03_base.sdc",
+      "cur_sdc": "RDIF03_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Line movement",
+      "note": "Same semantic constraint moved from line ~4 to ~40. Finding identity must NOT depend on line numbers → UNCHANGED, not RESOLVED+NEW.",
+      "expected": {"classification": "NEUTRAL_CHANGE", "compatibility": "COMPATIBLE", "new_findings": 0, "resolved_findings": 0}
+    },
+    {
+      "id": "RDIF04",
+      "base_sdc": "RDIF04_base.sdc",
+      "cur_sdc": "RDIF04_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Scientific-notation equivalent",
+      "note": "11.0 vs 1.1e1 (and 0.5 vs 5.0e-1). Numeric canonicalization normalizes 1.1e1 → 11 → identical identity → no regression.",
+      "expected": {"classification": "NEUTRAL_CHANGE", "compatibility": "COMPATIBLE", "new_findings": 0, "resolved_findings": 0}
+    },
+    {
+      "id": "RDIF05",
+      "base_sdc": "RDIF05_base.sdc",
+      "cur_sdc": "RDIF05_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Variable/literal equivalent",
+      "note": "create_clock -period $PERIOD (set PERIOD 10.0) vs literal 10.0 — preprocess resolves the scalar → identical semantic findings → no regression.",
+      "expected": {"classification": "NEUTRAL_CHANGE", "compatibility": "COMPATIBLE", "new_findings": 0, "resolved_findings": 0}
+    },
+    {
+      "id": "RDIF06",
+      "base_sdc": "RDIF06_base.sdc",
+      "cur_sdc": "RDIF06_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "New undefined clock blocker",
+      "note": "cur adds set_input_delay -clock ghost_clk → SDC-046 (error, BLOCKER) → BLOCKING_REGRESSION.",
+      "expected": {"classification": "BLOCKING_REGRESSION", "compatibility": "COMPATIBLE", "new_blockers_include": ["SDC-046"], "overall_delta": "REGRESSION"}
+    },
+    {
+      "id": "RDIF07",
+      "base_sdc": "RDIF07_base.sdc",
+      "cur_sdc": "RDIF07_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Resolved blocker",
+      "note": "base has ghost-clock blocker, cur removes it → resolved blocker → IMPROVEMENT.",
+      "expected": {"classification": "IMPROVEMENT", "compatibility": "COMPATIBLE", "resolved_blockers_include": ["SDC-046"], "overall_delta": "IMPROVEMENT"}
+    },
+    {
+      "id": "RDIF08",
+      "base_sdc": "RDIF08_base.sdc",
+      "cur_sdc": "RDIF08_cur.sdc",
+      "base_netlist": "rdif_block.v",
+      "cur_netlist": "rdif_block.v",
+      "purpose": "New unconstrained input (design-aware, same netlist)",
+      "note": "din_b loses its set_input_delay → SDC-064/SDC-059 (warning, REVIEW) → REVIEW_REGRESSION; coverage delta lists din_b newly unconstrained.",
+      "expected": {"classification": "REVIEW_REGRESSION", "compatibility": "COMPATIBLE", "new_review_include": ["SDC-064"], "coverage_inputs_newly_unconstrained": ["din_b"], "overall_delta": "REGRESSION"}
+    },
+    {
+      "id": "RDIF09",
+      "base_sdc": "RDIF09_base.sdc",
+      "cur_sdc": "RDIF09_cur.sdc",
+      "base_netlist": "rdif_block.v",
+      "cur_netlist": "rdif_block.v",
+      "purpose": "Resolved unconstrained input (design-aware)",
+      "note": "din_b gains set_input_delay → SDC-064 resolved → IMPROVEMENT.",
+      "expected": {"classification": "IMPROVEMENT", "compatibility": "COMPATIBLE", "resolved_review_include": ["SDC-064"], "overall_delta": "IMPROVEMENT"}
+    },
+    {
+      "id": "RDIF10",
+      "base_sdc": "RDIF10_base.sdc",
+      "cur_sdc": "RDIF10_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "New duplicate only",
+      "note": "cur adds exact duplicate → SDC-067 (info, ADVISORY) → ADVISORY_REGRESSION. MUST NOT become BLOCKING (new advisory is not a blocker).",
+      "expected": {"classification": "ADVISORY_REGRESSION", "compatibility": "COMPATIBLE", "new_advisory_include": ["SDC-067"], "new_blockers": 0}
+    },
+    {
+      "id": "RDIF11",
+      "base_sdc": "RDIF11_base.sdc",
+      "cur_sdc": "RDIF11_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "New override only",
+      "note": "cur overrides din delay value → SDC-068 (info, ADVISORY) → ADVISORY_REGRESSION, not blocking.",
+      "expected": {"classification": "ADVISORY_REGRESSION", "compatibility": "COMPATIBLE", "new_advisory_include": ["SDC-068"], "new_blockers": 0}
+    },
+    {
+      "id": "RDIF12",
+      "base_sdc": "RDIF12_base.sdc",
+      "cur_sdc": "RDIF12_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "New SDC-069 contradiction",
+      "note": "cur flips max/min window to max<min → SDC-069 (warning, BLOCKER) → BLOCKING_REGRESSION.",
+      "expected": {"classification": "BLOCKING_REGRESSION", "compatibility": "COMPATIBLE", "new_blockers_include": ["SDC-069"], "overall_delta": "REGRESSION"}
+    },
+    {
+      "id": "RDIF13",
+      "base_sdc": "RDIF13_base.sdc",
+      "cur_sdc": "RDIF13_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "New SDC-070 review item",
+      "note": "cur adds false-path + multicycle on same endpoints → SDC-070 (info, needs STA) → REVIEW_REGRESSION, NEVER BLOCKING.",
+      "expected": {"classification": "REVIEW_REGRESSION", "compatibility": "COMPATIBLE", "new_review_include": ["SDC-070"], "new_blockers": 0}
+    },
+    {
+      "id": "RDIF14",
+      "base_sdc": "RDIF14_base.sdc",
+      "cur_sdc": "RDIF14_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Trust regression",
+      "note": "cur adds unsupported Tcl (foreach) → SCOPE-UNSUPPORTED (warning) + trust transition foreach ABSENT→TCL_EXECUTION_REQUIRED (regression) → REVIEW_REGRESSION even though zero SDC errors.",
+      "expected": {"classification": "REVIEW_REGRESSION", "compatibility": "COMPATIBLE", "new_review_include": ["SCOPE-UNSUPPORTED"], "trust_regressions_include": ["foreach"]}
+    },
+    {
+      "id": "RDIF15",
+      "base_sdc": "RDIF15_base.sdc",
+      "cur_sdc": "RDIF15_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Trust improvement",
+      "note": "cur removes the unsupported foreach → SCOPE-UNSUPPORTED resolved + trust transition foreach TCL_EXECUTION_REQUIRED→ABSENT (improvement) → IMPROVEMENT.",
+      "expected": {"classification": "IMPROVEMENT", "compatibility": "COMPATIBLE", "resolved_review_include": ["SCOPE-UNSUPPORTED"], "trust_improvements_include": ["foreach"]}
+    },
+    {
+      "id": "RDIF16",
+      "base_sdc": "RDIF16_base.sdc",
+      "cur_sdc": "RDIF16_cur.sdc",
+      "base_netlist": "rdif16_base.v",
+      "cur_netlist": "rdif16_cur.v",
+      "purpose": "New design port",
+      "note": "SDC unchanged; the netlist adds din_d → new SDC-064 attributable to the DESIGN change, not the SDC revision → CONTEXT_CHANGE, never BLOCKING_REGRESSION.",
+      "expected": {"classification": "CONTEXT_CHANGE", "compatibility": "COMPATIBLE_WITH_CONTEXT_CHANGE", "new_blockers": 0}
+    },
+    {
+      "id": "RDIF17",
+      "base_sdc": "RDIF17_base.sdc",
+      "cur_sdc": "RDIF17_cur.sdc",
+      "base_netlist": "rdif17_base.v",
+      "cur_netlist": "rdif17_cur.v",
+      "purpose": "Changed top module",
+      "note": "Design renamed top_a → top_b (same ports). Fingerprint/top changes → CONTEXT_CHANGE; no new findings → nothing blamed on the SDC.",
+      "expected": {"classification": "CONTEXT_CHANGE", "compatibility": "COMPATIBLE_WITH_CONTEXT_CHANGE", "new_findings": 0}
+    },
+    {
+      "id": "RDIF18",
+      "base_sdc": null,
+      "cur_sdc": null,
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Incompatible baseline",
+      "note": "Synthetic: baseline snapshot with schema_version=99 → INCOMPATIBLE; NO_READINESS_REGRESSION gate must FAIL with exit 2 (invalid input).",
+      "synthetic": "incompatible_schema",
+      "expected": {"classification": null, "compatibility": "INCOMPATIBLE", "gate_result": "FAIL", "gate_exit": 2}
+    },
+    {
+      "id": "RDIF19",
+      "base_sdc": null,
+      "cur_sdc": null,
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Engine failure",
+      "note": "Synthetic: current snapshot engine_failed=True → ENGINE_FAILURE; any gate must FAIL with exit 3 and NEVER report PASS.",
+      "synthetic": "engine_failure",
+      "expected": {"classification": "ENGINE_FAILURE", "compatibility": "COMPATIBLE", "gate_result": "FAIL", "gate_exit": 3}
+    },
+    {
+      "id": "RDIF20",
+      "base_sdc": "RDIF20_base.sdc",
+      "cur_sdc": "RDIF20_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Realistic clean improvement",
+      "note": "base has ghost clock (SDC-046) + max<min (SDC-069); cur fixes both → both resolved → IMPROVEMENT.",
+      "expected": {"classification": "IMPROVEMENT", "compatibility": "COMPATIBLE", "resolved_blockers_include": ["SDC-046", "SDC-069"], "overall_delta": "IMPROVEMENT"}
+    },
+    {
+      "id": "RDIF21",
+      "base_sdc": "RDIF21_base.sdc",
+      "cur_sdc": "RDIF21_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Realistic regression",
+      "note": "base clean; cur adds ghost clock (SDC-046), duplicate (SDC-067), max<min (SDC-069) → new blocker dominates → BLOCKING_REGRESSION.",
+      "expected": {"classification": "BLOCKING_REGRESSION", "compatibility": "COMPATIBLE", "new_blockers_include": ["SDC-046", "SDC-069"], "new_advisory_include": ["SDC-067"], "overall_delta": "REGRESSION"}
+    },
+    {
+      "id": "RDIF22",
+      "base_sdc": "RDIF22_base.sdc",
+      "cur_sdc": "RDIF22_cur.sdc",
+      "base_netlist": null,
+      "cur_netlist": null,
+      "purpose": "Multiple simultaneous changes",
+      "note": "cur fixes SDC-046 (resolved) but adds SDC-069 (new blocker), SDC-067 (advisory), SDC-070 (review) → new blocker dominates → BLOCKING_REGRESSION. Improvement signals must not mask the new blocker.",
+      "expected": {"classification": "BLOCKING_REGRESSION", "compatibility": "COMPATIBLE", "new_blockers_include": ["SDC-069"], "resolved_blockers_include": ["SDC-046"]}
+    }
+  ]
+}

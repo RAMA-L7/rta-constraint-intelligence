@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capabilities — Ṛta</title>
+  <meta name="description" content="Ṛta capabilities: validation, clock intelligence, design context, coverage, interactions, readiness, regression and CI quality gates.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Capabilities</p>
+    <h1 class="display-1" style="max-width:22ch;margin:0 auto">Every capability, one deterministic model</h1>
+    <p class="lede" style="max-width:60ch;margin:18px auto 0">Eight engineering capabilities built on a single evidence model — findings, clocks, context, coverage, interactions, readiness, regression and CI. Each page explains the problem it solves, how it works, what it proves and what it does not.</p>
+  </div>
+</section>
+
+<section class="section" aria-label="Capability index">
+  <div class="container">
+    <div class="cap-grid">
+      <a class="cap-tile reveal" href="capabilities/validation.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 19 5v6c0 4.7-3 8-7 9-4-1-7-4.3-7-9V5Z"/><path d="m9 11.5 2 2 4-4"/></svg></div>
+        <h3>SDC Validation</h3>
+        <p>Deterministic rule engine with severity, evidence and source provenance on every finding.</p>
+        <div class="ct-meta">100+ rules · trust scope</div><span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-1" href="capabilities/clocks.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+        <h3>Clock Intelligence</h3>
+        <p>Primary, generated and virtual clocks with hierarchy, ancestry and relationship matrix.</p>
+        <div class="ct-meta">inventory · hierarchy · matrix</div><span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-2" href="capabilities/context.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <h3>Design Context</h3>
+        <p>Structural Verilog context resolves ports, pins, cells, nets and hierarchy.</p>
+        <div class="ct-meta">netlist-aware · hierarchy</div><span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal" href="capabilities/coverage.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 8h18M3 12h18M3 16h18"/><rect x="3" y="5" width="7" height="14" rx="1"/><rect x="13" y="5" width="8" height="6" rx="1"/></svg></div>
+        <h3>Constraint Coverage</h3>
+        <p>Object-level and bus-aware coverage evidence. Coverage ≠ correctness, always disclosed.</p>
+        <div class="ct-meta">buses · partial · exempt</div><span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-1" href="capabilities/interactions.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5h10M7 12h10M7 19h10"/><circle cx="5" cy="5" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/><circle cx="5" cy="19" r="1.6" fill="currentColor"/></svg></div>
+        <h3>Constraint Interactions</h3>
+        <p>Duplicates, overrides, contradictions and STA-review overlaps with dual-line provenance.</p>
+        <div class="ct-meta">provable vs STA-review</div><span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-2" href="capabilities/readiness.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20h16M6 20v-6M10 20V8M14 20v-9M18 20V5"/></svg></div>
+        <h3>Readiness</h3>
+        <p>Seven-dimension readiness review with blockers, review items and recommended actions.</p>
+        <div class="ct-meta">READY ≠ signoff</div><span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal" href="capabilities/regression.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 9 12l-5-5M4 17h11a5 5 0 0 0 0-10H7"/></svg></div>
+        <h3>Regression Intelligence</h3>
+        <p>Snapshot baselines and semantic diff: NEW, RESOLVED, CHANGED, UNCHANGED.</p>
+        <div class="ct-meta">structured identity</div><span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-1" href="capabilities/ci.html">
+        <div class="ct-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></div>
+        <h3>CI Quality Gates</h3>
+        <p>Deterministic policies with strict exit codes. Engine failures never pass.</p>
+        <div class="ct-meta">vendor-neutral</div><span class="ct-go">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Capability page template note">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">How every capability is described</p>
+        <h2 class="display-2">Same structure, honest answers</h2>
+        <p class="lede" style="margin-top:16px">Each capability page answers the same five questions — what problem it solves, how it works, what evidence it produces, what the result means, and what it does not mean. No capability page overclaims; each ends at its trust boundary.</p>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="panel">
+          <div style="display:grid;gap:10px;font-size:14px;color:var(--text-secondary)">
+            <div><b style="color:var(--text-primary)">Problem</b> — the engineering pain it removes</div>
+            <div><b style="color:var(--text-primary)">How it works</b> — the deterministic model</div>
+            <div><b style="color:var(--text-primary)">Evidence</b> — what the output contains</div>
+            <div><b style="color:var(--text-primary)">What it means</b> — how to read the result</div>
+            <div><b style="color:var(--text-primary)">What it does not mean</b> — the trust boundary</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

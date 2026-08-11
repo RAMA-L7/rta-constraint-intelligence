@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform — Ṛta</title>
+  <meta name="description" content="The deterministic SDC analysis pipeline: preprocess, validate, clock analysis, design context, coverage, interactions, readiness, diff, CI gate.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<!-- ═══════════ PLATFORM HERO ═══════════ -->
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">The platform</p>
+    <h1 class="display-1" style="max-width:20ch;margin:0 auto">One deterministic pipeline from SDC to readiness</h1>
+    <p class="lede" style="max-width:60ch;margin:18px auto 0">Every input flows through the same fixed analysis stages. Each stage produces evidence; each finding is traceable to a rule, a line, and a trust status.</p>
+  </div>
+</section>
+
+<!-- ═══════════ PIPELINE DIAGRAM ═══════════ -->
+<section class="section section--tighter" aria-label="Analysis pipeline">
+  <div class="container">
+    <div class="pipeline" style="margin-bottom:24px">
+      <div class="pipe-step"><span class="ps-idx">01</span><div class="ps-name">Input</div><div class="ps-desc">SDC + optional Verilog + top module</div></div>
+      <div class="pipe-step"><span class="ps-idx">02</span><div class="ps-name">Preprocess</div><div class="ps-desc">tcl variables · comments · multiline · collections</div></div>
+      <div class="pipe-step"><span class="ps-idx">03</span><div class="ps-name">Validate</div><div class="ps-desc">deterministic rule engine · severity + provenance</div></div>
+      <div class="pipe-step"><span class="ps-idx">04</span><div class="ps-name">Clock intelligence</div><div class="ps-desc">primary · generated · virtual · relations</div></div>
+      <div class="pipe-step"><span class="ps-idx">05</span><div class="ps-name">Design context</div><div class="ps-desc">netlist object resolution · hierarchy</div></div>
+      <div class="pipe-step"><span class="ps-idx">06</span><div class="ps-name">Coverage</div><div class="ps-desc">inputs · outputs · buses · exempt</div></div>
+      <div class="pipe-step"><span class="ps-idx">07</span><div class="ps-name">Interactions</div><div class="ps-desc">duplicates · overrides · contradictions</div></div>
+      <div class="pipe-step"><span class="ps-idx">08</span><div class="ps-name">Readiness</div><div class="ps-desc">7 dimensions · blockers · actions</div></div>
+    </div>
+    <div class="pipeline" style="grid-template-columns:repeat(4,1fr)">
+      <div class="pipe-step"><span class="ps-idx">09</span><div class="ps-name">Snapshot</div><div class="ps-desc">structured finding identity · versioned</div></div>
+      <div class="pipe-step"><span class="ps-idx">10</span><div class="ps-name">Baseline diff</div><div class="ps-desc">NEW · RESOLVED · CHANGED · UNCHANGED</div></div>
+      <div class="pipe-step"><span class="ps-idx">11</span><div class="ps-name">CI quality gate</div><div class="ps-desc">policy · deterministic exit codes</div></div>
+      <div class="pipe-step" style="border-color:var(--border-active)"><span class="ps-idx">12</span><div class="ps-name">Outputs</div><div class="ps-desc">JSON · HTML report · snapshot · CLI · UI</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ STAGE DETAIL ═══════════ -->
+<section class="section section--alt" id="stages" aria-label="Pipeline stages in detail">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Stages in detail</p>
+      <h2 class="display-2">What happens at every step</h2>
+    </div>
+    <div class="space-y">
+      <div class="feature-row">
+        <div>
+          <div class="kicker micro-label">Stage 01–02 · Input &amp; Preprocess</div>
+          <h3>Understand the file before judging it</h3>
+          <p>The preprocessor normalizes SDC across Tcl variable resolution, comment stripping, multiline continuation and scientific notation — so identical constraints written differently are analyzed identically.</p>
+          <ul>
+            <li>Tcl scalar variables resolved before analysis</li>
+            <li>Collection parsing (get_ports / get_pins / all_*) normalized</li>
+            <li>Commented-out constraints never create phantom clocks</li>
+          </ul>
+        </div>
+        <div>
+          <code class="block">
+<span class="c-dim"># variables + multiline + sci-notation all normalize the same</span>
+<span class="c-cmd">set CLK_PER</span> 5.0
+<span class="c-cmd">create_clock</span> -name clk_core \
+  <span class="c-cmd">-period</span> <span class="c-dim">$CLK_PER</span> [get_ports clk]
+          </code>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div>
+          <div class="kicker micro-label">Stage 03 · Validation</div>
+          <h3>Deterministic rules with provenance</h3>
+          <p>The rule engine emits findings with a stable code (SDC-001…), severity, a human-readable message, and the exact source line. Findings are identity-stable for diffing — never fragile message matches.</p>
+          <ul>
+            <li>100+ documented rules across syntax, semantics, clocks, I/O and exceptions</li>
+            <li>Every finding: rule · severity · evidence · source line</li>
+            <li>Trust scope reports what was and wasn't fully analyzed</li>
+          </ul>
+        </div>
+        <div>
+          <div class="panel" style="font-family:var(--font-mono);font-size:13px;line-height:2">
+            <div><span class="badge badge--error" style="margin-right:10px">ERROR</span><b style="color:var(--text-primary)">SDC-008</b> <span style="color:var(--text-secondary)">input delay 9.0ns ≥ clock period — no timing margin</span></div>
+            <div style="color:var(--text-muted)">L7 · set_input_delay -max 9.0 -clock clk_core [all_inputs]</div>
+            <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px"><span class="badge badge--warning" style="margin-right:10px">WARNING</span><b style="color:var(--text-primary)">SDC-030</b> <span style="color:var(--text-secondary)">no input delay on data_in[7:0]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div>
+          <div class="kicker micro-label">Stage 04 · Clock intelligence</div>
+          <h3>Structure before timing</h3>
+          <p>Clocks are parsed into primary, generated and virtual definitions; ancestry is inferred; every pair is classified synchronous, asynchronous, physically exclusive or logically exclusive — and compared against declared set_clock_groups.</p>
+          <ul>
+            <li>Generated-clock hierarchy with divide/multiply and source node</li>
+            <li>Relationship matrix with declaration mismatch detection</li>
+            <li>Explicitly structural — no timing propagation is ever implied</li>
+          </ul>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="micro-label" style="margin-bottom:12px">Inferred relationship</div>
+            <div style="display:grid;gap:8px;font-family:var(--font-mono);font-size:13px">
+              <div><span class="badge badge--success" style="margin-right:10px">SYNC</span> clk_div2 ← clk_core <span style="color:var(--text-muted)">(derived, /2)</span></div>
+              <div><span class="badge badge--muted" style="margin-right:10px">ASYNC</span> clk_core / clk_io <span style="color:var(--text-muted)">(no common ancestor)</span></div>
+              <div><span class="badge badge--error" style="margin-right:10px">MISMATCH</span> clk_core / clk_io <span style="color:var(--text-muted)">declared async, inferred sync</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div>
+          <div class="kicker micro-label">Stage 05–06 · Context &amp; coverage</div>
+          <h3>Know what the constraints actually cover</h3>
+          <p>With a structural Verilog netlist, object references resolve against real ports, pins, cells and nets. Coverage is reported per object and per bus bit — and always with the disclosure that coverage ≠ correctness.</p>
+          <ul>
+            <li>Object resolution: resolved · empty · unsupported expression</li>
+            <li>Bus-level coverage strips with exact constrained ranges</li>
+            <li>Without a netlist, references are honestly NETLIST_REQUIRED</li>
+          </ul>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="micro-label" style="margin-bottom:10px">data_in[31:0] — partial coverage</div>
+            <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted)">31 ──── constrained ──── ════════ gap ════════ 0</div>
+            <div style="height:14px;border-radius:3px;margin:6px 0;display:flex;overflow:hidden;border:1px solid var(--border)">
+              <div style="width:62%;background:var(--success);opacity:.85"></div>
+              <div style="width:14%;background:var(--surface-elev)"></div>
+              <div style="width:24%;background:var(--warning);opacity:.7"></div>
+            </div>
+            <div style="display:flex;gap:14px;font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary)">
+              <span><span style="color:var(--success)">■</span> constrained (31:12)</span>
+              <span><span style="color:var(--text-muted)">■</span> gap (11:4)</span>
+              <span><span style="color:var(--warning)">■</span> partial (3:0)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div>
+          <div class="kicker micro-label">Stage 07–08 · Interactions &amp; readiness</div>
+          <h3>Conflicts first, then a defensible verdict</h3>
+          <p>Constraint interactions are separated into provable conflicts (duplicates, overrides, contradictions) and STA-review overlaps that legitimately require path analysis. Readiness then aggregates everything into seven dimensions with blockers, review items and recommended actions.</p>
+          <ul>
+            <li>Dual-line provenance for interaction findings</li>
+            <li>Readiness: CLOCKS · I/O · EXCEPTIONS · COVERAGE · CONSISTENCY · ANALYSIS_TRUST · DESIGN_CONTEXT</li>
+            <li>READY is a readiness verdict — never an STA signoff</li>
+          </ul>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="micro-label" style="margin-bottom:12px">Readiness · REVIEW_REQUIRED</div>
+            <div style="display:grid;gap:6px;font-family:var(--font-mono);font-size:12.5px">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:5px 0"><span>CLOCKS</span><span class="badge badge--success">ready</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:5px 0"><span>I/O</span><span class="badge badge--warning">review</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:5px 0"><span>EXCEPTIONS</span><span class="badge badge--success">ready</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:5px 0"><span>COVERAGE</span><span class="badge badge--warning">review</span></div>
+              <div style="display:flex;justify-content:space-between;padding:5px 0"><span>ANALYSIS_TRUST</span><span class="badge badge--accent">validated</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-row">
+        <div>
+          <div class="kicker micro-label">Stage 09–11 · Snapshots, diff, CI</div>
+          <h3>Regressions become reviewable events</h3>
+          <p>Snapshots capture structured finding identity; a baseline diff classifies NEW, RESOLVED, CHANGED and UNCHANGED findings; CI gates turn policies into deterministic pass/fail with a strict exit-code contract.</p>
+          <ul>
+            <li>Policies: BLOCKERS_ONLY · NO_READINESS_REGRESSION · STRICT · CUSTOM</li>
+            <li>Engine failures never pass a gate (exit 3 / invalid exit 2)</li>
+            <li>Vendor-neutral — any CI system can call the CLI</li>
+          </ul>
+        </div>
+        <div>
+          <code class="block">
+<span class="c-cmd">sdc-tools check</span> design.sdc <span class="c-cmd">--baseline</span> base.json <span class="c-cmd">--gate</span> STRICT
+<span class="c-dim"># exit 0 → gate passed · 1 → regression · 2 → invalid · 3 → engine</span>
+
+<span class="c-dim"># GitHub Actions is one option; any CI can call the CLI</span>
+- <span class="c-cmd">run:</span> sdc-tools check <span class="c-cmd">$SDC</span> --baseline base.json --gate STRICT
+          </code>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ OUTPUTS ═══════════ -->
+<section class="section" id="outputs" aria-label="Outputs">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Outputs</p>
+      <h2 class="display-2">One analysis, every surface</h2>
+    </div>
+    <div class="grid-4">
+      <div class="panel reveal"><div class="panel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></div><h3 class="display-3" style="font-size:17px">CLI</h3><p>check · generate · diff · corners · analyze — with --json and deterministic exit codes.</p></div>
+      <div class="panel reveal reveal-delay-1"><div class="panel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/></svg></div><h3 class="display-3" style="font-size:17px">HTML report</h3><p>Self-contained engineering report with readiness and trust disclosures.</p></div>
+      <div class="panel reveal reveal-delay-2"><div class="panel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></div><h3 class="display-3" style="font-size:17px">Snapshot / JSON</h3><p>Versioned snapshot schema for baselines and semantic diffing.</p></div>
+      <div class="panel reveal reveal-delay-3"><div class="panel-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 13h4"/></svg></div><h3 class="display-3" style="font-size:17px">Workspace</h3><p>Streamlit engineering workspace with grouped navigation and inspectors.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="section section--alt" aria-label="Get started">
+  <div class="container center">
+    <h2 class="display-2">See the pipeline on a real SDC</h2>
+    <p class="lede" style="max-width:52ch;margin:14px auto 26px">The workspace runs the same deterministic backend the CLI uses — findings, clocks, coverage and readiness from one analysis.</p>
+    <div class="hero-ctas" style="justify-content:center">
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `sdc-tools web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="capabilities.html">Explore capabilities</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

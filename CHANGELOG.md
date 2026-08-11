@@ -1,0 +1,124 @@
+# Changelog
+
+All notable changes to Ṛta (formerly SDC Tools) are documented here.
+
+## [1.5.0] — 2026-08-11
+
+### ✨ New Features
+
+- **Netlist-Aware Cross-Checks** — `design_context.py` / `design_coverage.py` resolve `get_ports`/`get_pins`/`get_cells` against a real RTL or gate-level Verilog file via structural pin/net connectivity (not name-matching). Available in Checker, Coverage, and Clock Relations tabs; block-level scope, full-chip planned.
+- **Constraint Interactions** (`constraint_interactions.py`) — new tab detecting exact duplicates, silent overrides, and contradictory constraints (e.g. `set_max_delay` < `set_min_delay` on the same endpoints) within a single SDC.
+- **Constraint Readiness** (`constraint_readiness.py`) — new tab aggregating Checker evidence into a 7-dimension signoff-readiness verdict (Clocks, I/O, Exceptions, Coverage, Consistency, Analysis Trust, Design Context) with prioritized fix-actions. Explicitly not an STA signoff tool.
+- **`smoke_test.py`** — standalone engine regression test (no browser/Streamlit required); run after any change for fast pass/fail feedback.
+- Rebranded project to **Ṛta**; engine reorganized under `rta/` as a proper package (top-level modules are now thin migration shims for backward compatibility).
+- Premium visual redesign of the web UI (light, flat, single-accent theme) — navigation kept as the original flat tab bar by design; new tabs added alongside existing ones rather than restructuring around them.
+
+### 🔧 Notes
+
+- All 95 pre-existing rule codes retained with identical severity/behavior — verified via direct functional comparison, not just static diff.
+- 16 new rule codes added (`SDC-046`–`SDC-070` range) covering undefined-clock references and the interactions/design-context checks above.
+
+## [1.3.0] — 2026-07-25
+
+### ✨ New Features
+
+- **SDC Linter** (`rta lint`) — Format & reorganize SDC files with consistent section ordering, spacing, and formatting
+- **SDC Converter** (`rta convert`) — Parse SDC files to structured JSON/YAML for tool integration
+- **Batch Processor** (`rta batch`) — Process all SDC files in a directory (check, lint, report)
+- **CSV/Markdown output** (`rta check --format csv/markdown`) — Machine-readable output for CI/CD
+- **Line numbers in checker** — Error/warning messages now show source line numbers
+- **Dark mode support** — Full dark theme with `prefers-color-scheme` and Streamlit dark mode toggle
+- **10-tab Web UI** — Added Linter, Converter, and Rules Reference tabs to Streamlit app
+- **GitHub Actions CI** — Automated test pipeline on Python 3.10/3.11/3.12 across Linux, Windows, macOS
+
+### 🐛 Bug Fixes
+
+- **SDC-008/009 regex** — Fixed checker regex to handle flags between command and value (e.g., `set_input_delay -max 6.0`)
+- **pyproject.toml** — Fixed unquoted wildcard key that caused TOML parse error
+
+### 📝 Documentation
+
+- **CHANGELOG.md** — New file documenting all version history
+- **CONTRIBUTING.md** — New file with testing guidelines and development setup
+- **README.md** — Updated to 13 features, added lint/convert/batch sections
+- **10 feature docs** — Complete feature documentation in `docs/features/`
+- **3 new sample SDCs** — `buggy_no_clocks.sdc`, `warning_heavy.sdc`, `multi_corner_template.sdc`
+
+### 🧪 Testing
+
+- **311 tests** — Comprehensive test suite covering all 15+ modules
+- **Code review** — Fixed 10 issues from cross-module code review
+- **Test files**: `test_linter.py`, `test_converter.py`, `test_batch_runner.py` (new)
+
+### 🏗️ Infrastructure
+
+- **Dockerfile** — Updated to include new modules (linter, converter, batch_runner, ui/)
+- **.gitignore** — Added `graphify-out/`, `.pytest_cache`, IDE files, log files
+- **Version bump** — Updated to v1.3.0 across all files
+
+---
+
+## [1.2.0] — 2026-07-24
+
+### ✨ New Features
+
+- **Clock Relation Analyzer** (`sdc-tools analyze clock-relations`) — Detect incorrect `set_clock_groups` constraints (SDC-060..063)
+- **Rules Reference tab** — Searchable table of all SDC rule codes with engineering context
+- **MMC integration in SDC Generator** — Live validation + multi-corner generation + baseline comparison
+- **HTML Clock Relations Report** — Visual clock matrix with mismatch highlighting
+
+### 🐛 Bug Fixes
+
+- **Virtual clock detection** — Improved virtual clock identification in checker
+- **Derate value extraction** — Fixed regex for extracting derate values
+
+### 📝 Documentation
+
+- **Clock Relations feature doc** (`docs/features/README-04-clock-relations.md`)
+- **Rules Registry feature doc** (`docs/features/README-08-rules-registry.md`)
+- **Updated feature docs** for Checker and Coverage modules
+
+---
+
+## [1.1.0] — 2026-07-23
+
+### ✨ New Features
+
+- **Constraint Change Analyzer** (`sdc-tools diff`) — Semantic SDC diff with 20 change detection rules (CHG-*)
+- **TCL Variable Resolution** (`tcl_resolver.py`) — Resolve `$VARNAME` references in linked TCL files
+- **Wildcard Pattern Analyzer** (`wildcard_analyzer.py`) — Risk-score wildcard patterns in SDC object specs
+- **MMC SDC Generator** — Generate per-corner SDC files with cross-corner checks
+- **MMC Corner Manager** — PVT corner presets (3-corner, 5-corner, 8-corner, custom)
+- **Coverage Gap Analysis** (`sdc-tools coverage`) — 39-item analysis across 6 constraint categories
+- **Custom Rules Engine** (`sdc-tools check --custom-rules`) — YAML-based project-specific validation policies
+- **Rules Registry** — Centralized documentation for all 60+ rule codes
+
+### 📦 Packaging
+
+- **PyPI package** — `pip install sdc-tools`
+- **Docker image** — `ramal7/sdc-tools`
+- **Pre-commit hooks** — `.pre-commit-config.yaml` for SDC validation
+
+### 📝 Documentation
+
+- **8 feature docs** in `docs/features/`
+- **Master README** with project structure, CLI reference, quick-start examples
+
+---
+
+## [1.0.0] — 2026-07-22
+
+### ✨ Initial Release
+
+- **SDC Checker** (`sdc-tools check`) — 40+ semantic checks for SDC files
+  - 11 error rules (SDC-001..011)
+  - 18 warning rules (SDC-020..037)
+  - 17 best-practice info rules (SDC-100..126)
+- **SDC Generator** (`sdc-tools generate`) — Generate complete SDC from CLI parameters
+  - Clock definitions (primary, generated, virtual)
+  - I/O constraints with timing
+  - Design rules, derate, power constraints
+- **JSON output** (`--json`) — Machine-readable output
+- **JUnit XML output** (`--junit`) — CI/CD integration
+- **HTML Reports** (`sdc-tools report`) — Self-contained signoff reports
+- **Streamlit Web UI** (`sdc-tools web`) — Interactive browser interface

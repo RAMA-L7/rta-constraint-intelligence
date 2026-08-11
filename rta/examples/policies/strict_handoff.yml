@@ -1,0 +1,28 @@
+# Declarative CUSTOM policy — "strict handoff" (Phase 13)
+#
+# Inert data. Only selects which existing diff evidence fails the gate.
+#
+# Use with:  sdc-tools check design.sdc --baseline baseline.json \
+#              --gate CUSTOM --gate-policy policy_examples/strict_handoff.yml
+#
+# Semantics: the strictest built-in-style gate. The current revision must not
+# be BLOCKED and must not introduce any new blocker, review item, trust
+# regression, or coverage regression relative to the baseline.
+
+policy: CUSTOM
+policy_version: 1
+name: strict-handoff
+
+fail_on:
+  current_blocked: true
+  new_blockers: true
+  new_review_items: true
+  trust_regression: true
+  coverage_regression: true
+  engine_failure: true
+
+allow:
+  new_advisories: true          # wording/style/advisory churn never fails
+
+thresholds:
+  max_new_review_items: 0       # zero new review items allowed

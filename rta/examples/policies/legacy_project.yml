@@ -1,0 +1,36 @@
+# Declarative CUSTOM policy — "legacy project" (Phase 13)
+#
+# Policies are INERT DATA: no eval, exec, Python expressions, imports, shell,
+# or callbacks. This file only SELECTS which existing diff evidence fails the
+# gate — it can never change what the validator detects.
+#
+# Use with:  sdc-tools check design.sdc --baseline baseline.json \
+#              --gate CUSTOM --gate-policy policy_examples/legacy_project.yml
+#
+# Semantics:
+#   - A NEW deterministic blocker always fails (new debt is never allowed to
+#     hide behind a baseline full of old debt).
+#   - The CURRENT analysis being BLOCKED does NOT fail by itself (old blockers
+#     that were already in the baseline remain "baseline debt", reported but
+#     not gating) — so an imperfect project can adopt the gate immediately.
+#   - New review items / trust / coverage regressions are advisory here.
+#   - Engine failure can never be disabled: a crashed analysis always exits 3.
+
+policy: CUSTOM
+policy_version: 1
+name: legacy-project
+
+fail_on:
+  current_blocked: false        # pre-existing blockers are debt, not regressions
+  new_blockers: true            # NEW deterministic blocker vs baseline → fail
+  new_review_items: false       # heuristic / needs-STA findings allowed
+  trust_regression: false       # unsupported-construct growth allowed for now
+  coverage_regression: false    # newly unconstrained objects allowed for now
+  engine_failure: true          # ALWAYS effective — cannot be disabled
+
+allow:
+  new_advisories: true          # informational findings never fail
+
+# Optional rule-specific gate: any NEW finding with these codes fails.
+# fail_on_new_rules:
+#   - SDC-069

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Release v1.3.0 — Ṛta</title>
+  <meta name="description" content="Ṛta v1.3.0 release: verified release-candidate evidence, capabilities, known limitations and artifacts.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Release</p>
+    <h1 class="display-1" style="max-width:22ch;margin:0 auto">v1.3.0 — release candidate</h1>
+    <p class="lede" style="max-width:58ch;margin:18px auto 0">Status: <b style="color:var(--text-primary)">RC_READY_WITH_KNOWN_LIMITATIONS</b> · verified 2026-08-06 · Python 3.10 · Windows. This page records what was actually verified — it is a checklist with evidence, not certification language.</p>
+  </div>
+</section>
+
+<!-- ═══════════ RELEASE HEADER ═══════════ -->
+<section class="section section--tighter" aria-label="Release summary">
+  <div class="container">
+    <div class="release-hero reveal">
+      <div class="micro-label" style="margin-bottom:6px">Release status</div>
+      <div class="release-ver">v1.3.0</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px">
+        <span class="badge badge--success"><span class="sq"></span>RC_READY_WITH_KNOWN_LIMITATIONS</span>
+        <span class="badge badge--muted"><span class="sq"></span>2026-08-06</span>
+        <span class="badge badge--muted"><span class="sq"></span>Python 3.10 · Windows · bash</span>
+      </div>
+      <div class="stats-band" style="margin-top:0">
+        <div class="stat"><div class="stat-num">800<span class="suffix">/800</span></div><div class="stat-label">pytest</div></div>
+        <div class="stat"><div class="stat-num">9<span class="suffix">/9</span></div><div class="stat-label">golden runners</div></div>
+        <div class="stat"><div class="stat-num">28<span class="suffix">/28</span></div><div class="stat-label">benchmark suites</div></div>
+        <div class="stat"><div class="stat-num">17<span class="suffix">/17</span></div><div class="stat-label">clean-room</div></div>
+        <div class="stat"><div class="stat-num">16<span class="suffix">/16</span></div><div class="stat-label">CLI audit</div></div>
+        <div class="stat"><div class="stat-num">10<span class="suffix">/10</span></div><div class="stat-label">release smoke</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CAPABILITIES ═══════════ -->
+<section class="section section--alt" aria-label="Release capabilities">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">What's in this release</p>
+      <h2 class="display-2">From parser to CI gate</h2>
+    </div>
+    <div class="grid-3">
+      <div class="panel reveal"><span class="badge badge--accent" style="margin-bottom:10px"><span class="sq"></span>Validate</span><h3 class="display-3" style="font-size:17px">SDC rule engine</h3><p>Deterministic checks, semantic references, trust scope.</p></div>
+      <div class="panel reveal reveal-delay-1"><span class="badge badge--accent" style="margin-bottom:10px"><span class="sq"></span>Understand</span><h3 class="display-3" style="font-size:17px">Clock + design intelligence</h3><p>Clock hierarchy and relations; netlist-aware object resolution.</p></div>
+      <div class="panel reveal reveal-delay-2"><span class="badge badge--accent" style="margin-bottom:10px"><span class="sq"></span>Assess</span><h3 class="display-3" style="font-size:17px">Coverage + interactions + readiness</h3><p>Object-level coverage, conflict detection, seven-dimension readiness.</p></div>
+      <div class="panel reveal"><span class="badge badge--accent" style="margin-bottom:10px"><span class="sq"></span>Protect</span><h3 class="display-3" style="font-size:17px">Snapshots + regression diff</h3><p>Structured identity, baseline comparison, semantic change review.</p></div>
+      <div class="panel reveal reveal-delay-1"><span class="badge badge--accent" style="margin-bottom:10px"><span class="sq"></span>Govern</span><h3 class="display-3" style="font-size:17px">CI quality gates</h3><p>Policies with deterministic exit codes; engine failure never passes.</p></div>
+      <div class="panel reveal reveal-delay-2"><span class="badge badge--accent" style="margin-bottom:10px"><span class="sq"></span>Deliver</span><h3 class="display-3" style="font-size:17px">Premium workspace</h3><p>Grouped navigation, clock intelligence views, readiness rail, change review.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ RELEASE NOTES ═══════════ -->
+<section class="section" aria-label="Release notes">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Release notes</p>
+      <h2 class="display-2">Highlights since 1.2</h2>
+    </div>
+    <div class="space-y">
+      <div class="callout callout--success reveal"><span class="co-icon">✓</span><span><b>Production hardening (Phase 13–14)</b> — structured finding identity, snapshot schema v2 + v1 compat, security fixes (stored-XSS), packaging fix (wheel now ships all UI modules), exit-code contract.</span></div>
+      <div class="callout callout--success reveal"><span class="co-icon">✓</span><span><b>Premium workspace (Phase 15–16)</b> — design system, grouped navigation, Clock Intelligence (inventory/hierarchy/matrix), Coverage bus evidence, Readiness dimension rail, Diff change review.</span></div>
+      <div class="callout callout--info reveal"><span class="co-icon">◈</span><span><b>Full history</b> — see <a href="https://github.com/RAMA-L7/sdc-tools/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md ↗</a></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ ARTIFACTS ═══════════ -->
+<section class="section section--alt" aria-label="Artifacts">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Artifacts</p>
+      <h2 class="display-2">Verification evidence</h2>
+    </div>
+    <div class="artifact-list">
+      <div class="artifact reveal">
+        <div class="ar-name">RELEASE_MANIFEST.md</div>
+        <p class="ar-desc">The verification matrix behind every claim on this page — checks, results and evidence.</p>
+      </div>
+      <div class="artifact reveal reveal-delay-1">
+        <div class="ar-name">release_cleanroom.py</div>
+        <p class="ar-desc">17-step fresh-engineer wheel-install journey.</p>
+      </div>
+      <div class="artifact reveal reveal-delay-2">
+        <div class="ar-name">release_cli_audit.py</div>
+        <p class="ar-desc">16-check CLI contract audit (commands, exit codes, JSON purity).</p>
+      </div>
+      <div class="artifact reveal">
+        <div class="ar-name">test_release_smoke.py</div>
+        <p class="ar-desc">Fast 10-check smoke suite for every release.</p>
+      </div>
+      <div class="artifact reveal reveal-delay-1">
+        <div class="ar-name">PHASE14_RELEASE_CANDIDATE_AUDIT_REPORT.md</div>
+        <p class="ar-desc">The full release-candidate audit incl. blocker findings and fixes.</p>
+      </div>
+      <div class="artifact reveal reveal-delay-2">
+        <div class="ar-name">Wheel + sdist</div>
+        <p class="ar-desc">Built and verified — all modules, ui/ and app.py present.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ KNOWN LIMITATIONS ═══════════ -->
+<section class="section" aria-label="Known limitations">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Known limitations</p>
+      <h2 class="display-2">Disclosed with the release</h2>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead><tr><th>Limitation</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Platform</td><td>Python 3.10 on Windows verified; 3.11/3.12 require additional environments.</td></tr>
+          <tr><td class="mono">Web UI from wheel</td><td>Verified via repo tests; installed-wheel launch deferred to deploy-time smoke.</td></tr>
+          <tr><td class="mono">Support boundary</td><td>SDC/Verilog support bounded and documented; outside constructs reported as unsupported.</td></tr>
+          <tr><td class="mono">No timing analysis</td><td>By design — see the Trust Center non-claims.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ INSTALL ═══════════ -->
+<section class="section section--alt" aria-label="Install">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">Install v1.3.0</p>
+        <h3 class="display-3">From source or Docker</h3>
+        <p style="color:var(--text-secondary);font-size:14.5px">The clean-clone walkthrough covers virtualenv, web extra, CLI verification and the test suite. Docker builds the same artifact.</p>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-cmd">git clone</span> https://github.com/RAMA-L7/sdc-tools.git
+<span class="c-cmd">cd</span> sdc-tools
+<span class="c-cmd">python -m venv</span> .venv &amp;&amp; <span class="c-cmd">source</span> .venv/bin/activate
+<span class="c-cmd">pip install -e</span> ".[web]"
+<span class="c-cmd">sdc-tools check</span> rta/examples/samples/example.sdc
+<span class="c-cmd">sdc-tools web</span>   <span class="c-dim"># workspace</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="CTA">
+  <div class="container center">
+    <h2 class="display-2">Verify the release yourself</h2>
+    <div class="hero-ctas" style="justify-content:center;margin-top:24px">
+      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/sdc-tools" target="_blank" rel="noopener">Get v1.3.0 <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="benchmarks.html">Release evidence</a>
+      <a class="btn btn--ghost btn--lg" href="trust.html">Trust Center</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

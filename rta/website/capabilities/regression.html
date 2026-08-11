@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regression Intelligence — Ṛta</title>
+  <meta name="description" content="Snapshot baselines and semantic regression diff: NEW, RESOLVED, CHANGED, UNCHANGED.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Capability · Regression Intelligence</p>
+    <h1 class="display-1" style="max-width:22ch;margin:0 auto">Constraint drift becomes a reviewable event</h1>
+    <p class="lede" style="max-width:62ch;margin:18px auto 0">Versioned snapshots and semantic baseline diff — NEW, RESOLVED, CHANGED, UNCHANGED — so constraint evolution is auditable from one release to the next.</p>
+  </div>
+</section>
+
+<section class="section" aria-label="Regression detail">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">The problem</p>
+      <h2 class="display-2">Text diff can't see semantics</h2>
+      <p class="lede">Two SDCs can be textually different but semantically identical, or textually similar but semantically different (a changed period, a dropped clock, a wildcard drift). Semantic diff sees the intent.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">Change review</p>
+        <div class="panel" style="font-family:var(--font-mono);font-size:13px;line-height:2.2">
+          <div style="display:flex;justify-content:space-between;color:var(--text-muted);font-size:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+            <span>BASELINE</span><span style="color:var(--accent)">→</span><span>CURRENT</span>
+          </div>
+          <div><span class="badge badge--error" style="margin-right:8px">NEW</span> SDC-008 input delay ≥ period</div>
+          <div><span class="badge badge--info" style="margin-right:8px">RESOLVED</span> SDC-030 missing I/O delay</div>
+          <div><span class="badge badge--warning" style="margin-right:8px">CHANGED</span> clk_core period 5.0 → 6.0ns</div>
+          <div style="color:var(--text-muted)"><span class="badge badge--muted" style="margin-right:8px">UNCHANGED</span> 38 findings identical by structured identity</div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <p class="eyebrow">What makes it semantic</p>
+        <ul style="color:var(--text-secondary);font-size:15px;line-height:2">
+          <li><b style="color:var(--text-primary)">Structured identity</b> — findings matched by constraint semantics, never by line number or message text</li>
+          <li><b style="color:var(--text-primary)">Readiness delta</b> — how the readiness verdict moved and why</li>
+          <li><b style="color:var(--text-primary)">Coverage &amp; trust deltas</b> — newly constrained, newly unconstrained, context changes</li>
+          <li><b style="color:var(--text-primary)">Baseline compatibility</b> — schema-aware; incompatible baselines are reported, not guessed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Boundary">
+  <div class="container">
+    <div class="callout callout--muted reveal">
+      <span class="co-icon">◈</span>
+      <span><b>What regression diff does not mean.</b> A clean diff means no disallowed readiness regression was detected — it does not certify the new constraints are timing-correct.</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="CTA">
+  <div class="container center">
+    <h2 class="display-2">Audit your constraint history</h2>
+    <div class="hero-ctas" style="justify-content:center;margin-top:24px">
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `sdc-tools web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../capabilities.html">All capabilities</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

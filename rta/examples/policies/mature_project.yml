@@ -1,0 +1,33 @@
+# Declarative CUSTOM policy — "mature project" (Phase 13)
+#
+# Inert data. Only selects which existing diff evidence fails the gate.
+#
+# Use with:  sdc-tools check design.sdc --baseline baseline.json \
+#              --gate CUSTOM --gate-policy policy_examples/mature_project.yml
+#
+# Semantics:
+#   - New blockers, new review items, trust regressions (VALIDATED → PARTIAL /
+#     UNSUPPORTED) and coverage regressions (newly unconstrained objects) all
+#     fail CI. A mature project has already paid down its debt and wants to
+#     keep it that way.
+#   - No numeric score: readiness stays categorical. A definite contradiction
+#     (SDC-069) can BLOCK handoff even when every dimension average looks green.
+
+policy: CUSTOM
+policy_version: 1
+name: mature-project
+
+fail_on:
+  current_blocked: true         # current readiness BLOCKED → fail
+  new_blockers: true            # NEW deterministic blocker → fail
+  new_review_items: true        # NEW review-tier finding → fail
+  trust_regression: true        # VALIDATED → PARTIAL/UNSUPPORTED → fail
+  coverage_regression: true     # newly unconstrained object → fail
+  engine_failure: true          # ALWAYS effective — cannot be disabled
+
+allow:
+  new_advisories: true          # informational findings never fail
+
+thresholds:
+  max_new_review_items: 2       # soft cap: >2 new review items fail even if
+                                # new_review_items were disabled (0 = none)

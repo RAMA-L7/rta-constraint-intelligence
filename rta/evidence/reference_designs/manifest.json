@@ -1,0 +1,122 @@
+{
+  "suite": "SDC Tools Reference Designs (Phase 6)",
+  "version": "1.0",
+  "note": "Expected values derived independently from SDC/Tcl semantics (Accellera SDC 2.1, Tcl rules), NOT from validator output.",
+  "designs": [
+    {
+      "id": "RD01", "dir": "rd01_single_clock", "file": "rd01_single_clock/rd01_single_clock.sdc",
+      "purpose": "Realistic single-clock logic block with complete I/O constraint set.",
+      "features": ["primary clock", "waveform", "input/output delay", "uncertainty", "transition", "load", "driving cell", "false path", "design rules"],
+      "expected": {
+        "clock_count": 1, "generated_count": 0, "pair_count": 0,
+        "errors": [], "semantic_errors": [],
+        "known_warnings": ["SDC-020", "SDC-030"],
+        "info_expected": ["SDC-100", "SDC-101"]
+      },
+      "classification": "clean",
+      "confidence": "high"
+    },
+    {
+      "id": "RD02", "dir": "rd02_multi_clock_soc", "file": "rd02_multi_clock_soc/rd02_multi_clock_soc.sdc",
+      "purpose": "Multi-clock SoC block: 5 primary clocks, async groups, multiple I/O interfaces.",
+      "features": ["5 primary clocks", "clock groups", "uncertainty", "multi-interface I/O", "exceptions"],
+      "expected": {
+        "clock_count": 5, "generated_count": 0, "pair_count": 10,
+        "errors": [], "semantic_errors": [],
+        "groups_declared": true,
+        "known_warnings": ["SDC-020", "SDC-022", "SDC-030"],
+        "info_expected": []
+      },
+      "classification": "clean",
+      "confidence": "high"
+    },
+    {
+      "id": "RD03", "dir": "rd03_generated_hierarchy", "file": "rd03_generated_hierarchy/rd03_generated_hierarchy.sdc",
+      "purpose": "Generated clock hierarchy: clk_ref→div2→div4 (divide_by 2 each) and pll_2x (multiply_by 2).",
+      "features": ["generated clock chain", "divide_by", "multiply_by", "master_clock", "pin source"],
+      "expected": {
+        "clock_count": 1, "generated_count": 3, "conv_clock_count": 4, "pair_count": 6,
+        "periods": {"clk_ref": 5.0, "div2": 10.0, "div4": 20.0, "pll_2x": 2.5},
+        "errors": [], "semantic_errors": [],
+        "missing_pairs": 0,
+        "known_warnings": ["SDC-020", "SDC-022", "SDC-030"]
+      },
+      "classification": "clean",
+      "confidence": "high"
+    },
+    {
+      "id": "RD04", "dir": "rd04_ddr_style", "file": "rd04_ddr_style/rd04_ddr_style.sdc",
+      "purpose": "DDR source-synchronous style: virtual clocks, rise/fall delays, min/max, dq/dqs/dq buses.",
+      "features": ["virtual clocks", "rise/fall", "min/max delays", "bus ports", "false path"],
+      "expected": {
+        "clock_count": 3, "generated_count": 0, "pair_count": 3,
+        "errors": [], "semantic_errors": [],
+        "known_warnings": ["SDC-020", "SDC-024", "SDC-030", "SDC-045"],
+        "info_expected": ["SDC-126"]
+      },
+      "classification": "clean",
+      "confidence": "high"
+    },
+    {
+      "id": "RD05", "dir": "rd05_multimode", "file": "rd05_multimode/rd05_multimode.sdc",
+      "purpose": "Multi-mode style: functional/test clocks, logically exclusive groups, mode pin case analysis.",
+      "features": ["logically_exclusive groups", "case analysis", "test clock"],
+      "expected": {
+        "clock_count": 2, "generated_count": 0, "pair_count": 1,
+        "errors": [], "semantic_errors": [],
+        "known_warnings": ["SDC-020", "SDC-030"]
+      },
+      "classification": "clean",
+      "confidence": "high"
+    },
+    {
+      "id": "RD06", "dir": "rd06_timing_exceptions", "file": "rd06_timing_exceptions/rd06_timing_exceptions.sdc",
+      "purpose": "Timing exceptions: false paths, multicycle (one without hold fix), max/min delay.",
+      "features": ["false path", "multicycle setup", "multicycle hold", "max delay datapath_only", "min delay"],
+      "expected": {
+        "clock_count": 2, "generated_count": 0, "pair_count": 1,
+        "errors": [], "semantic_errors": [],
+        "warnings_include": ["SDC-021"],
+        "warnings_exclude": ["SDC-027"],
+        "known_warnings": ["SDC-020", "SDC-021", "SDC-030"]
+      },
+      "classification": "known_warning",
+      "confidence": "high"
+    },
+    {
+      "id": "RD07", "dir": "rd07_broken", "file": "rd07_broken/rd07_broken.sdc",
+      "purpose": "Intentionally broken design with 6 injected defects (manifest-documented).",
+      "features": ["injected defects"],
+      "injected_defects": [
+        {"id": "D1", "rule": "SDC-046", "desc": "set_input_delay -clock nonexistent_clock (undefined clock)"},
+        {"id": "D2", "rule": "SDC-047", "desc": "create_generated_clock -master_clock ghost_master (undefined master)"},
+        {"id": "D3", "rule": "SDC-049", "desc": "set_case_analysis 0 then 1 on test_mode (contradictory)"},
+        {"id": "D4", "rule": "SDC-048", "desc": "set_clock_groups references ghost_group_clock (undefined in group)"},
+        {"id": "D5", "rule": "SDC-002", "desc": "duplicate create_clock -name clk_core"},
+        {"id": "D6", "rule": "SDC-008", "desc": "set_input_delay -max 6.0 >= period 5.0"}
+      ],
+      "expected": {
+        "clock_count": 2, "generated_count": 1, "pair_count": 3,
+        "errors_include": ["SDC-002", "SDC-008", "SDC-046"],
+        "warnings_include": ["SDC-047", "SDC-048", "SDC-049"],
+        "known_warnings": ["SDC-020", "SDC-030"]
+      },
+      "classification": "broken",
+      "confidence": "high"
+    },
+    {
+      "id": "RD08", "dir": "rd08_large", "file": "rd08_large/rd08_large.sdc",
+      "purpose": "Large synthetic design: 60 clocks, 4 async domains, 120 I/O delays, 4 uncertainty groups.",
+      "features": ["60 primary clocks", "clock groups with wildcards", "120 delays", "performance/stability"],
+      "expected": {
+        "clock_count": 60, "generated_count": 0, "pair_count": 1770,
+        "errors": [], "semantic_errors": [],
+        "groups_declared": true,
+        "known_warnings": ["SDC-022", "SDC-030"],
+        "perf_ok": true
+      },
+      "classification": "clean",
+      "confidence": "high"
+    }
+  ]
+}

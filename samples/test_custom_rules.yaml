@@ -1,0 +1,61 @@
+name: Project-Specific Policies
+version: "1.0"
+description: Foundry and team-specific SDC validation rules for 28nm designs
+
+rules:
+  - id: FND-001
+    name: "Clock period ≤ 2.5ns"
+    severity: error
+    description: "All primary clock periods must be ≤ 2.5ns (≥ 400MHz target)"
+    command: create_clock
+    condition: value_above
+    field: period
+    threshold: 2.5
+    pattern: '-period\s+([\d.]+)'
+    message: "Clock period {value}ns exceeds 2.5ns limit — design cannot meet frequency target"
+
+  - id: FND-002
+    name: "Propagated clocks required"
+    severity: error
+    description: "All designs must use set_propagated_clock for signoff"
+    command: set_propagated_clock
+    condition: present
+    message: "No set_propagated_clock found — required for 28nm signoff"
+
+  - id: FND-003
+    name: "Clock uncertainty must be defined"
+    severity: error
+    command: set_clock_uncertainty
+    condition: present
+
+  - id: FND-004
+    name: "Input delays required"
+    severity: error
+    command: set_input_delay
+    condition: present
+
+  - id: FND-005
+    name: "Output delays required"
+    severity: error
+    command: set_output_delay
+    condition: present
+
+  - id: FND-006
+    name: "Timing derate required"
+    severity: warning
+    command: set_timing_derate
+    condition: present
+
+  - id: FND-007
+    name: "Operating conditions required"
+    severity: warning
+    command: set_operating_conditions
+    condition: present
+
+  - id: FND-008
+    name: "Max false paths ≤ 20"
+    severity: warning
+    command: set_false_path
+    condition: count_above
+    threshold: 20
+    message: "Found {count} false paths — review each one for ECO"

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Ṛta — Constraint Intelligence for Digital Design</title>
+  <meta name="description" content="Ṛta — deterministic, offline-capable constraint intelligence and pre-STA validation for semiconductor design constraints.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/app.css">
+</head>
+<body>
+  <!-- Silicon Graph background: layer 0 paper · layer 1 hairline grid · layer 2-4 topology canvas (viz.js) -->
+  <div id="bg" aria-hidden="true"></div>
+
+  <div class="app">
+    <!-- ═════════════ COMMAND BAR (persistent top) ═════════════ -->
+    <header class="cmdbar" id="cmdbar">
+      <div class="cmdbar-brand">
+        <svg class="brand-mark" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="8" cy="8" r="1.1" fill="currentColor"/>
+        </svg>
+        <div class="brand-text">
+          <span class="brand-name">Ṛ<b>ta</b></span>
+          <span class="brand-sub">Constraint Intelligence for Digital Design</span>
+        </div>
+      </div>
+
+      <!-- Search (filters navigation — real, local) -->
+      <div class="cmdbar-search">
+        <svg class="cs-icon" viewBox="0 0 16 16" aria-hidden="true">
+          <circle cx="7" cy="7" r="4.6" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M10.6 10.6 L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <input id="cmd-search" type="text" placeholder="Search navigation…" aria-label="Search navigation" autocomplete="off" spellcheck="false">
+        <kbd class="cs-kbd">/</kbd>
+      </div>
+
+      <div class="cmdbar-actions">
+        <button class="cmd-btn" id="cmd-open-session" type="button" title="Current session and recent sessions (this browser tab)">Open Session</button>
+        <button class="cmd-btn" id="cmd-import" type="button" title="Go to Validate and import an SDC file">Import</button>
+        <button class="cmd-btn" id="cmd-quick" type="button" title="Frequent workspace actions">Quick Actions</button>
+        <button class="cmd-btn" id="cmd-settings" type="button" title="Workspace settings">Settings</button>
+        <span class="ver mono" id="ver">v1.3.0</span>
+      </div>
+
+      <!-- Command menus (real actions; placeholders are honest, never fake) -->
+      <div class="cmd-menu" id="menu-session" hidden role="menu" aria-label="Sessions"></div>
+      <div class="cmd-menu" id="menu-quick" hidden role="menu" aria-label="Quick actions"></div>
+      <div class="cmd-menu" id="menu-settings" hidden role="menu" aria-label="Settings"></div>
+    </header>
+
+    <!-- ═════════════ ANALYSIS SESSION HEADER ═════════════ -->
+    <div class="session-head" id="session-head" role="status" aria-live="polite">
+      <span class="sh-session" id="session-name" title="Analysis session">Untitled session</span>
+      <span class="sh-status" id="session-status"></span>
+      <span class="sh-sep" aria-hidden="true"></span>
+      <span class="ctx-item mono" data-ctx="file" title="SDC file">—</span>
+      <span class="sh-sep" aria-hidden="true"></span>
+      <span class="ctx-item mono" data-ctx="netlist" title="Netlist">no netlist</span>
+      <span class="sh-sep" aria-hidden="true"></span>
+      <span class="ctx-item mono" data-ctx="mode" title="Analysis mode">—</span>
+      <span class="sh-sep" aria-hidden="true"></span>
+      <span id="ctx-trust"></span>
+      <span class="sh-sep" aria-hidden="true"></span>
+      <span id="ctx-readiness"></span>
+      <span class="sh-sep" aria-hidden="true"></span>
+      <span class="ctx-item mono" id="session-time" title="Analysis timestamp"></span>
+      <span class="sh-right mono" id="session-scope"></span>
+    </div>
+
+    <div class="body">
+      <!-- ═════════════ LEFT NAV (grouped engineering workflow) ═════════════ -->
+      <nav class="nav" id="nav" aria-label="Workspace navigation">
+        <div class="nav-scroll">
+          <div id="nav-groups"></div>
+          <div class="nav-empty mono" id="nav-empty" hidden>no navigation matches</div>
+        </div>
+        <div class="nav-foot">
+          <span class="mono" id="nav-foot">deterministic · offline · no LLM</span>
+        </div>
+      </nav>
+
+      <!-- ═════════════ CONTENT CANVAS ═════════════ -->
+      <main class="main" id="main" tabindex="-1"></main>
+    </div>
+
+    <!-- ═════════════ SESSION STATUS BAR ═════════════ -->
+    <footer class="rail" id="rail" aria-live="polite"></footer>
+  </div>
+
+  <!-- Right inspector (contextual finding / clock / object detail, 400px) -->
+  <aside class="inspector" id="inspector" aria-hidden="true">
+    <div class="inspector-head">
+      <span class="inspector-title" id="inspector-title">Finding</span>
+      <button class="icon-btn" id="inspector-close" aria-label="Close inspector" title="Close (Esc)">✕</button>
+    </div>
+    <div class="inspector-body" id="inspector-body"></div>
+  </aside>
+  <div class="inspector-backdrop" id="inspector-backdrop" hidden></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div style="padding:40px;font-family:Inter,sans-serif;color:#18181B;background:#FFFFFF">
+      Ṛta requires JavaScript. All analysis runs locally on your machine — no data leaves your browser.
+    </div>
+  </noscript>
+
+  <script type="module" src="/assets/js/theme.js"></script>
+  <script type="module" src="/assets/js/components.js"></script>
+  <script type="module" src="/assets/js/viz.js"></script>
+  <script type="module" src="/assets/js/pages.js"></script>
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

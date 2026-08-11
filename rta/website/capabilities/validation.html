@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDC Validation — Ṛta</title>
+  <meta name="description" content="Deterministic SDC rule validation with severity, evidence and source provenance.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Capability · Validation</p>
+    <h1 class="display-1" style="max-width:20ch;margin:0 auto">Findings you can trust, provenance you can follow</h1>
+    <p class="lede" style="max-width:60ch;margin:18px auto 0">A deterministic rule engine checks every constraint and reports findings with a stable rule code, severity, evidence and the exact source line.</p>
+  </div>
+</section>
+
+<section class="section" aria-label="Validation detail">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">The problem</p>
+      <h2 class="display-2">SDC errors hide until signoff</h2>
+      <p class="lede">Delays that exceed their clock period, duplicate clock definitions, unresolved references, contradictory windows — these surface late, cost iteration cycles, and are hard to trace in large constraint files.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">How it works</p>
+        <h3 class="display-3">Every finding is structured</h3>
+        <p style="color:var(--text-secondary)">Findings carry a stable identity derived from the constraint itself — never from fragile message text — so they can be diffed across runs and baselines. Each finding records the rule, severity, affected object, evidence and source line.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>Structured identity</b> — same constraint change → same finding classification in diff</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Trust scope</b> — every run states how completely the input was analyzed</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="panel" style="font-family:var(--font-mono);font-size:13px;line-height:2.1">
+          <div><span class="badge badge--error">ERROR</span> <b style="color:var(--text-primary)">SDC-008</b> <span style="color:var(--text-secondary)">input delay 9.0ns ≥ clock period — no timing margin</span></div>
+          <div style="color:var(--text-muted)">L7 · set_input_delay -max 9.0 -clock clk_core [all_inputs]</div>
+          <div style="margin-top:8px"><span class="badge badge--warning">WARNING</span> <b style="color:var(--text-primary)">SDC-030</b> <span style="color:var(--text-secondary)">missing input delay on data_in[7:0]</span></div>
+          <div style="color:var(--text-muted)">L9 · data_in[7:0]</div>
+          <div style="margin-top:8px"><span class="badge badge--muted">INFO</span> <b style="color:var(--text-primary)">SDC-054</b> <span style="color:var(--text-secondary)">get_ports references require netlist context</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Rule catalog">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Rule catalog</p>
+      <h2 class="display-2">100+ documented rules</h2>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead><tr><th>Area</th><th>Example rules</th><th>Severity</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Syntax &amp; parsing</td><td>SDC-001 malformed input · sdc_version checks · scientific notation</td><td>error</td></tr>
+          <tr><td class="mono">Clocks</td><td>SDC-002 duplicate clock · period sanity · generated-clock master</td><td>error</td></tr>
+          <tr><td class="mono">I/O constraints</td><td>SDC-008 delay ≥ clock period · SDC-030 missing I/O delay</td><td>error / warning</td></tr>
+          <tr><td class="mono">Exceptions</td><td>false path / multicycle overlap · contradictory windows</td><td>warning</td></tr>
+          <tr><td class="mono">Semantic references</td><td>SDC-054..059 object resolution · clock reference validity</td><td>warning</td></tr>
+          <tr><td class="mono">Interactions</td><td>duplicates · overrides · contradictions · STA-review overlaps</td><td>mixed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:16px;font-size:13.5px;color:var(--text-secondary)">The full catalog is documented with detection semantics, examples, false-positive protections and trust notes in the repository rule reference.</p>
+  </div>
+</section>
+
+<section class="section" aria-label="Boundary">
+  <div class="container">
+    <div class="callout callout--muted reveal">
+      <span class="co-icon">◈</span>
+      <span><b>What validation does not mean.</b> A clean validation result means the constraint set is internally consistent and structurally supported — not that timing will close. Timing propagation, slack and signoff remain with STA engines.</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="CTA">
+  <div class="container center">
+    <h2 class="display-2">Run it on your SDC</h2>
+    <div class="hero-ctas" style="justify-content:center;margin-top:24px">
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `sdc-tools web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../capabilities.html">All capabilities</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

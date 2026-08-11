@@ -1,0 +1,183 @@
+{
+  "note": "Netlist-aware golden manifest (Phase 8). Expected facts derived from SDC/Tcl/Verilog semantics + the design files, NOT from validator output. Deterministic cases only.",
+  "cases": [
+    {
+      "id": "NA01",
+      "name": "valid_single_module",
+      "verilog": "NA01_valid_single_module.v",
+      "sdc": "NA01_valid_single_module.sdc",
+      "top_module": "top",
+      "expected": {
+        "modules": 5,
+        "ports": 5,
+        "instances": 5,
+        "parse_ok": true,
+        "resolvable": ["get_ports clk", "get_ports data_in", "get_ports data_out", "get_cells u_core/u_reg0"],
+        "issues": [],
+        "trust_status": "VALIDATED"
+      },
+      "reason": "All SDC refs exist in netlist; every port constrained; no defects.",
+      "confidence": "high"
+    },
+    {
+      "id": "NA02",
+      "name": "missing_port",
+      "verilog": "NA02_missing_port.v",
+      "sdc": "NA02_missing_port.sdc",
+      "top_module": "top",
+      "expected": {
+        "parse_ok": true,
+        "resolvable": ["get_ports data_in"],
+        "issues": [{"code": "SDC-055", "min_count": 1, "needle": "get_ports clk"}],
+        "trust_status": "NETLIST_REQUIRED"
+      },
+      "reason": "Design has port 'sysclk', not 'clk'. create_clock [get_ports clk] is definitely unresolved.",
+      "confidence": "high"
+    },
+    {
+      "id": "NA03",
+      "name": "hierarchy",
+      "verilog": "NA03_hierarchy.v",
+      "sdc": "NA03_hierarchy.sdc",
+      "top_module": "top",
+      "expected": {
+        "parse_ok": true,
+        "instances_nested": ["u_core/u_reg0", "u_core/u_reg1"],
+        "pins_nested": ["u_core/u_reg0/D", "u_core/u_reg0/Q", "u_core/u_reg1/D", "u_core/u_reg1/Q"],
+        "resolvable": ["get_pins u_core/u_reg0/D", "get_cells u_core/u_reg1"],
+        "issues": [],
+        "trust_status": "PARTIALLY_VALIDATED"
+      },
+      "reason": "All refs resolve, but set_multicycle_path -from/-to are present-yet-not-value-analyzed → PARTIAL wins in precedence (honest: checker does not analyze exception endpoints).",
+      "confidence": "high"
+    },
+    {
+      "id": "NA04",
+      "name": "buses",
+      "verilog": "NA04_buses.v",
+      "sdc": "NA04_buses.sdc",
+      "top_module": "top",
+      "expected": {
+        "parse_ok": true,
+        "ports_bus": {"data_in": [7, 0], "addr_in": [15, 0]},
+        "resolvable": ["get_ports data_in[3]", "get_ports data_in[*]", "get_ports addr_out[9]"],
+        "issues": [{"code": "SDC-055", "min_count": 1, "needle": "data_in[9]"}],
+        "trust_status": "NETLIST_REQUIRED"
+      },
+      "reason": "data_in is [7:0]; bit 9 out of range → unresolved. Other bus refs in range.",
+      "confidence": "high"
+    },
+    {
+      "id": "NA05",
+      "name": "wildcards",
+      "verilog": "NA05_wildcards.v",
+      "sdc": "NA05_wildcards.sdc",
+      "top_module": "top",
+      "expected": {
+        "parse_ok": true,
+        "resolvable": ["get_ports debug_*"],
+        "issues": [{"code": "SDC-056", "min_count": 1, "needle": "bogus_*"}],
+        "trust_status": "NETLIST_REQUIRED"
+      },
+      "reason": "debug_sel/debug_bus exist so debug_* resolves; no port matches bogus_*.",
+      "confidence": "high"
+    },
+    {
+      "id": "NA06",
+      "name": "generated_clocks",
+      "verilog": "NA06_generated_clocks.v",
+      "sdc": "NA06_generated_clocks.sdc",
+      "top_module": "top",
+      "expected": {
+        "parse_ok": true,
+        "resolvable": ["get_ports clk"],
+        "issues": [{"code": "SDC-055", "min_count": 1, "needle": "pll_out"}],
+        "trust_status": "PARTIALLY_VALIDATED"
+      },
+      "reason": "clk port exists; pll_out does not → unresolved source (NETLIST ref). The second create_generated_clock uses -add which is not value-analyzed → PARTIAL wins over NETLIST in precedence.",
+      "confidence": "high"
+    },
+    {
+      "id": "NA07",
+      "name": "timing_exceptions",
+      "verilog": "NA07_timing_exceptions.v",
+      "sdc": "NA07_timing_exceptions.sdc",
+      "top_module": "top",
+      "expected": {
+        "parse_ok": true,
+        "resolvable": ["get_pins u_core/u_reg0/D"],
+        "issues": [
+          {"code": "SDC-055", "min_count": 1, "needle": "u_core/u_nope/Q"},
+          {"code": "SDC-057", "min_count": 1, "needle": "u_core/u_nope"}
+        ],
+        "trust_status": "NETLIST_REQUIRED"
+      },
+      "reason": "Valid pin resolves; u_core/u_nope does not exist (both 055 and 057 fire).",
+      "confidence": "high"
+    },
+    {
+      "id": "NA08",
+      "name": "broken_design",
+      "verilog": "NA08_broken_design.v",
+      "sdc": "NA08_broken_design.sdc",
+      "top_module": "top",
+      "injected_defects": [
+        "D1 get_ports nonexistent_clk",
+        "D2 get_pins u_core/u_bad_reg/D",
+        "D3 get_ports stray_* empty",
+        "D4 input data_in unconstrained"
+      ],
+      "expected": {
+        "parse_ok": true,
+        "issues": [
+          {"code": "SDC-055", "min_count": 1, "needle": "nonexistent_clk"},
+          {"code": "SDC-055", "min_count": 1, "needle": "u_bad_reg"},
+          {"code": "SDC-056", "min_count": 1, "needle": "stray_*"},
+          {"code": "SDC-064", "min_count": 1, "needle": "data_in"}
+        ],
+        "trust_status": "NETLIST_REQUIRED"
+      },
+      "reason": "4 injected defects; D1/D2 → SDC-055, D3 → SDC-056, D4 → SDC-064 (Phase 9: data_in is structurally DATA — drives u_core/din — so the structural rule owns it; SDC-059 is the name-heuristic fallback and does not double-fire). data_out IS constrained; clk is a clock port (exempt).",
+      "confidence": "high"
+    },
+    {
+      "id": "NA10",
+      "name": "large_netlist",
+      "verilog": "NA10_large_netlist.v",
+      "sdc": "NA10_large_netlist.sdc",
+      "top_module": "top",
+      "expected": {
+        "parse_ok": true,
+        "modules": 6,
+        "ports": 4,
+        "instances": 17,
+        "instances_nested": ["u_core/u_reg0", "u_core/u_reg9", "u_io/u_out0", "u_io/u_out3"],
+        "pins_nested": ["u_core/u_reg0/D", "u_core/u_reg9/Q", "u_io/u_out0/DOUT"],
+        "resolvable": [
+          "get_pins u_core/u_reg0/D",
+          "get_pins u_io/u_out0/DOUT",
+          "get_cells u_core/u_reg0",
+          "get_cells u_core/*",
+          "get_ports data_out"
+        ],
+        "issues": [],
+        "trust_status": "PARTIALLY_VALIDATED"
+      },
+      "reason": "17 instances (3 top + 10 core flops + 4 io buffers), 4 top ports, 6 modules. All refs resolve; set_multicycle_path -from/-to are not value-analyzed → PARTIAL.",
+      "confidence": "high"
+    },
+    {
+      "id": "NA09",
+      "name": "multiple_tops",
+      "verilog": "NA09_multiple_tops.v",
+      "sdc": "NA09_multiple_tops.sdc",
+      "expected": {
+        "parse_ok": false,
+        "ambiguity": true,
+        "top_candidates": ["chip_a", "chip_b"]
+      },
+      "reason": "Two uninstantiated modules — must NOT silently pick one; explicit ambiguity required.",
+      "confidence": "high"
+    }
+  ]
+}

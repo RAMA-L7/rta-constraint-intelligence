@@ -1,0 +1,201 @@
+{
+  "intro": "Phase 11 — SDC Constraint Readiness golden suite (HR01..HR15). Expected statuses are derived from SDC semantics and the documented blocker/review/advisory mapping — NOT from validator output. Categorical statuses only (no numeric score). READY never means timing passes.",
+  "cases": [
+    {
+      "id": "HR01",
+      "sdc": "HR01_clean_sdconly.sdc",
+      "netlist": null,
+      "purpose": "Clean SDC-only (realistic: contains partially-supported options)",
+      "note": "Complete single-clock SDC with all standard sections. It uses options the validator does not value-analyze (group_path -name/-to, set_clock_gating_check -setup/-hold, set_clock_latency -source, set_ideal_network -no_propagate) → SCOPE-PARTIAL honestly fires → REVIEW_REQUIRED. This is the no-false-confidence behavior: a realistic clean SDC whose options are partially understood must not be claimed READY. Nothing blocks; no invented findings.",
+      "expected": {
+        "overall": "REVIEW_REQUIRED",
+        "mode": "SDC_ONLY",
+        "limited_design_verification": true,
+        "blockers": [],
+        "review_items_include": ["SCOPE-PARTIAL"],
+        "review_items_exclude": ["SDC-030", "SDC-021"]
+      }
+    },
+    {
+      "id": "HR02",
+      "sdc": "HR02_clean_designaware.sdc",
+      "netlist": "HR02_block.v",
+      "purpose": "Clean design-aware",
+      "note": "Same clean block with netlist: every port constrained or exempt (clk/scan). All collections resolve, coverage READY, design context VALIDATED → genuinely READY (no advisories needed).",
+      "expected": {
+        "overall": "READY",
+        "mode": "DESIGN_AWARE",
+        "limited_design_verification": false,
+        "blockers": [],
+        "dimension": {"COVERAGE": "READY", "DESIGN_CONTEXT": "READY"}
+      }
+    },
+    {
+      "id": "HR03",
+      "sdc": "HR03_undefined_clock.sdc",
+      "netlist": null,
+      "purpose": "Undefined clock reference",
+      "note": "set_input_delay -clock nonexistent_clk → SDC-046 (error) → BLOCKED.",
+      "expected": {
+        "overall": "BLOCKED",
+        "mode": "SDC_ONLY",
+        "blockers_include": ["SDC-046"]
+      }
+    },
+    {
+      "id": "HR04",
+      "sdc": "HR04_unconstrained_io.sdc",
+      "netlist": "HR04_busblock.v",
+      "purpose": "Unconstrained data I/O (design-aware)",
+      "note": "din_b has structural data evidence but no set_input_delay → SDC-064 (warning) → REVIEW_REQUIRED.",
+      "expected": {
+        "overall": "REVIEW_REQUIRED",
+        "mode": "DESIGN_AWARE",
+        "blockers": [],
+        "review_items_include": ["SDC-064"]
+      }
+    },
+    {
+      "id": "HR05",
+      "sdc": "HR05_partial_bus.sdc",
+      "netlist": "HR04_busblock.v",
+      "purpose": "Partial bus coverage (design-aware)",
+      "note": "data_in[7:0] bus; only data_in[3:0] constrained → SDC-066 PARTIALLY_CONSTRAINED → REVIEW_REQUIRED.",
+      "expected": {
+        "overall": "REVIEW_REQUIRED",
+        "mode": "DESIGN_AWARE",
+        "blockers": [],
+        "review_items_include": ["SDC-066"]
+      }
+    },
+    {
+      "id": "HR06",
+      "sdc": "HR06_contradictory_case.sdc",
+      "netlist": null,
+      "purpose": "Contradictory case analysis",
+      "note": "0 then 1 on same pin → SDC-049 (warning, DEFINITE contradiction) → BLOCKED.",
+      "expected": {
+        "overall": "BLOCKED",
+        "mode": "SDC_ONLY",
+        "blockers_include": ["SDC-049"]
+      }
+    },
+    {
+      "id": "HR07",
+      "sdc": "HR07_contradictory_window.sdc",
+      "netlist": null,
+      "purpose": "Contradictory delay window",
+      "note": "set_max_delay 5 < set_min_delay 8 on identical endpoints → SDC-069 → BLOCKED.",
+      "expected": {
+        "overall": "BLOCKED",
+        "mode": "SDC_ONLY",
+        "blockers_include": ["SDC-069"]
+      }
+    },
+    {
+      "id": "HR08",
+      "sdc": "HR08_duplicate_only.sdc",
+      "netlist": null,
+      "purpose": "Duplicate-only design",
+      "note": "One exact duplicate (SDC-067, info) → advisory, NOT a blocker. Overall must NOT be BLOCKED.",
+      "expected": {
+        "overall": "READY_WITH_ADVISORIES",
+        "mode": "SDC_ONLY",
+        "blockers": [],
+        "advisories_include": ["SDC-067"]
+      }
+    },
+    {
+      "id": "HR09",
+      "sdc": "HR09_override_only.sdc",
+      "netlist": null,
+      "purpose": "Override-only design",
+      "note": "Silent override (SDC-068, info) → advisory. The later value may be intentional → not a blocker.",
+      "expected": {
+        "overall": "READY_WITH_ADVISORIES",
+        "mode": "SDC_ONLY",
+        "blockers": [],
+        "advisories_include": ["SDC-068"]
+      }
+    },
+    {
+      "id": "HR10",
+      "sdc": "HR10_exception_overlap.sdc",
+      "netlist": null,
+      "purpose": "Exception overlap requiring STA",
+      "note": "fp + mcp on same endpoints → SDC-070 POSSIBLE_CONFLICT (info, STA required) → REVIEW_REQUIRED, never BLOCKED.",
+      "expected": {
+        "overall": "REVIEW_REQUIRED",
+        "mode": "SDC_ONLY",
+        "blockers": [],
+        "review_items_include": ["SDC-070"]
+      }
+    },
+    {
+      "id": "HR11",
+      "sdc": "HR11_unsupported_construct.sdc",
+      "netlist": null,
+      "purpose": "Unsupported semantic construct",
+      "note": "foreach present → SCOPE-UNSUPPORTED → REVIEW_REQUIRED (analysis incomplete), not BLOCKED (no definite error).",
+      "expected": {
+        "overall": "REVIEW_REQUIRED",
+        "mode": "SDC_ONLY",
+        "blockers": [],
+        "review_items_include": ["SCOPE-UNSUPPORTED"]
+      }
+    },
+    {
+      "id": "HR12",
+      "sdc": "HR12_missing_netlist.sdc",
+      "netlist": null,
+      "purpose": "Missing netlist context (SDC-only)",
+      "note": "Good SDC without netlist: DESIGN_CONTEXT = INSUFFICIENT_CONTEXT + limited design verification, but NOT BLOCKED and NOT forced REVIEW by the missing netlist alone.",
+      "expected": {
+        "overall": "READY_WITH_ADVISORIES",
+        "mode": "SDC_ONLY",
+        "limited_design_verification": true,
+        "blockers": [],
+        "dimension": {"DESIGN_CONTEXT": "INSUFFICIENT_CONTEXT"}
+      }
+    },
+    {
+      "id": "HR13",
+      "sdc": "HR13_multiple_blockers.sdc",
+      "netlist": null,
+      "purpose": "Multiple simultaneous blockers",
+      "note": "SDC-046 + SDC-049 + SDC-069 all present → BLOCKED with all three in blockers.",
+      "expected": {
+        "overall": "BLOCKED",
+        "mode": "SDC_ONLY",
+        "blockers_include": ["SDC-046", "SDC-049", "SDC-069"]
+      }
+    },
+    {
+      "id": "HR14",
+      "sdc": "HR14_realistic_handoff.sdc",
+      "netlist": null,
+      "purpose": "Realistic handoff candidate",
+      "note": "Realistic multi-clock block with legal repeated constraints (min/max, rise/fall, setup/hold, add_delay, virtual clocks). Legal multiples produce NO interaction findings (no SDC-067/068/069/070), and the split-command MCP hold fix suppresses SDC-021. But the file uses options the validator does not value-analyze (set_input_delay -rise/-fall/-add_delay, set_max_delay/-min_delay -from/-to, set_multicycle_path -from/-to, group_path, set_clock_gating_check, set_clock_latency -source) → SCOPE-PARTIAL honestly fires → REVIEW_REQUIRED. Never BLOCKED, never claimed READY without full understanding.",
+      "expected": {
+        "overall": "REVIEW_REQUIRED",
+        "mode": "SDC_ONLY",
+        "blockers": [],
+        "review_items_include": ["SCOPE-PARTIAL"],
+        "review_items_exclude": ["SDC-021", "SDC-067"]
+      }
+    },
+    {
+      "id": "HR15",
+      "sdc": "HR15_realistic_notready.sdc",
+      "netlist": null,
+      "purpose": "Realistic not-ready design",
+      "note": "Undefined master clock (SDC-047) + max<min (SDC-069) → BLOCKED; fp/mcp overlap (SDC-070) separated as review item.",
+      "expected": {
+        "overall": "BLOCKED",
+        "mode": "SDC_ONLY",
+        "blockers_include": ["SDC-047", "SDC-069"],
+        "review_items_include": ["SDC-070"]
+      }
+    }
+  ]
+}

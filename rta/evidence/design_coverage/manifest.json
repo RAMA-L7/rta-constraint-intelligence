@@ -1,0 +1,145 @@
+{
+  "description": "Phase 9 design-aware constraint coverage golden suite. Expected results derived independently from SDC/STA convention: clock/reset/scan ports are EXEMPT from I/O delay; structurally-data ports (D/Q pins) without delays are definite findings; a bus with only some bits delayed is PARTIAL. Coverage is NOT correctness.",
+  "designs": {
+    "_design_v1.v": {"inputs": 4, "outputs": 2, "clk_ports": ["clk"], "exempt": ["clk", "rst_n", "scan_en"], "data": ["data_in", "data_out", "status"]},
+    "_design_v2.v": {"inputs": 3, "outputs": 2, "clk_ports": ["clk_a", "clk_b"], "exempt": ["clk_a", "clk_b", "rst_n"], "data": ["data_in", "data_out_a", "data_out_b"]},
+    "_design_v3.v": {"inputs": 3, "outputs": 2, "clk_ports": ["clk"], "exempt": ["clk", "rst_n"], "data": ["data_in", "data_out"]}
+  },
+  "cases": [
+    {
+      "id": "DC01", "design": "_design_v1.v", "sdc": "DC01_fully_constrained.sdc",
+      "purpose": "Fully constrained single-clock block — clean coverage.",
+      "expected": {
+        "inputs_constrained": 1, "inputs_exempt": 3, "outputs_constrained": 2,
+        "clocks_defined": 1, "clocks_resolved": 1,
+        "exceptions_total": 1, "exceptions_resolved": 1,
+        "findings": []
+      },
+      "reason": "data_in delayed; clk/rst_n/scan_en exempt by structure; data_out/status delayed.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC02", "design": "_design_v1.v", "sdc": "DC02_missing_input_delay.sdc",
+      "purpose": "One missing input delay.",
+      "expected": {
+        "inputs_constrained": 0, "inputs_exempt": 3, "inputs_unconstrained": 1,
+        "outputs_constrained": 2,
+        "findings": [{"code": "SDC-064", "min": 1}]
+      },
+      "reason": "data_in is structurally DATA (drives D pin) and has no set_input_delay → SDC-064.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC03", "design": "_design_v1.v", "sdc": "DC03_missing_output_delay.sdc",
+      "purpose": "One missing output delay.",
+      "expected": {
+        "inputs_constrained": 1, "inputs_exempt": 3,
+        "outputs_constrained": 1, "outputs_unconstrained": 1,
+        "findings": [{"code": "SDC-065", "min": 1}]
+      },
+      "reason": "data_out structurally driven by Q pin with no set_output_delay → SDC-065.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC04", "design": "_design_v1.v", "sdc": "DC04_clock_reset_exclusions.sdc",
+      "purpose": "Clock-only SDC — clock/reset/scan exempt, all data unconstrained.",
+      "expected": {
+        "inputs_constrained": 0, "inputs_exempt": 3, "inputs_unconstrained": 1,
+        "outputs_constrained": 0, "outputs_unconstrained": 2,
+        "clocks_defined": 1, "clocks_resolved": 1,
+        "findings": [{"code": "SDC-064", "min": 1}, {"code": "SDC-065", "min": 1, "max": 2}]
+      },
+      "reason": "clk/rst_n/scan_en exempt; data_in (SDC-064), data_out + status (SDC-065).",
+      "confidence": "high"
+    },
+    {
+      "id": "DC05", "design": "_design_v1.v", "sdc": "DC05_full_bus_coverage.sdc",
+      "purpose": "Whole bus referenced — full coverage, no partial flag.",
+      "expected": {
+        "inputs_constrained": 1, "inputs_exempt": 3, "inputs_partial": 0,
+        "outputs_constrained": 2,
+        "findings": []
+      },
+      "reason": "[get_ports data_in] covers all 8 bits; outputs fully delayed.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC06", "design": "_design_v1.v", "sdc": "DC06_partial_bus_coverage.sdc",
+      "purpose": "Partial bus coverage (4 of 8 bits) — SDC-066.",
+      "expected": {
+        "inputs_constrained": 0, "inputs_exempt": 3, "inputs_partial": 1,
+        "outputs_constrained": 2,
+        "findings": [{"code": "SDC-066", "min": 1}]
+      },
+      "reason": "data_in[3:0] covers bits 3..0 only; bits 7..4 uncovered → PARTIAL → SDC-066.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC07", "design": "_design_v1.v", "sdc": "DC07_virtual_clock_io.sdc",
+      "purpose": "Virtual clock referenced by I/O delays — valid, no false findings.",
+      "expected": {
+        "inputs_constrained": 1, "inputs_exempt": 3,
+        "outputs_constrained": 2,
+        "clocks_defined": 2, "clocks_virtual": 1,
+        "findings": []
+      },
+      "reason": "Delays referencing a virtual clock are legitimate external interface timing; ports constrained.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC08", "design": "_design_v3.v", "sdc": "DC08_generated_clock.sdc",
+      "purpose": "Generated clock — source structurally resolvable.",
+      "expected": {
+        "clocks_defined": 2, "clocks_resolved": 2,
+        "inputs_constrained": 1, "inputs_exempt": 2,
+        "outputs_constrained": 1,
+        "findings": []
+      },
+      "reason": "create_generated_clock -source [get_ports clk] resolves against design; data delayed.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC09", "design": "_design_v1.v", "sdc": "DC09_valid_timing_exceptions.sdc",
+      "purpose": "Valid timing exceptions with resolvable endpoints.",
+      "expected": {
+        "exceptions_total": 2, "exceptions_resolved": 2,
+        "findings": []
+      },
+      "reason": "set_false_path + set_multicycle_path endpoints all resolve to real objects.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC10", "design": "_design_v1.v", "sdc": "DC10_empty_exception_endpoint.sdc",
+      "purpose": "Exception endpoint wildcard matches nothing.",
+      "expected": {
+        "exceptions_total": 1, "exceptions_empty": 1,
+        "findings": []
+      },
+      "reason": "[get_ports debug_*] has no matches → EMPTY_COLLECTION status (SDC-056 from reference validation; no SDC-064/065/066).",
+      "confidence": "high"
+    },
+    {
+      "id": "DC11", "design": "_design_v2.v", "sdc": "DC11_multi_clock_interface.sdc",
+      "purpose": "Two clock domains with asynchronous groups.",
+      "expected": {
+        "clocks_defined": 2, "clocks_resolved": 2,
+        "inputs_constrained": 1, "inputs_exempt": 3,
+        "outputs_constrained": 2,
+        "findings": []
+      },
+      "reason": "clk_a/clk_b exempt (CLOCK), rst_n exempt, data_in delayed, both outputs delayed.",
+      "confidence": "high"
+    },
+    {
+      "id": "DC12", "design": "_design_v1.v", "sdc": "DC12_intentionally_mixed.sdc",
+      "purpose": "Intentionally mixed coverage — partial bus + missing output delay.",
+      "expected": {
+        "inputs_constrained": 0, "inputs_exempt": 3, "inputs_partial": 1,
+        "outputs_constrained": 1, "outputs_unconstrained": 1,
+        "findings": [{"code": "SDC-066", "min": 1}, {"code": "SDC-065", "min": 1}]
+      },
+      "reason": "data_in[7:4] partial → SDC-066; status output never delayed → SDC-065; data_out delayed.",
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Readiness — Ṛta</title>
+  <meta name="description" content="Seven-dimension constraint readiness review with blockers, review items and recommended actions.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Capability · Readiness</p>
+    <h1 class="display-1" style="max-width:22ch;margin:0 auto">A defensible readiness verdict, dimension by dimension</h1>
+    <p class="lede" style="max-width:62ch;margin:18px auto 0">Seven dimensions, each backed by evidence. Blockers, review items, advisories and recommended actions — and a boundary that is always stated: READY is not signoff.</p>
+  </div>
+</section>
+
+<section class="section" aria-label="Readiness detail">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">The problem</p>
+      <h2 class="display-2">"Looks OK" is not a review</h2>
+      <p class="lede">A structured readiness review answers: what is actually ready, what needs review, what blocks, and why — with the evidence that caused each status.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">The dimension rail</p>
+        <div class="panel">
+          <div style="display:grid;gap:6px;font-family:var(--font-mono);font-size:12.5px">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:6px 0"><span>CLOCKS</span><span class="badge badge--success">ready</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:6px 0"><span>I/O</span><span class="badge badge--warning">review</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:6px 0"><span>EXCEPTIONS</span><span class="badge badge--success">ready</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:6px 0"><span>COVERAGE</span><span class="badge badge--warning">review</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:6px 0"><span>CONSISTENCY</span><span class="badge badge--success">ready</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:6px 0"><span>ANALYSIS_TRUST</span><span class="badge badge--accent">validated</span></div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0"><span>DESIGN_CONTEXT</span><span class="badge badge--info">available</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <p class="eyebrow">Overall status</p>
+        <div style="display:grid;gap:10px">
+          <div class="callout callout--warning"><span class="co-icon">▲</span><span><b>REVIEW_REQUIRED</b> — two dimensions need attention before signoff handoff</span></div>
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>Recommended actions</b> — deterministic P0–P3 backend recommendations, never AI suggestions</span></div>
+          <div class="callout callout--muted"><span class="co-icon">◈</span><span><b>Evidence-proportioned</b> — dimension rails show evidence composition, not an invented score</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Disclosure">
+  <div class="container">
+    <div class="callout callout--warning reveal">
+      <span class="co-icon">▲</span>
+      <span><b>READY is not STA signoff.</b> The validator performs deterministic structural and semantic analysis. It does not propagate timing, compute slack, or close timing. A READY verdict means the constraint set satisfies the validator's documented readiness criteria — nothing more.</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Actions">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Actions</p>
+      <h2 class="display-2">Recommendations from evidence, not opinion</h2>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead><tr><th>Priority</th><th>Category</th><th>Example action</th></tr></thead>
+        <tbody>
+          <tr><td class="mono" style="color:var(--error)">P0</td><td>blockers</td><td>resolve SDC-008 input delay ≥ clock period before handoff</td></tr>
+          <tr><td class="mono" style="color:var(--warning)">P1</td><td>review items</td><td>add missing I/O delays (SDC-030) on unconstrained buses</td></tr>
+          <tr><td class="mono" style="color:var(--info)">P2</td><td>advisories</td><td>declare set_clock_groups for inferred-asynchronous pairs</td></tr>
+          <tr><td class="mono" style="color:var(--text-muted)">P3</td><td>context</td><td>supply a netlist to upgrade NETLIST_REQUIRED constructs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="CTA">
+  <div class="container center">
+    <h2 class="display-2">Get a defensible readiness review</h2>
+    <div class="hero-ctas" style="justify-content:center;margin-top:24px">
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `sdc-tools web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../capabilities.html">All capabilities</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

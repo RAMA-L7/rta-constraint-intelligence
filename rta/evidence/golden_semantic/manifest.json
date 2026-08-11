@@ -1,0 +1,76 @@
+{
+  "suite": "SDC Tools Golden Semantic Benchmark (Phase 5)",
+  "version": "1.0",
+  "schema_note": "Expected results encode CORRECT semantic SDC behavior (undefined references, duplicates vs legal multiples, conflicts) based on authoritative tool semantics — NOT current tool output.",
+  "references": {
+    "sdc_undefined_ref": "Real tools error/warn when -clock / -master_clock / clock-group names reference clocks never defined by create_clock/create_generated_clock. Clock NAMES are always statically resolvable from the SDC; get_ports/get_pins/all_clocks/wildcards are netlist-dependent.",
+    "sdc_add_delay": "Repeated set_input_delay/set_output_delay on the same port+clock REPLACES by default; -add_delay accumulates. -max vs -min and -rise vs -fall are distinct constraints, not duplicates.",
+    "sdc_case_analysis": "Subsequent set_case_analysis on the same pin overrides the earlier value; two different values on one pin in one mode is a conflict to verify."
+  },
+  "cases": [
+    {
+      "id": "s01", "group": "undefined_references", "file": "undefined_references/s01_io_delay_undefined_clock.sdc",
+      "purpose": "set_input_delay -clock references a never-defined clock → SDC-046; MUST NOT fall back to the tightest defined clock (no SDC-008).",
+      "expected": {"errors_include": ["SDC-046"], "errors_exclude": ["SDC-008"], "warnings_exclude": []},
+      "classification": "definitely_undefined", "confidence": "high",
+      "reference": "sdc_undefined_ref"
+    },
+    {
+      "id": "s02", "group": "undefined_references", "file": "undefined_references/s02_generated_undefined_master.sdc",
+      "purpose": "create_generated_clock -master_clock names an undefined clock → SDC-047.",
+      "expected": {"warnings_include": ["SDC-047"]},
+      "classification": "definitely_undefined", "confidence": "high",
+      "reference": "sdc_undefined_ref"
+    },
+    {
+      "id": "s03", "group": "undefined_references", "file": "undefined_references/s03_group_undefined_clock.sdc",
+      "purpose": "set_clock_groups references undefined clock → SDC-048; defined clk_a NOT flagged.",
+      "expected": {"warnings_include": ["SDC-048"], "sdc048_names": ["ghost2"], "sdc048_exclude_names": ["clk_a"]},
+      "classification": "definitely_undefined", "confidence": "high",
+      "reference": "sdc_undefined_ref"
+    },
+    {
+      "id": "s04", "group": "case_analysis", "file": "case_analysis/s04_conflicting_case_analysis.sdc",
+      "purpose": "Same pin assigned 0 then 1 → SDC-049 warning carrying BOTH source lines.",
+      "expected": {"warnings_include": ["SDC-049"], "dual_line": true},
+      "classification": "conflict", "confidence": "high",
+      "reference": "sdc_case_analysis"
+    },
+    {
+      "id": "s05", "group": "valid_multiple_constraints", "file": "valid_multiple_constraints/s05_legal_io_multiples.sdc",
+      "purpose": "-max and -min on same port+clock are legal distinct constraints → no semantic findings.",
+      "expected": {"errors_include": [], "warnings_exclude": ["SDC-046", "SDC-047", "SDC-048", "SDC-049"]},
+      "classification": "valid_multiple_constraints", "confidence": "high",
+      "reference": "sdc_add_delay"
+    },
+    {
+      "id": "s06", "group": "valid_multiple_constraints", "file": "valid_multiple_constraints/s06_netlist_dependent_refs.sdc",
+      "purpose": "get_ports/get_pins/all_clocks/wildcard refs are netlist-dependent → never flagged as undefined.",
+      "expected": {"errors_include": [], "warnings_exclude": ["SDC-046", "SDC-047", "SDC-048"]},
+      "classification": "netlist_dependent", "confidence": "high",
+      "reference": "sdc_undefined_ref"
+    },
+    {
+      "id": "s07", "group": "valid_multiple_constraints", "file": "valid_multiple_constraints/s07_add_delay_and_modes.sdc",
+      "purpose": "-add_delay accumulation and separate -rise/-fall constraints are legal → no semantic findings.",
+      "expected": {"errors_include": [], "warnings_exclude": ["SDC-046", "SDC-047", "SDC-048", "SDC-049"]},
+      "classification": "valid_multiple_constraints", "confidence": "high",
+      "reference": "sdc_add_delay"
+    },
+    {
+      "id": "s10", "group": "realistic", "file": "realistic/s10_realistic_one_defect.sdc",
+      "purpose": "Realistic SoC SDC with EXACTLY ONE injected defect (clk_ddr undefined) → exactly one SDC-046, no unrelated semantic findings.",
+      "expected": {"errors_include": ["SDC-046"], "errors_exclude": ["SDC-008", "SDC-047", "SDC-048"], "warnings_exclude": ["SDC-047", "SDC-048", "SDC-049"]},
+      "classification": "realistic", "confidence": "high",
+      "reference": "sdc_undefined_ref"
+    },
+    {
+      "id": "s11", "group": "realistic", "file": "realistic/s11_realistic_multiple_defects.sdc",
+      "purpose": "Realistic SDC with THREE injected defects → SDC-047, SDC-046, SDC-049 each exactly once, dual-line on SDC-049.",
+      "expected": {"errors_include": ["SDC-046"], "warnings_include": ["SDC-047", "SDC-049"],
+                   "warnings_exclude": ["SDC-048"], "dual_line": true},
+      "classification": "realistic", "confidence": "high",
+      "reference": "sdc_case_analysis"
+    }
+  ]
+}

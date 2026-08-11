@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "rta-constraint-intelligence"
+version = "1.5.0"
+description = "Ṛta — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking. No EDA tool required."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["sdc", "vlsi", "timing", "constraints", "synopsys", "eda", "signoff", "sta", "constraint-intelligence"]
+authors = [
+    {name = "RAMA-L7"},
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+web = ["streamlit>=1.35"]
+dev = ["pre-commit>=3.0", "pytest>=7.0"]
+all = ["streamlit>=1.35", "pre-commit>=3.0", "pytest>=7.0"]
+
+[project.urls]
+"Homepage" = "https://github.com/RAMA-L7/rta-constraint-intelligence"
+"Repository" = "https://github.com/RAMA-L7/rta-constraint-intelligence.git"
+"Bug Tracker" = "https://github.com/RAMA-L7/rta-constraint-intelligence/issues"
+
+[project.scripts]
+rta = "cli:main"
+
+[tool.setuptools]
+py-modules = [
+    "cli", "checker", "generator", "corner_manager", "mmc",
+    "tcl_resolver", "wildcard_analyzer", "constraint_diff",
+    "clock_relations", "rules_registry", "reporter",
+    "coverage", "custom_rules", "linter", "converter",
+    "batch_runner", "design_context", "design_coverage",
+    "constraint_interactions", "constraint_readiness",
+    "readiness_diff", "policy_engine", "evidence",
+    "finding_identity", "support_boundary", "sdc_preprocess",
+]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["rta*", "ui*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.sdc", "*.tcl", ".pre-commit-config.yaml"]
+
+[tool.setuptools.data-files]
+".pre-commit-hooks" = [".pre-commit-hooks/sdc-check.sh"]

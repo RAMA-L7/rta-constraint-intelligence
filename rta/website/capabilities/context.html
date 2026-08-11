@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Context — Ṛta</title>
+  <meta name="description" content="Structural Verilog context for object resolution, hierarchy and collection evidence.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Capability · Design Context</p>
+    <h1 class="display-1" style="max-width:22ch;margin:0 auto">SDC-only, or SDC + structural Verilog</h1>
+    <p class="lede" style="max-width:62ch;margin:18px auto 0">Supply a netlist and the validator resolves object references against real ports, pins, cells, nets and hierarchy. Skip it and references are honestly reported as netlist-required.</p>
+  </div>
+</section>
+
+<section class="section" aria-label="Context detail">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">The problem</p>
+      <h2 class="display-2">Object references are either proven or reported</h2>
+      <p class="lede">get_ports / get_pins / all_* collections can silently match nothing, match the wrong object, or rely on hierarchy that doesn't exist. Design context turns "probably fine" into "resolved" or an explicit limitation.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">What design context enables</p>
+        <ul style="color:var(--text-secondary);font-size:15px;line-height:2">
+          <li><b style="color:var(--text-primary)">Object resolution</b> — references resolved against a structural inventory, or reported empty / unsupported</li>
+          <li><b style="color:var(--text-primary)">Hierarchy</b> — module/instance tree with top-level ports and widths</li>
+          <li><b style="color:var(--text-primary)">Coverage evidence</b> — object-level constraint coverage across inputs, outputs and buses</li>
+          <li><b style="color:var(--text-primary)">Trust upgrade</b> — NETLIST_REQUIRED constructs become VALIDATED where they resolve</li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <p class="eyebrow">What it does not enable</p>
+        <div class="space-y">
+          <div class="callout callout--warning"><span class="co-icon">✗</span><span><b>No timing propagation</b> — context is a structural inventory only</span></div>
+          <div class="callout callout--warning"><span class="co-icon">✗</span><span><b>No slack or delay</b> — no delay values, no .lib analysis</span></div>
+          <div class="callout callout--warning"><span class="co-icon">✗</span><span><b>No signoff</b> — a resolved object is not a correct constraint</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Collection resolution">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Collection resolution</p>
+      <h2 class="display-2">Resolved · Empty · Unsupported</h2>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead><tr><th>Status</th><th>Meaning</th><th>User action</th></tr></thead>
+        <tbody>
+          <tr><td class="mono" style="color:var(--success)">RESOLVED</td><td>reference matches real object(s) in the netlist</td><td>none — evidence captured</td></tr>
+          <tr><td class="mono" style="color:var(--warning)">EMPTY</td><td>collection matched nothing (typo / missing object)</td><td>fix the object reference</td></tr>
+          <tr><td class="mono" style="color:var(--error)">UNSUPPORTED</td><td>expression outside the supported Verilog subset</td><td>review manually; reported, not assumed</td></tr>
+          <tr><td class="mono" style="color:var(--info)">NETLIST_REQUIRED</td><td>no netlist supplied for this run</td><td>supply structural Verilog + top module</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Boundary">
+  <div class="container">
+    <div class="callout callout--muted reveal">
+      <span class="co-icon">◈</span>
+      <span><b>What design context does not mean.</b> Structural resolution proves an object exists and is referenced — it does not prove the constraint on it is timing-correct. Coverage ≠ correctness.</span>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="CTA">
+  <div class="container center">
+    <h2 class="display-2">Add your netlist</h2>
+    <div class="hero-ctas" style="justify-content:center;margin-top:24px">
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `sdc-tools web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../capabilities.html">All capabilities</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/site.js"></script>
+</body>
+</html>

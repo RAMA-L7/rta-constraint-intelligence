@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation — Ṛta</title>
+  <meta name="description" content="Ṛta documentation: getting started, concepts, workflows, reference, trust.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Documentation</p>
+    <h1 class="display-1" style="max-width:22ch;margin:0 auto">From first check to CI policy</h1>
+    <p class="lede" style="max-width:60ch;margin:18px auto 0">Full documentation lives in the repository. This page is the map: getting started, concepts, workflows, reference and trust.</p>
+  </div>
+</section>
+
+<section class="section" aria-label="Docs index">
+  <div class="container">
+    <div class="docs-layout">
+      <nav class="docs-nav reveal" aria-label="Documentation sections">
+        <div class="dn-group"><div class="dn-title">Getting started</div>
+          <a class="active" href="#install">Installation</a>
+          <a href="#first">First validation</a>
+          <a href="#results">Understanding results</a>
+        </div>
+        <div class="dn-group"><div class="dn-title">Concepts</div>
+          <a href="#concepts">Validation · clocks · coverage · readiness</a>
+        </div>
+        <div class="dn-group"><div class="dn-title">Workflows</div>
+          <a href="#workflows">Local · design-aware · baseline · CI</a>
+        </div>
+        <div class="dn-group"><div class="dn-title">Reference</div>
+          <a href="#reference">CLI · Python API · rules · support matrix</a>
+        </div>
+        <div class="dn-group"><div class="dn-title">Trust</div>
+          <a href="#trust">Methodology · benchmarks · limitations</a>
+        </div>
+      </nav>
+
+      <div>
+        <div class="space-y">
+          <div id="install" class="reveal">
+            <p class="eyebrow">Getting started · Installation</p>
+            <h3 class="display-3">Install from source</h3>
+            <code class="block">
+<span class="c-cmd">git clone</span> https://github.com/RAMA-L7/sdc-tools.git
+<span class="c-cmd">cd</span> sdc-tools
+<span class="c-cmd">python -m venv</span> .venv &amp;&amp; <span class="c-cmd">source</span> .venv/bin/activate
+<span class="c-cmd">pip install -e</span> ".[web]"
+            </code>
+            <p style="font-size:14px;color:var(--text-secondary);margin-top:10px">Requires Python 3.10+ · Docker image also available · <a href="https://github.com/RAMA-L7/sdc-tools#install-from-source" target="_blank" rel="noopener">Full install guide ↗</a></p>
+          </div>
+
+          <div id="first" class="reveal">
+            <p class="eyebrow">Getting started · First validation</p>
+            <h3 class="display-3">Check a constraint set</h3>
+            <code class="block">
+<span class="c-cmd">sdc-tools check</span> rta/examples/samples/example.sdc
+<span class="c-cmd">sdc-tools check</span> design.sdc --json          <span class="c-dim"># machine-readable</span>
+<span class="c-cmd">sdc-tools check</span> design.sdc --netlist top.v  <span class="c-dim"># design-aware</span>
+<span class="c-cmd">sdc-tools web</span>                                <span class="c-dim"># workspace UI</span>
+            </code>
+          </div>
+
+          <div id="results" class="reveal">
+            <p class="eyebrow">Getting started · Understanding results</p>
+            <h3 class="display-3">Every finding is structured</h3>
+            <p style="color:var(--text-secondary);font-size:14.5px">Findings carry <span class="code-inline">code</span> (SDC-001…), <span class="code-inline">severity</span>, a message, the affected object and the exact source line. The trust-scope panel states how completely the input was analyzed. Readiness and coverage sections carry their own disclosures.</p>
+            <p style="font-size:14px;margin-top:8px"><a href="capabilities/validation.html">More on findings →</a></p>
+          </div>
+
+          <div id="concepts" class="reveal">
+            <p class="eyebrow">Concepts</p>
+            <h3 class="display-3">The mental model in one paragraph</h3>
+            <p style="color:var(--text-secondary);font-size:14.5px">The validator preprocesses SDC into a normalized form, runs a deterministic rule engine, builds clock structure, resolves design objects (when a netlist is given), measures coverage, detects constraint interactions, computes a seven-dimension readiness verdict, and can snapshot + diff that verdict for CI. Every stage is evidence-backed; every boundary is disclosed.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+              <a class="btn btn--outline btn--sm" href="capabilities.html">Capability pages</a>
+              <a class="btn btn--outline btn--sm" href="platform.html">Platform pipeline</a>
+            </div>
+          </div>
+
+          <div id="workflows" class="reveal">
+            <p class="eyebrow">Workflows</p>
+            <h3 class="display-3">Four ways to use it</h3>
+            <div class="grid-2">
+              <div class="panel"><b>Local validation</b><p style="margin-top:6px">CLI or workspace: check an SDC, read findings, iterate.</p></div>
+              <div class="panel"><b>Design-aware</b><p style="margin-top:6px">Add a netlist + top module for resolution and coverage.</p></div>
+              <div class="panel"><b>Baseline review</b><p style="margin-top:6px">Save a snapshot, compare later, review the semantic diff.</p></div>
+              <div class="panel"><b>CI integration</b><p style="margin-top:6px">Gate merges with policies and deterministic exit codes.</p></div>
+            </div>
+          </div>
+
+          <div id="reference" class="reveal">
+            <p class="eyebrow">Reference</p>
+            <h3 class="display-3">Authoritative sources in the repo</h3>
+            <div class="table-wrap">
+              <table class="spec">
+                <thead><tr><th>Topic</th><th>Location</th></tr></thead>
+                <tbody>
+                  <tr><td>CLI reference</td><td class="mono">README.md · rta/docs/features/</td></tr>
+                  <tr><td>Rule catalog</td><td class="mono">rta/engine/rules/rules_registry.py · rta/docs/features/README-08</td></tr>
+                  <tr><td>Support boundary</td><td class="mono">rta/engine/trust/support_boundary.py · rta/docs/features/README-07</td></tr>
+                  <tr><td>Snapshot / policy schema</td><td class="mono">readiness_diff.py · policy_engine.py</td></tr>
+                  <tr><td>Feature guides (1–10)</td><td class="mono">rta/docs/features/README-01…10</td></tr>
+                  <tr><td>Changelog</td><td class="mono">CHANGELOG.md</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="trust" class="reveal">
+            <p class="eyebrow">Trust</p>
+            <h3 class="display-3">Docs that stay honest</h3>
+            <p style="color:var(--text-secondary);font-size:14.5px">Methodology, benchmark provenance and limitations are documented alongside features — never in a footnote. <a href="trust.html">Trust Center →</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="CTA">
+  <div class="container center">
+    <h2 class="display-2">Docs live in the repository</h2>
+    <div class="hero-ctas" style="justify-content:center;margin-top:24px">
+      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/sdc-tools/tree/main/docs" target="_blank" rel="noopener">Open the docs <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="release.html">Release v1.3.0</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

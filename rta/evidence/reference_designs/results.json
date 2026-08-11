@@ -1,0 +1,81 @@
+{
+  "designs": [
+    {
+      "id": "RD01",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "id": "RD02",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "id": "RD03",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "id": "RD04",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "id": "RD05",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "id": "RD06",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "id": "RD07",
+      "ok": true,
+      "issues": []
+    },
+    {
+      "id": "RD08",
+      "ok": true,
+      "issues": []
+    }
+  ],
+  "scorecard": {
+    "RD01": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    "RD02": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    "RD03": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    "RD04": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    "RD05": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    },
+    "RD07": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 0
+    },
+    "RD08": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 0
+    }
+  }
+}

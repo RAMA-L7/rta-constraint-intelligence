@@ -1,0 +1,167 @@
+{
+  "intro": "Constraint-interaction golden suite (Phase 10). Expected values were derived from SDC semantics, NOT from validator output. Categories: EXACT_DUPLICATE (SDC-067, info), OVERRIDE (SDC-068, info), DEFINITE_CONFLICT (SDC-069, warning), POSSIBLE_CONFLICT (SDC-070, info, STA review). Deferrals: SDC-002 owns duplicate/conflicting clock names; SDC-049 owns contradictory case analysis.",
+  "cases": [
+    {
+      "id": "CI01",
+      "sdc": "CI01_exact_duplicate.sdc",
+      "purpose": "Exact duplicate input delay",
+      "note": "Identical -max delay twice on same port/clock is redundant (second is a no-op) -> EXACT_DUPLICATE.",
+      "expected": {"exact_duplicates": 1, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-067", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI02",
+      "sdc": "CI02_legal_min_max.sdc",
+      "purpose": "Legal min/max pair",
+      "note": "-max and -min are independent analysis modes on the same object -> LEGAL_MULTIPLE, never flagged.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI03",
+      "sdc": "CI03_legal_rise_fall.sdc",
+      "purpose": "Legal rise/fall pair",
+      "note": "-rise and -fall select different edges -> independent constraints.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI04",
+      "sdc": "CI04_add_delay.sdc",
+      "purpose": "Legal -add_delay accumulation",
+      "note": "Both carry -add_delay -> they ACCUMULATE (legal SDC). Never treated as duplicate/override.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI05",
+      "sdc": "CI05_repeated_output_delay.sdc",
+      "purpose": "Repeated identical output delay",
+      "note": "Identical -max output delay twice -> EXACT_DUPLICATE.",
+      "expected": {"exact_duplicates": 1, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-067", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI06",
+      "sdc": "CI06_duplicate_clock.sdc",
+      "purpose": "Duplicate clock definition",
+      "note": "Duplicate clock NAME is owned by existing SDC-002; the interaction analyzer deliberately does not double-report.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI07",
+      "sdc": "CI07_conflicting_clock.sdc",
+      "purpose": "Conflicting clock definition (same name, different period)",
+      "note": "Same-name-different-period is an SDC-002 duplicate-name situation; not double-reported here.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI08",
+      "sdc": "CI08_duplicate_uncertainty.sdc",
+      "purpose": "Duplicate clock uncertainty",
+      "note": "Identical -setup uncertainty on same clock -> EXACT_DUPLICATE.",
+      "expected": {"exact_duplicates": 1, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-067", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI09",
+      "sdc": "CI09_setup_hold_uncertainty.sdc",
+      "purpose": "Legal setup/hold uncertainty pair",
+      "note": "-setup and -hold are independent analysis modes -> legal.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI10",
+      "sdc": "CI10_duplicate_case_analysis.sdc",
+      "purpose": "Duplicate case analysis (same value)",
+      "note": "Identical value repeated is a no-op; SDC-049 only fires on contradictory values. No interaction finding.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI11",
+      "sdc": "CI11_contradictory_case_analysis.sdc",
+      "purpose": "Contradictory case analysis",
+      "note": "0 then 1 on same pin is owned by existing SDC-049 (warning, dual-line). Not double-reported.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI12",
+      "sdc": "CI12_duplicate_false_path.sdc",
+      "purpose": "Duplicate false path",
+      "note": "Endpoint-identical false path repeated -> EXACT_DUPLICATE (no numeric value).",
+      "expected": {"exact_duplicates": 1, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-067", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI13",
+      "sdc": "CI13_fp_vs_mcp.sdc",
+      "purpose": "False-path vs multicycle overlap",
+      "note": "Endpoint objects overlap, but path overlap is NOT provable statically -> POSSIBLE_CONFLICT (info, confidence MEDIUM, STA required). Never an error.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 1,
+        "findings": [{"code": "SDC-070", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI14",
+      "sdc": "CI14_setup_hold_mcp.sdc",
+      "purpose": "Valid setup/hold multicycle pair",
+      "note": "-setup 2 and -hold 1 on same endpoints is the standard legal MCP pairing.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI15",
+      "sdc": "CI15_repeated_mcp.sdc",
+      "purpose": "Repeated multicycle with different values",
+      "note": "Intentional non-flag: exception value override is high false-positive risk (later value legally replaces). Documented limitation, not a finding.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI16",
+      "sdc": "CI16_max_min_conflict.sdc",
+      "purpose": "Max/min delay contradiction",
+      "note": "set_max_delay 5 < set_min_delay 10 on provably identical endpoints -> impossible window -> DEFINITE_CONFLICT (warning).",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 1, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-069", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI17",
+      "sdc": "CI17_clock_group_redundancy.sdc",
+      "purpose": "Clock-group + false-path redundancy",
+      "note": "asynchronous clock group plus explicit false path between the same clocks is common valid practice -> redundancy is legal, not flagged.",
+      "expected": {"exact_duplicates": 0, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": []}
+    },
+    {
+      "id": "CI18",
+      "sdc": "CI18_variable_duplicate.sdc",
+      "purpose": "Variable-derived semantic duplicate",
+      "note": "$D resolves to 2.0 in both commands after preprocessing -> the normalized records are identical -> EXACT_DUPLICATE.",
+      "expected": {"exact_duplicates": 1, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-067", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI19",
+      "sdc": "CI19_scientific_duplicate.sdc",
+      "purpose": "Scientific-notation semantic duplicate",
+      "note": "0.25 and 2.5e-1 are numerically equal after normalization -> classified EXACT_DUPLICATE (semantic duplicate by numeric equivalence).",
+      "expected": {"exact_duplicates": 1, "overrides": 0, "definite_conflicts": 0, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-067", "min": 1, "max": 1}]}
+    },
+    {
+      "id": "CI20",
+      "sdc": "CI20_realistic_mixed.sdc",
+      "purpose": "Realistic mixed design",
+      "note": "One exact duplicate (din_b), one override (dout_a 3.0->4.0), one max<min conflict (5<8). All legal min/max, rise/fall, setup/hold, MCP pairs must stay silent.",
+      "expected": {"exact_duplicates": 1, "overrides": 1, "definite_conflicts": 1, "possible_conflicts": 0,
+        "findings": [{"code": "SDC-067", "min": 1, "max": 1},
+                     {"code": "SDC-068", "min": 1, "max": 1},
+                     {"code": "SDC-069", "min": 1, "max": 1}]}
+    }
+  ]
+}

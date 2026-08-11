@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust Center — Ṛta</title>
+  <meta name="description" content="What Ṛta validates, partially validates, requires netlist or Tcl execution for, and does not claim. Honest trust boundaries.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<section class="hero" style="padding-bottom:var(--sp-7)">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container center" style="position:relative">
+    <p class="eyebrow center" style="margin-bottom:14px">Trust Center</p>
+    <h1 class="display-1" style="max-width:22ch;margin:0 auto">Precision about what we validate</h1>
+    <p class="lede" style="max-width:62ch;margin:18px auto 0">A tool that tells you what it does NOT do is more trustworthy than one that implies everything. This page is the complete trust model — statuses, non-claims, security and known limitations.</p>
+  </div>
+</section>
+
+<!-- ═══════════ TRUST MODEL ═══════════ -->
+<section class="section" aria-label="Trust model">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Trust model</p>
+      <h2 class="display-2">Every construct gets one of six statuses</h2>
+      <p class="lede">The validator never silently assumes correctness. Each analyzed construct is classified into a documented trust status.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-status reveal">
+        <div class="ts-head"><span class="sq" style="background:var(--success)"></span><span class="ts-name">VALIDATED</span></div>
+        <p class="ts-desc">Fully analyzed within the supported boundary: syntax, semantics, structure and references proven.</p>
+      </div>
+      <div class="trust-status reveal reveal-delay-1">
+        <div class="ts-head"><span class="sq" style="background:var(--warning)"></span><span class="ts-name">PARTIALLY VALIDATED</span></div>
+        <p class="ts-desc">Analyzed, but parts of the construct fall outside value-analysis (options present but not value-checked).</p>
+      </div>
+      <div class="trust-status reveal reveal-delay-2">
+        <div class="ts-head"><span class="sq" style="background:var(--info)"></span><span class="ts-name">NETLIST REQUIRED</span></div>
+        <p class="ts-desc">Object references (get_ports / get_pins / all_*) cannot be proven without a structural netlist.</p>
+      </div>
+      <div class="trust-status reveal">
+        <div class="ts-head"><span class="sq" style="background:var(--unknown)"></span><span class="ts-name">TCL EXECUTION REQUIRED</span></div>
+        <p class="ts-desc">Constructs whose meaning requires Tcl execution the validator deliberately does not perform.</p>
+      </div>
+      <div class="trust-status reveal reveal-delay-1">
+        <div class="ts-head"><span class="sq" style="background:var(--error)"></span><span class="ts-name">UNSUPPORTED</span></div>
+        <p class="ts-desc">Outside the documented support boundary — reported explicitly, never assumed correct.</p>
+      </div>
+      <div class="trust-status reveal reveal-delay-2">
+        <div class="ts-head"><span class="sq" style="background:var(--text-muted)"></span><span class="ts-name">NOT VALIDATED</span></div>
+        <p class="ts-desc">Not checked by this run — the trust scope panel always lists what was not analyzed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHAT WE VALIDATE ═══════════ -->
+<section class="section section--alt" aria-label="What we validate">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">What we validate</p>
+        <h3 class="display-3">Deterministic structural and semantic analysis</h3>
+        <ul style="color:var(--text-secondary);font-size:15px;line-height:2.1">
+          <li>SDC syntax and command semantics within the supported subset</li>
+          <li>Clock definitions: primary, generated, virtual; ancestry and relationships</li>
+          <li>Semantic references: clock names, objects, collections</li>
+          <li>Constraint interactions: duplicates, overrides, contradictions, overlaps</li>
+          <li>Design-aware coverage when a netlist is supplied</li>
+          <li>Readiness across seven evidence-backed dimensions</li>
+          <li>Regression: snapshot baselines and semantic diff</li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <p class="eyebrow">What design context enables</p>
+        <h3 class="display-3">Object resolution, not timing</h3>
+        <p style="color:var(--text-secondary)">With a structural Verilog netlist, references resolve against real objects; hierarchy, ports, pins, cells and nets become checkable evidence; NETLIST_REQUIRED constructs upgrade to VALIDATED where they resolve.</p>
+        <div class="callout callout--info" style="margin-top:16px"><span class="co-icon">◈</span><span>Design context is a structural inventory. It does not compute timing, delay or slack.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ NON-CLAIMS ═══════════ -->
+<section class="section" id="boundary" aria-label="What we do not claim">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Non-claims</p>
+      <h2 class="display-2">What we explicitly do not do</h2>
+      <p class="lede">These boundaries are features. A READY verdict and a green CI gate mean specific, documented things — and never these:</p>
+    </div>
+    <div class="grid-3">
+      <div class="non-claim reveal"><div class="nc-head"><span style="color:var(--error)">✗</span> No STA signoff</div><p>This product does not replace PrimeTime, Tempus or any signoff STA engine.</p></div>
+      <div class="non-claim reveal reveal-delay-1"><div class="nc-head"><span style="color:var(--error)">✗</span> No slack calculation</div><p>No setup/hold slack, no path delays, no arrival times.</p></div>
+      <div class="non-claim reveal reveal-delay-2"><div class="nc-head"><span style="color:var(--error)">✗</span> No .lib timing analysis</div><p>Library timing models are outside the analysis boundary.</p></div>
+      <div class="non-claim reveal"><div class="nc-head"><span style="color:var(--error)">✗</span> No physical timing</div><p>No parasitic, RC, clock-tree or physical timing analysis.</p></div>
+      <div class="non-claim reveal reveal-delay-1"><div class="nc-head"><span style="color:var(--error)">✗</span> No closure guarantee</div><p>100% coverage does not mean correct timing intent; READY does not mean timing closes.</p></div>
+      <div class="non-claim reveal reveal-delay-2"><div class="nc-head"><span style="color:var(--error)">✗</span> No AI runtime</div><p>Validation is deterministic and offline. AI may be used to develop the product — never to validate your constraints.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SECURITY ═══════════ -->
+<section class="section section--alt" aria-label="Security and local processing">
+  <div class="container">
+    <div class="split split--flip">
+      <div class="reveal">
+        <p class="eyebrow">Security / local processing</p>
+        <h3 class="display-3">Your constraints stay on your machine</h3>
+        <p style="color:var(--text-secondary)">Validation runs locally. The wheel has no network imports, no external API calls, no telemetry. HTML reports escape user content (the stored-XSS fix is regression-tested). CUSTOM policies are declarative data — no eval or executable logic in the runtime.</p>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div style="display:grid;gap:10px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>Offline operation</b> — clean-room checks verify no network imports</span></div>
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>Escaping tested</b> — adversarial <span class="mono">&lt;script&gt;</span> content renders escaped</span></div>
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>No telemetry</b> — nothing phones home</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ KNOWN LIMITATIONS ═══════════ -->
+<section class="section" id="limitations" aria-label="Known limitations">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Known limitations</p>
+      <h2 class="display-2">Disclosed, not hidden</h2>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead><tr><th>Limitation</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Platform coverage</td><td>Verified on Python 3.10 / Windows in the release audit; 3.11/3.12 require additional environments.</td></tr>
+          <tr><td class="mono">SDC subset</td><td>Support is bounded by the documented support boundary; unsupported constructs are reported, not assumed.</td></tr>
+          <tr><td class="mono">Verilog subset</td><td>Structural parsing covers the documented subset; unsupported expressions surface as UNSUPPORTED.</td></tr>
+          <tr><td class="mono">No timing</td><td>No propagation, slack, delay, physical or signoff analysis — by design.</td></tr>
+          <tr><td class="mono">Web UI audit</td><td>Web UI startup is verified via repo tests; an installed-wheel launch is deferred to deploy-time smoke.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ METHODOLOGY ═══════════ -->
+<section class="section section--alt" aria-label="Benchmark methodology">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">Benchmark methodology</p>
+        <h3 class="display-3">Every claim is traceable</h3>
+        <p style="color:var(--text-secondary)">Benchmark numbers map to repository artifacts: pytest files, golden runners, benchmark suites, the release manifest and phase reports. Environment and version are recorded with every result. These are internal verification results — not independent industry certification.</p>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <p class="eyebrow">Verification journey</p>
+        <div class="panel" style="font-family:var(--font-mono);font-size:13px;line-height:2.2">
+          <div>pytest <span style="color:var(--text-muted)">800/800</span></div>
+          <div>golden runners <span style="color:var(--text-muted)">9/9</span></div>
+          <div>benchmark suites <span style="color:var(--text-muted)">42/42</span></div>
+          <div>clean-room wheel <span style="color:var(--text-muted)">17/17</span></div>
+          <div>CLI contract <span style="color:var(--text-muted)">16/16</span></div>
+          <div>release smoke <span style="color:var(--text-muted)">10/10</span></div>
+          <div style="border-top:1px solid var(--border);padding-top:10px;color:var(--accent)">RC_READY_WITH_KNOWN_LIMITATIONS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="CTA">
+  <div class="container center">
+    <h2 class="display-2">Verify the boundaries yourself</h2>
+    <div class="hero-ctas" style="justify-content:center;margin-top:24px">
+      <a class="btn btn--primary btn--lg" href="benchmarks.html">See the evidence <span class="mono">→</span></a>
+      <a class="btn btn--outline btn--lg" href="https://github.com/RAMA-L7/sdc-tools#readme">Run it locally <span class="mono">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

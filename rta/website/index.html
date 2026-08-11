@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ṛta — Constraint Intelligence for Digital Design</title>
+  <meta name="description" content="Deterministic, offline-capable SDC constraint validation before STA: rule checking, clock intelligence, design context, coverage, interactions, readiness and regression diff. Not an STA signoff tool.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<header id="site-header"></header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" aria-labelledby="hero-h">
+  <div id="silicon-canvas" class="silicon-canvas"></div>
+  <div class="container-wide hero-inner">
+    <div>
+      <p class="eyebrow hero-eyebrow">Ṛta · v1.3.0</p>
+      <h1 id="hero-h" class="display-hero">Constraint quality,<br>assessed before STA.</h1>
+      <p class="lede">Ṛta deterministically validates your timing constraints before signoff tooling — rule checking, clock intelligence, design-aware coverage, constraint interactions and readiness, with regression diff for CI. Offline, reproducible, evidence-driven.</p>
+      <div class="hero-ctas">
+        <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` (or `sdc-tools web`) to start the workspace on port 8501">Launch Ṛta <span class="mono">↗</span></a>
+        <a class="btn btn--outline btn--lg" href="platform.html">See how it works</a>
+      </div>
+      <div class="hero-trust">
+        <span class="badge badge--success"><span class="sq"></span>Deterministic</span>
+        <span class="badge badge--accent"><span class="sq"></span>Offline-capable</span>
+        <span class="badge badge--info"><span class="sq"></span>No LLM required</span>
+        <span class="trust-line">Every finding carries rule, severity, evidence and source line.</span>
+      </div>
+    </div>
+    <div class="hero-visual reveal">
+      <div class="hero-terminal">
+        <div class="term-bar">
+          <span class="tl"></span><span class="tl"></span><span class="tl"></span>
+          <span class="term-title">sdc-tools check — deterministic analysis</span>
+        </div>
+        <div id="hero-terminal-body" class="term-body" aria-label="Animated SDC validation terminal output"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PROBLEM / WORKFLOW ═══════════ -->
+<section class="section" id="workflow" aria-label="Where Ṛta fits">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">Where it fits</p>
+        <h2 class="display-2">Constraint development → validation → STA. The missing step.</h2>
+        <p class="lede" style="margin-top:16px">SDC files grow complex fast: generated clocks, cross-domain pairs, wildcard drift, duplicate constraints, delays that silently exceed their clock period. By the time STA runs, small constraint defects waste hours of signoff iteration.</p>
+        <p style="color:var(--text-secondary)">Ṛta sits between constraint authoring and STA — catching structural and semantic problems with a deterministic engine, so the constraint set that reaches timing analysis is one you can defend.</p>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="panel" style="margin-bottom:12px">
+          <h3 class="display-3" style="font-size:18px">Constraint Development</h3>
+          <p>SDC + optional structural Verilog, multi-corner templates, variables</p>
+        </div>
+        <div class="panel panel--elev" style="margin-bottom:12px;border-color:var(--border-active)">
+          <span class="badge badge--accent" style="margin-bottom:10px"><span class="sq"></span>Ṛta</span>
+          <h3 class="display-3" style="font-size:18px">Validate · Analyze · Assess · Protect · Prove</h3>
+          <p>deterministic checks, clock relations, coverage, interactions, readiness, snapshots, CI gates</p>
+        </div>
+        <div class="panel">
+          <h3 class="display-3" style="font-size:18px">STA / Signoff</h3>
+          <p>PrimeTime, Tempus and friends receive a constraint set that was checked before they saw it</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PILLARS ═══════════ -->
+<section class="section section--alt" id="pillars" aria-label="Product pillars">
+  <div class="container">
+    <div class="section-head center" style="margin-left:auto;margin-right:auto">
+      <p class="eyebrow center">What the product does</p>
+      <h2 class="display-2">Five pillars, one deterministic engine</h2>
+    </div>
+    <div class="grid-3">
+      <div class="pillar reveal">
+        <div class="pillar-num">01 / VALIDATE</div>
+        <h3>Check constraints</h3>
+        <ul>
+          <li><b>Deterministic rule engine</b> — 100+ documented rules with severity and provenance</li>
+          <li><b>Semantic references</b> — clock names, ports, pins resolved or honestly reported</li>
+          <li><b>Trust scope</b> — every run reports what was and wasn't fully analyzed</li>
+        </ul>
+      </div>
+      <div class="pillar reveal reveal-delay-1">
+        <div class="pillar-num">02 / UNDERSTAND</div>
+        <h3>Analyze structure</h3>
+        <ul>
+          <li><b>Clock intelligence</b> — primary, generated, virtual; hierarchy and relationship matrix</li>
+          <li><b>Design context</b> — netlist-aware object resolution when a netlist is supplied</li>
+          <li><b>Coverage</b> — object-level evidence, bus-aware, never reduced to one number</li>
+        </ul>
+      </div>
+      <div class="pillar reveal reveal-delay-2">
+        <div class="pillar-num">03 / ASSESS</div>
+        <h3>Assess quality</h3>
+        <ul>
+          <li><b>Constraint interactions</b> — duplicates, overrides, contradictions, STA-review overlaps</li>
+          <li><b>Readiness model</b> — seven dimensions with blockers, review items and actions</li>
+          <li><b>Honest status</b> — READY is never presented as signoff</li>
+        </ul>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-num">04 / PROTECT</div>
+        <h3>Guard regressions</h3>
+        <ul>
+          <li><b>Snapshots &amp; baselines</b> — structured finding identity, not line-number diffs</li>
+          <li><b>Semantic readiness diff</b> — NEW / RESOLVED / CHANGED / UNCHANGED</li>
+          <li><b>CI quality gates</b> — BLOCKERS_ONLY → STRICT, deterministic exit codes</li>
+        </ul>
+      </div>
+      <div class="pillar reveal reveal-delay-1">
+        <div class="pillar-num">05 / PROVE</div>
+        <h3>Show evidence</h3>
+        <ul>
+          <li><b>Verified release evidence</b> — every benchmark number maps to a repo artifact</li>
+          <li><b>Clean-room install checks</b> — the wheel, not the checkout</li>
+          <li><b>Trust Center</b> — exactly what is validated, and what is not</li>
+        </ul>
+      </div>
+      <div class="pillar reveal reveal-delay-2" style="border-style:dashed">
+        <div class="pillar-num">THE BOUNDARY</div>
+        <h3>What it is not</h3>
+        <ul>
+          <li><b>Not an STA engine</b> — no timing propagation, slack, or .lib analysis</li>
+          <li><b>Not a signoff tool</b> — READY ≠ timing closure</li>
+          <li><b>Not an LLM validator</b> — deterministic and reproducible by design</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="section" id="how" aria-label="How it works">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">How it works</p>
+      <h2 class="display-2">One deterministic pipeline</h2>
+      <p class="lede">SDC (plus optional Verilog) flows through a fixed analysis pipeline. Every stage produces evidence; nothing is skipped silently.</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipe-step reveal"><span class="ps-idx">01</span><div class="ps-name">Preprocess</div><div class="ps-desc">tcl variables · comments · multiline · collections</div></div>
+      <div class="pipe-step reveal reveal-delay-1"><span class="ps-idx">02</span><div class="ps-name">Validate</div><div class="ps-desc">rule engine with severity + provenance</div></div>
+      <div class="pipe-step reveal reveal-delay-1"><span class="ps-idx">03</span><div class="ps-name">Clock analysis</div><div class="ps-desc">primary / generated / relations</div></div>
+      <div class="pipe-step reveal reveal-delay-2"><span class="ps-idx">04</span><div class="ps-name">Design context</div><div class="ps-desc">object resolution with optional netlist</div></div>
+      <div class="pipe-step reveal reveal-delay-2"><span class="ps-idx">05</span><div class="ps-name">Coverage</div><div class="ps-desc">object- and bus-level evidence</div></div>
+      <div class="pipe-step reveal reveal-delay-3"><span class="ps-idx">06</span><div class="ps-name">Interactions</div><div class="ps-desc">duplicates · overrides · contradictions</div></div>
+      <div class="pipe-step reveal reveal-delay-3"><span class="ps-idx">07</span><div class="ps-name">Readiness</div><div class="ps-desc">7 dimensions + recommended actions</div></div>
+      <div class="pipe-step reveal reveal-delay-3"><span class="ps-idx">08</span><div class="ps-name">Diff / CI</div><div class="ps-desc">baseline snapshots · quality gates</div></div>
+    </div>
+    <p style="margin-top:20px;font-size:13.5px;color:var(--text-muted)"><span class="mono">sdc-tools check design.sdc [--netlist top.v] [--baseline base.json] [--gate STRICT]</span> — one command, machine-readable output, deterministic exit codes.</p>
+  </div>
+</section>
+
+<!-- ═══════════ CAPABILITY SPOTLIGHT ═══════════ -->
+<section class="section section--alt" id="capabilities" aria-label="Capability spotlight">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Capabilities</p>
+      <h2 class="display-2">Built for constraint engineers</h2>
+    </div>
+    <div class="cap-grid">
+      <a class="cap-tile reveal" href="capabilities/validation.html">
+        <div class="ct-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 19 5v6c0 4.7-3 8-7 9-4-1-7-4.3-7-9V5Z"/><path d="m9 11.5 2 2 4-4"/></svg>
+        </div>
+        <h3>SDC Validation</h3>
+        <p>Deterministic rule engine, semantic reference checks, severity + evidence + provenance on every finding.</p>
+        <div class="ct-meta">100+ rules · trust scope</div>
+        <span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-1" href="capabilities/clocks.html">
+        <div class="ct-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        </div>
+        <h3>Clock Intelligence</h3>
+        <p>Primary, generated and virtual clocks with hierarchy, ancestry and relationship matrix. Never timing propagation.</p>
+        <div class="ct-meta">inventory · hierarchy · matrix</div>
+        <span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-2" href="capabilities/context.html">
+        <div class="ct-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <h3>Design Context</h3>
+        <p>Structural Verilog context resolves ports, pins, cells, nets and hierarchy — or honestly reports netlist-required.</p>
+        <div class="ct-meta">netlist-aware · hierarchy</div>
+        <span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal" href="capabilities/coverage.html">
+        <div class="ct-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 8h18M3 12h18M3 16h18"/><rect x="3" y="5" width="7" height="14" rx="1"/><rect x="13" y="5" width="8" height="6" rx="1"/></svg>
+        </div>
+        <h3>Constraint Coverage</h3>
+        <p>Object-level evidence across inputs, outputs and buses. Coverage ≠ correctness, and it always says so.</p>
+        <div class="ct-meta">buses · partial · exempt</div>
+        <span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-1" href="capabilities/interactions.html">
+        <div class="ct-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5h10M7 12h10M7 19h10"/><circle cx="5" cy="5" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/><circle cx="5" cy="19" r="1.6" fill="currentColor"/></svg>
+        </div>
+        <h3>Constraint Interactions</h3>
+        <p>Duplicates, overrides, contradictory windows and STA-review overlaps — with dual-line provenance.</p>
+        <div class="ct-meta">provable vs STA-review</div>
+        <span class="ct-go">→</span>
+      </a>
+      <a class="cap-tile reveal reveal-delay-2" href="capabilities/readiness.html">
+        <div class="ct-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20h16M6 20v-6M10 20V8M14 20v-9M18 20V5"/></svg>
+        </div>
+        <h3>Readiness &amp; Regression</h3>
+        <p>Seven-dimension readiness rail, snapshot baselines, semantic diff and deterministic CI quality gates.</p>
+        <div class="ct-meta">READY ≠ signoff</div>
+        <span class="ct-go">→</span>
+      </a>
+    </div>
+    <p style="margin-top:24px"><a href="capabilities.html" style="font-family:var(--font-mono);font-size:13.5px">View all capabilities →</a></p>
+  </div>
+</section>
+
+<!-- ═══════════ EVIDENCE ═══════════ -->
+<section class="section" id="evidence" aria-label="Verified release evidence">
+  <div class="container">
+    <div class="section-head center" style="margin-left:auto;margin-right:auto">
+      <p class="eyebrow center">Verified release evidence · v1.3.0</p>
+      <h2 class="display-2">Claims you can trace to an artifact</h2>
+      <p class="lede">Every number on this page maps to a repository benchmark suite, a golden runner, or the release manifest. Nothing is extrapolated.</p>
+    </div>
+    <div class="stats-band">
+      <div class="stat reveal"><div class="stat-num">800<span class="suffix">/800</span></div><div class="stat-label">pytest suite</div><div class="stat-note">deterministic tests</div></div>
+      <div class="stat reveal reveal-delay-1"><div class="stat-num">9<span class="suffix">/9</span></div><div class="stat-label">golden runners</div><div class="stat-note">parser · semantic · netlist · readiness</div></div>
+      <div class="stat reveal reveal-delay-1"><div class="stat-num">28<span class="suffix">/28</span></div><div class="stat-label">benchmark suites</div><div class="stat-note">adversarial · metamorphic · security · perf</div></div>
+      <div class="stat reveal reveal-delay-2"><div class="stat-num">17<span class="suffix">/17</span></div><div class="stat-label">clean-room checks</div><div class="stat-note">fresh wheel install journey</div></div>
+      <div class="stat reveal reveal-delay-2"><div class="stat-num">16<span class="suffix">/16</span></div><div class="stat-label">CLI contract audit</div><div class="stat-note">exit codes · JSON purity</div></div>
+      <div class="stat reveal reveal-delay-3"><div class="stat-num">10<span class="suffix">/10</span></div><div class="stat-label">release smoke</div><div class="stat-note">offline · engine-failure-safe</div></div>
+    </div>
+    <p style="margin-top:24px;text-align:center"><a class="btn btn--outline" href="benchmarks.html">Explore the benchmarks <span class="mono">→</span></a></p>
+  </div>
+</section>
+
+<!-- ═══════════ DETERMINISTIC ARCHITECTURE ═══════════ -->
+<section class="section section--alt" id="deterministic" aria-label="Deterministic architecture">
+  <div class="container">
+    <div class="split split--flip">
+      <div class="reveal">
+        <p class="eyebrow">The architecture</p>
+        <h2 class="display-2">Deterministic by design</h2>
+        <p class="lede" style="margin-top:16px">The validator is a fixed pipeline of parsers, checkers and analyzers. Same input, same output, every time — no model inference, no external API, no network dependency in the runtime.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>No LLM required</b> — validation never calls an AI model. AI may be used to develop the product; it is not part of runtime analysis.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Offline-capable</b> — the wheel runs locally; clean-room checks verify no network imports.</span></div>
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>Reproducible</b> — structured findings, versioned snapshots, deterministic CI gates with exit-code contracts.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim"># one command, from checkout or installed wheel</span>
+<span class="c-cmd">sdc-tools check</span> design.sdc \
+  <span class="c-dim">--netlist soc_top.v --top soc_top</span> \
+  <span class="c-dim">--baseline base.json --gate STRICT</span>
+
+<span class="c-dim"># machine-readable everywhere</span>
+<span class="c-cmd">sdc-tools check</span> design.sdc --json &gt; result.json
+<span class="c-cmd">sdc-tools report</span> check design.sdc --format html
+
+<span class="c-dim"># exit codes: 0 pass · 1 fail · 2 invalid · 3 engine</span>
+<span class="c-cmd">echo</span> $?  <span class="c-dim"># → 0</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TRUST BOUNDARY ═══════════ -->
+<section class="section" id="trust" aria-label="Trust boundary">
+  <div class="container">
+    <div class="section-head center" style="margin-left:auto;margin-right:auto">
+      <p class="eyebrow center">Trust boundary</p>
+      <h2 class="display-2">Precise about what it validates</h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-status reveal">
+        <div class="ts-head"><span class="sq" style="background:var(--success)"></span><span class="ts-name">Validates</span></div>
+        <p class="ts-desc">SDC syntax and semantics, clock structure, semantic references, coverage, interactions, readiness and regression — within a documented support boundary.</p>
+      </div>
+      <div class="trust-status reveal reveal-delay-1">
+        <div class="ts-head"><span class="sq" style="background:var(--warning)"></span><span class="ts-name">Does not validate</span></div>
+        <p class="ts-desc">Timing propagation, slack, delay calculation, .lib analysis, physical timing, timing closure or signoff STA. Those remain with dedicated STA engines.</p>
+      </div>
+      <div class="trust-status reveal reveal-delay-2">
+        <div class="ts-head"><span class="sq" style="background:var(--info)"></span><span class="ts-name">Reports honestly</span></div>
+        <p class="ts-desc">NETLIST_REQUIRED, TCL_EXECUTION_REQUIRED, UNSUPPORTED and NOT_VALIDATED constructs are surfaced — never silently assumed correct.</p>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:28px"><a href="trust.html">Read the full Trust Center →</a></p>
+  </div>
+</section>
+
+<!-- ═══════════ FINAL CTA ═══════════ -->
+<section class="section section--alt" id="cta" aria-label="Get started">
+  <div class="container center">
+    <p class="eyebrow center" style="margin-bottom:12px">Get started</p>
+    <h2 class="display-2" style="max-width:24ch;margin:0 auto">Check your first constraint set in minutes</h2>
+    <p class="lede" style="max-width:52ch;margin:16px auto 28px">Install from source or Docker, run the Validator on a sample SDC, and see findings with rule, severity, evidence and source line.</p>
+    <div class="hero-ctas" style="justify-content:center">
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` (or `sdc-tools web`) to start the workspace on port 8501">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="docs.html">Read the docs</a>
+      <a class="btn btn--ghost btn--lg" href="benchmarks.html">Explore evidence</a>
+    </div>
+    <code class="block" style="max-width:640px;margin:28px auto 0;text-align:left">
+<span class="c-cmd">pip install -e ".[web]"</span>
+<span class="c-cmd">sdc-tools check</span> rta/examples/samples/example.sdc
+<span class="c-cmd">sdc-tools web</span>   <span class="c-dim"># launch the workspace</span>
+    </code>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

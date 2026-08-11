@@ -1,0 +1,1234 @@
+[
+  {
+    "timestamp": "2026-07-27T22:40:50.151040",
+    "feature": "test_drive",
+    "rating": 1,
+    "comment": "Test feedback from debug",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings, 100% coverage"
+  },
+  {
+    "timestamp": "2026-07-28T00:28:27.702584",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:28:27.702584",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:28:27.702584",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:31:16.639725",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:31:16.639725",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:31:16.639725",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:31:56.902228",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:31:56.903227",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:31:56.903227",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:32:22.158281",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:32:22.158281",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:32:22.158281",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:33:10.223751",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:33:10.223751",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:33:10.223751",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:33:42.509593",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:33:42.509593",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:33:42.509593",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:34:58.861099",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:34:58.861099",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:34:58.861099",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:35:37.366780",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:35:37.366780",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:35:37.366780",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:38:11.051707",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:38:11.051707",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:38:11.051707",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:42:20.857590",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:42:20.857590",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:42:20.857590",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:45:16.493456",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:45:16.493456",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:45:16.493456",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:47:53.863280",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:47:53.863280",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:47:53.863280",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:51:41.303622",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:51:41.303622",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:51:41.303622",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:52:56.821107",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:52:56.821107",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:52:56.821107",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T00:57:38.985727",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:57:38.985727",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T00:57:38.985727",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T01:01:06.803026",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:01:58.735169",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:03:01.541965",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:04:59.137917",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:04:59.137917",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:04:59.137917",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T01:06:17.008525",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:06:17.008525",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:06:17.008525",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T01:07:52.343745",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:07:52.343745",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T01:07:52.343745",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:14:27.752918",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:14:27.752918",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:14:27.752918",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:15:16.035275",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:15:16.035275",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:15:16.035275",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:16:08.142368",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:16:08.142368",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:16:08.142368",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:18:08.757305",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:18:08.757305",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:18:08.757305",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:19:21.179480",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:19:21.179480",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:19:21.179480",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:20:47.665783",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:20:47.665783",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:20:47.665783",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:22:49.122906",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:22:49.122906",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:22:49.122906",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:23:39.949455",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:23:39.949455",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:23:39.949455",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:25:11.653140",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:25:11.653140",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:25:11.653140",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T18:25:55.383794",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:25:55.383794",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T18:25:55.383794",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T19:12:23.377935",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T19:12:23.377935",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T19:12:23.377935",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T19:12:58.606303",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T19:12:58.606303",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T19:12:58.606303",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T20:00:39.567584",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T20:00:39.567584",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T20:00:39.567584",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T20:26:11.714145",
+    "feature": "rules",
+    "rating": 1,
+    "comment": "very helpful",
+    "sdc_file": "",
+    "results_summary": ""
+  },
+  {
+    "timestamp": "2026-07-28T20:33:42.261494",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T20:33:42.261494",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T20:33:42.261494",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T21:48:05.480411",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T21:48:05.480411",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T21:48:05.480411",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T21:48:49.742834",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T21:48:49.742834",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T21:48:49.742834",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T22:00:54.581554",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T22:00:54.581554",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T22:00:54.581554",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T22:11:25.148950",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T22:11:25.148950",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T22:11:25.148950",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T22:15:45.811715",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T22:15:45.811715",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T22:15:45.811715",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T23:01:36.003196",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T23:01:36.003196",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T23:01:36.003196",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-07-28T23:02:05.025163",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T23:02:05.025163",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-07-28T23:02:05.025163",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:14:52.968938",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:14:52.968938",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:14:52.968938",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:18:09.390613",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:18:09.390613",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:18:09.390613",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:19:44.160142",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:19:44.160142",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:19:44.160142",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:21:20.170858",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:21:20.170858",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:21:20.170858",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:23:11.903937",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:23:11.903937",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:23:11.903937",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:24:46.625268",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:24:46.625268",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:24:46.625268",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:28:22.441000",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:28:22.441000",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:28:22.441000",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:30:02.245139",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:30:02.245139",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:30:02.245139",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:31:40.509300",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:31:40.509300",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:31:40.509300",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-03T15:42:33.042187",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "Great checker!",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors, 0 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:42:33.042187",
+    "feature": "linter",
+    "rating": -1,
+    "comment": "Linter found false positives",
+    "sdc_file": "bad.sdc",
+    "results_summary": "3 warnings"
+  },
+  {
+    "timestamp": "2026-08-03T15:42:33.042187",
+    "feature": "converter",
+    "rating": 1,
+    "comment": "",
+    "sdc_file": "test.sdc",
+    "results_summary": "5 clocks parsed"
+  },
+  {
+    "timestamp": "2026-08-05T17:44:23.412606",
+    "feature": "rules",
+    "rating": 1,
+    "comment": "cool",
+    "sdc_file": "",
+    "results_summary": ""
+  },
+  {
+    "timestamp": "",
+    "feature": "checker",
+    "rating": 1,
+    "comment": "clean wheel feedback test",
+    "sdc_file": "test.sdc",
+    "results_summary": "0 errors"
+  }
+]
