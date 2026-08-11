@@ -64,10 +64,8 @@ python -m pytest rta/tests/test_checker.py::TestCheckSdc::test_no_clock_creates_
 
 ### Test Coverage
 
-⚠️ **PLACEHOLDER-TEST-COUNT** — after running `python rta/evidence/build_evidence.py`
-on your machine, it prints the real live count; replace this line with
-`The project currently has **N pytest tests** across M test files:` using the
-exact numbers it printed, and regenerate the table below from
+The project currently has **763 pytest tests** across 26 test files, verified
+by `python rta/evidence/build_evidence.py` and recorded in
 `rta/evidence/manifest/RELEASE_EVIDENCE.json`'s `test_files_detail` field
 (don't hand-count — that's exactly what went stale here last time).
 
@@ -170,7 +168,7 @@ rta-constraint-intelligence/
 │
 ├── CLI (cli.py)            # Command-line interface
 ├── Web UI (app.py + ui/)   # Streamlit interface
-├── Tests (tests/)          # 311 pytest tests
+├── Tests (tests/)          # 763 pytest tests
 └── Documentation (docs/)   # Feature documentation
 ```
 

@@ -8,6 +8,7 @@ version = "1.5.0"
 description = "Ṛta — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking. No EDA tool required."
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 keywords = ["sdc", "vlsi", "timing", "constraints", "synopsys", "eda", "signoff", "sta", "constraint-intelligence"]
 authors = [

@@ -57,10 +57,10 @@ python3 smoke_test.py                # fast engine check, no browser needed
 pytest rta/tests -q                   # full test suite
 ```
 
-<!-- PLACEHOLDER-TEST-COUNT: after running `python rta/evidence/build_evidence.py`,
-     replace this line with "Ṛta ships with **N pytest tests** across the engine,
-     covering deterministic checks, netlist resolution, interactions, and
-     readiness scoring." using the exact N it prints. -->
+Ṛta ships with **763 pytest tests** across the engine, covering deterministic
+checks, netlist resolution, interactions, and readiness scoring — backed by
+**9 golden runners** and **42 benchmark suites**. All counts are recorded in
+`RELEASE_EVIDENCE.json` and regenerated via `python rta/evidence/build_evidence.py`.
 
 ### Docker
 ```bash

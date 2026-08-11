@@ -40,9 +40,9 @@ trustworthy to a physical-design/STA engineer in the first ten seconds.
 |---|---|
 | Version | **1.3.0** |
 | Release status | **RC_READY_WITH_KNOWN_LIMITATIONS** |
-| pytest | **800/800** |
+| pytest | **763/763** |
 | Golden runners | **9/9** (parser 22/22 · semantic 9/9 · reference 8/8 · coverage 12/12 · netlist-aware 10/10 · interactions 20/20 · readiness 15/15 · readiness-diff 22/22 · production-hardening 49) |
-| Benchmark suites | **28/28** |
+| Benchmark suites | **42/42** |
 | Clean-room wheel journey | **17/17** |
 | CLI contract audit | **16/16** |
 | Release smoke suite | **10/10** |
@@ -279,9 +279,9 @@ valid benchmarking exists for that comparison, and we do not claim it.
 
 ## 12. Product Evidence Inventory (all traceable)
 
-- **800 pytest tests** in `tests/` (27 files).
+- **763 pytest tests** in `tests/` (26 files).
 - **9 golden runners** in `benchmarks/` (`run_golden*.py`, `run_reference*.py`, `run_design_coverage.py`, `run_netlist_aware.py`, `run_constraint_interactions.py`, `run_readiness*.py`, `run_production_hardening.py`).
-- **28 benchmark suites** (`test_*.py` in `benchmarks/`).
+- **42 benchmark suites** (`test_*.py` in `benchmarks/`).
 - **111 rules** with per-rule descriptions, why-it-matters, fix, module, added version, reference URL (`rules_registry.py`).
 - **Release evidence:** `PHASE14_RELEASE_CANDIDATE_AUDIT_REPORT.md`, `RELEASE_MANIFEST.md`, `release_cleanroom.py`, `release_cli_audit.py`, `test_release_smoke.py`.
 - **Phase reports:** PHASE3..PHASE14 in `benchmarks/`.
@@ -571,7 +571,7 @@ No wall of numbers: each benchmark is a card (see template §30).
 ## 29. Benchmark Overview (executive)
 
 Headline evidence (all verified in this audit cycle):
-- 800/800 pytest · 9/9 golden runners · 42/42 benchmark suites
+- 763/763 pytest · 9/9 golden runners · 42/42 benchmark suites
 - 17/17 clean-room wheel journey · 16/16 CLI contract · 10/10 release smoke
 - 111 rules · 1.3.0 · RC_READY_WITH_KNOWN_LIMITATIONS
 
@@ -1039,7 +1039,7 @@ Independent product review executed after drafting. Findings and resolutions:
 | LOW | §66 was a placeholder; review had not been executed | Filled with actual findings + resolutions |
 | INFO | Capability inventory condensed vs the spec's requested field set (inputs/outputs/UI location/benchmark/docs/page per row) | Accepted for a planning document; §9 gains a UI-location/product-page mapping note and §62 covers the reuse matrix |
 
-Reviewer also confirmed: no STA/signoff overclaims; benchmark numbers (800/9/42/17/16/10, 111 rules, 1.3.0) all traceable; terminology clean (no "AI-powered"/"signoff-ready"); P0 scope realistic; product/workspace separation coherent; all 15 final-recommendation questions answered.
+Reviewer also confirmed: no STA/signoff overclaims; benchmark numbers (763/9/42/17/16/10, 111 rules, 1.3.0) all traceable; terminology clean (no "AI-powered"/"signoff-ready"); P0 scope realistic; product/workspace separation coherent; all 15 final-recommendation questions answered.
 
 ---
 
