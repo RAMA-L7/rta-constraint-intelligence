@@ -23,6 +23,7 @@ Endpoints:
     POST /api/generate               generate an SDC from parameters
     POST /api/corners                validate corners / build matrix
     POST /api/mmc                    multi-corner SDC generation
+    POST /api/mmc/zip                per-corner SDCs bundled as a ZIP archive
     POST /api/feedback               record feedback
     GET  /*                          static workspace assets (SPA)
 
@@ -32,6 +33,7 @@ Run:
 
 from __future__ import annotations
 
+import io
 import json
 import mimetypes
 import os
@@ -40,6 +42,7 @@ import sys
 import tempfile
 import threading
 import traceback
+import zipfile
 from dataclasses import asdict, is_dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
@@ -465,6 +468,22 @@ def mmc_json(template: dict, corners: list) -> dict:
     }
 
 
+def mmc_zip_bytes(template: dict, corners: list) -> bytes:
+    """Bundle the per-corner SDCs into an in-memory ZIP archive.
+
+    Reuses ``mmc_json`` so the archive always matches what the MMC page
+    rendered (same template/corners → same corner names and content).
+    Returns raw bytes for a binary ``application/zip`` response.
+    """
+    sdcs = mmc_json(template, corners)["sdcs"]
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        for name, text in sdcs.items():
+            safe = re.sub(r"[^A-Za-z0-9._-]", "_", name) or "corner"
+            zf.writestr(f"{safe}.sdc", text)
+    return buf.getvalue()
+
+
 def diff_sdc_json(v1: str, v2: str) -> dict:
     """V1 vs V2 SDC regression diff (readiness_diff authority)."""
     from checker import check_sdc
@@ -665,6 +684,10 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/mmc":
                 return self._json(200, mmc_json(body.get("template", {}),
                                                 body.get("corners", [])))
+            if path == "/api/mmc/zip":
+                return self._send(200, mmc_zip_bytes(body.get("template", {}),
+                                                     body.get("corners", [])),
+                                  "application/zip")
             if path == "/api/diff":
                 return self._json(200, diff_sdc_json(body.get("v1", ""),
                                                      body.get("v2", "")))

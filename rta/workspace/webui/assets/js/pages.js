@@ -906,7 +906,8 @@ export async function pageConverter() {
     <textarea class="code-input" id="conv-in" spellcheck="false" placeholder="create_clock -name clk -period 5.0 [get_ports clk]&#10;">${esc(App.state.convIn || "")}</textarea>
     <div style="padding:10px 14px;display:flex;gap:10px;align-items:center;border-top:1px solid var(--border-subtle)">
       <button class="btn btn-primary" id="conv-run" type="button" data-fmt="json">→ JSON</button>
-      <button class="btn" id="conv-run-yaml" type="button" data-fmt="yaml">→ YAML</button></div>
+      <button class="btn" id="conv-run-yaml" type="button" data-fmt="yaml">→ YAML</button>
+      <button class="btn btn-sm" id="conv-dl" type="button" disabled>Download converted file</button></div>
   </div>
   <pre class="mono" id="conv-out" style="font-size:11.5px;color:var(--text-secondary);background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px;overflow-x:auto;white-space:pre-wrap"></pre>`;
   return html + "</div>";
@@ -948,7 +949,11 @@ export async function pageRules() {
   }
   const sev = App.state.ruleFilter || "All";
   const rules = sev === "All" ? App.state.rules : App.state.rules.filter(r => r.severity === sev);
-  html += `<div class="filters"><div class="f-field"><label>Severity</label>${segFilter("rule-sev", ["All", "error", "warning", "info", "fatal"], sev)}</div></div>`;
+  html += `<div class="filters"><div class="f-field"><label>Severity</label>${segFilter("rule-sev", ["All", "error", "warning", "info", "fatal"], sev)}</div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button class="btn btn-sm" id="rules-dl-json" type="button">Download JSON</button>
+      <button class="btn btn-sm" id="rules-dl-md" type="button">Download Markdown</button>
+    </div></div>`;
   rules.slice(0, 120).forEach(r => {
     html += `<div class="rule-row"><span class="rule-code">${esc(r.code)}</span> <span class="rule-name">${esc(r.short_name)}</span> ${statusBadge("severity", r.severity)}<div class="rule-desc">${esc(r.description)}</div>
       ${r.why_matters ? `<div class="rule-desc" style="color:var(--text-muted)">Why: ${esc(r.why_matters)}</div>` : ""}</div>`;
@@ -963,7 +968,8 @@ export async function pageTestDrive() {
   html += `<div class="filters"><div class="f-field"><label>Sample</label><select class="select-input" id="td-sample">
     <option value="good">Good SDC</option><option value="bad">Buggy SDC</option><option value="multi">Multi-clock</option>
     <option value="generated">Generated clocks</option>
-  </select></div><button class="btn btn-primary" id="td-run" type="button">Analyze sample</button></div>
+  </select></div><button class="btn btn-primary" id="td-run" type="button">Analyze sample</button>
+  <button class="btn btn-sm" id="td-dl" type="button">Download results JSON</button></div>
   <div id="td-out"></div>`;
   return html + "</div>";
 }

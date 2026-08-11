@@ -11,12 +11,14 @@ Usage:
     python benchmarks/test_ui_app.py            # run all UI/API checks
 """
 
+import io
 import json
 import subprocess
 import sys
 import threading
 import time
 import urllib.request
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -90,6 +92,15 @@ def status(path):
         return urllib.request.urlopen(f"http://127.0.0.1:{_port}{path}").status
     except Exception:
         return 0
+
+
+def post_bytes(path, body):
+    """POST returning raw bytes (for binary endpoints like /api/mmc/zip)."""
+    req = urllib.request.Request(
+        f"http://127.0.0.1:{_port}{path}",
+        data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req) as r:
+        return r.status, r.headers.get("Content-Type", ""), r.read()
 
 
 # ── Checks ────────────────────────────────────────────────────────────────
@@ -171,6 +182,23 @@ def run_all():
     gn = post("/api/generate", {"params": {"design_name": "T",
                                            "clocks": [{"name": "clk", "port": "clk", "period": 5.0}]}})
     check("UI-35 generate sdc", "create_clock" in gn.get("sdc", ""))
+
+    # ── MMC download (per-corner SDC ZIP archive) ─────────────────────────
+    mz_status, mz_type, mz_bytes = post_bytes("/api/mmc/zip", {
+        "template": {"design_name": "MY_DESIGN",
+                     "clocks": [{"name": "clk_core", "port": "clk", "period": 5.0}]},
+        "corners": [{"name": "C1", "operating_condition": "TT", "voltage": 0.8,
+                      "temperature": 25.0, "process_type": "TT"},
+                     {"name": "C2", "operating_condition": "SS", "voltage": 0.72,
+                      "temperature": -40.0, "process_type": "SS"}]})
+    check("UI-36 mmc zip returns zip", mz_status == 200 and "application/zip" in mz_type)
+    try:
+        zf = zipfile.ZipFile(io.BytesIO(mz_bytes))
+        entries = sorted(zf.namelist())
+        ok_zip = entries == ["C1.sdc", "C2.sdc"] and all(zf.read(n).strip() for n in entries)
+    except Exception:
+        ok_zip = False
+    check("UI-37 mmc zip archive valid", ok_zip)
 
     stop_server()
     print(f"\nUI/API BENCHMARK: {len(PASSED)}/{len(PASSED) + len(FAILED)} passed")

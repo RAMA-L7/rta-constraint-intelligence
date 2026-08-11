@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 import { esc, statusBadge, setStatusMeta, setTokens } from "./theme.js";
-import { emptyState } from "./components.js";
+import { emptyState, accordion } from "./components.js";
 import { initBackground } from "./viz.js";
 import {
   App, PAGES, navGroupsHtml, toast, openInspector, closeInspector,
@@ -42,6 +42,19 @@ let current = "overview";
 let rulesCache = null;
 
 const $ = (sel) => document.querySelector(sel);
+
+/* Shared client-side download helper (blob → <a download>) — used by every
+   tool page's Download/Export button (Linter, Converter, Corners, MMC, Rules,
+   Test Drive, Reports, Export). */
+function dl(name, content, mime) {
+  const b = new Blob([content], { type: mime });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(b); a.download = name; a.click();
+  // Revoke on the next tick — revoking synchronously can drop the download
+  // in Chrome/Firefox before the click is processed.
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast(`Downloaded ${name}`);
+}
 
 /* ── Bootstrap ──────────────────────────────────────────────────────────── */
 async function boot() {
@@ -667,13 +680,6 @@ function wireDiff(main) {
 
 /* ── Reports ────────────────────────────────────────────────────────────── */
 function wireReports(main) {
-  const dl = (name, content, mime) => {
-    const b = new Blob([content], { type: mime });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(b); a.download = name; a.click();
-    URL.revokeObjectURL(a.href);
-    toast(`Downloaded ${name}`);
-  };
   $("#rep-json").addEventListener("click", () => {
     dl("analysis_result.json", JSON.stringify(App.state.analysis, null, 2), "application/json");
   });
@@ -687,13 +693,6 @@ function wireReports(main) {
 
 /* ── Export ─────────────────────────────────────────────────────────────── */
 function wireExport(main) {
-  const dl = (name, content, mime) => {
-    const b = new Blob([content], { type: mime });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(b); a.download = name; a.click();
-    URL.revokeObjectURL(a.href);
-    toast(`Downloaded ${name}`);
-  };
   const jb = $("#exp-json");
   if (jb) jb.addEventListener("click", () => {
     dl("analysis_result.json", JSON.stringify(App.state.analysis, null, 2), "application/json");
@@ -766,11 +765,14 @@ function wireLinter(main) {
     try {
       const res = await post("/api/lint", { sdc: inp.value });
       $("#lint-out").innerHTML = `
+        <div style="margin:8px 0"><button class="btn btn-sm" id="lint-dl" type="button">Download formatted SDC</button></div>
         ${`<div class="metric-row"><div class="metric"><div class="m-num">${res.warnings}</div><div class="m-label">warnings</div></div>
         <div class="metric"><div class="m-num">${res.fixed}</div><div class="m-label">fixed</div></div>
         <div class="metric"><div class="m-num">${res.line_count_original}</div><div class="m-label">lines in</div></div>
         <div class="metric"><div class="m-num">${res.line_count_formatted}</div><div class="m-label">lines out</div></div></div>`}
         <pre class="mono" style="font-size:12px;color:var(--text-secondary);background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px;overflow-x:auto;white-space:pre-wrap">${esc(res.formatted_text)}</pre>`;
+      const ld = $("#lint-dl");
+      if (ld) ld.addEventListener("click", () => dl("linted.sdc", res.formatted_text, "text/plain"));
     } catch (e) { toast("Lint failed", true); }
   });
 }
@@ -779,16 +781,26 @@ function wireLinter(main) {
 function wireConverter(main) {
   const inp = $("#conv-in");
   inp.addEventListener("input", () => App.state.convIn = inp.value);
+  let last = null; // last successful conversion {fmt, text}
   const run = async (fmt) => {
     if (!inp.value.trim()) { toast("Paste SDC to convert", true); return; }
     try {
       const res = await post("/api/convert", { sdc: inp.value, format: fmt });
-      $("#conv-out").textContent = fmt === "yaml" ? res.text : JSON.stringify(res.data, null, 2);
-      $("#conv-out").textContent = res.text || JSON.stringify(res.data, null, 2);
+      const text = res.text || JSON.stringify(res.data, null, 2);
+      $("#conv-out").textContent = text;
+      last = { fmt, text };
+      const cdl = $("#conv-dl");
+      if (cdl) cdl.disabled = false;
     } catch (e) { toast("Conversion failed", true); }
   };
   $("#conv-run").addEventListener("click", () => run("json"));
   $("#conv-run-yaml").addEventListener("click", () => run("yaml"));
+  const cdl = $("#conv-dl");
+  if (cdl) cdl.addEventListener("click", () => {
+    if (!last) { toast("Convert an SDC first", true); return; }
+    dl(`sdc_converted.${last.fmt}`, last.text,
+       last.fmt === "yaml" ? "application/x-yaml" : "application/json");
+  });
 }
 
 /* ── Corners ────────────────────────────────────────────────────────────── */
@@ -826,27 +838,33 @@ function wireCorners(main) {
       $("#corner-out").innerHTML = `
         ${errs ? `<div class="err err-invalid"><span class="e-kind">Invalid</span><span class="err-msg">${esc(errs)} corner(s) failed validation</span></div>` : ""}
         <div class="metric-row"><div class="metric"><div class="m-num">${res.corners.length}</div><div class="m-label">corners</div></div></div>
+        <div style="margin:8px 0"><button class="btn btn-sm" id="corner-dl" type="button">Export JSON</button></div>
         <table class="tbl"><thead><tr><th>Name</th><th>Op cond</th><th>V</th><th>T</th><th>Process</th><th>U-scale</th></tr></thead><tbody>
         ${res.corners.map(c => `<tr><td class="mono">${esc(c.name)}</td><td class="mono">${esc(c.operating_condition)}</td><td class="num">${c.voltage}</td><td class="num">${c.temperature}</td><td>${esc(c.process_type)}</td><td class="num">${c.uncertainty_scale}</td></tr>`).join("")}
         </tbody></table>`;
+      const cdl = $("#corner-dl");
+      if (cdl) cdl.addEventListener("click", () => dl("corners.json", JSON.stringify(res.corners, null, 2), "application/json"));
     } catch (e) { toast("Corner validation failed", true); }
   });
 }
 
 /* ── MMC ────────────────────────────────────────────────────────────────── */
 function wireMMC(main) {
+  const cornersPayload = () => CORNER_PRESETS.CLASSIC_3.map(c => ({ name: c.name, operating_condition: c.operating_condition, voltage: c.voltage, temperature: c.temperature, process_type: c.process_type, derate_cell_early: c.derate_cell_early, derate_cell_late: c.derate_cell_late, derate_net_early: c.derate_net_early, derate_net_late: c.derate_net_late, uncertainty_scale: c.uncertainty_scale }));
   $("#mmc-run").addEventListener("click", async () => {
     const clk = ($("#mmc-clock").value || "clk_core clk 5.0").trim().split(/\s+/);
+    const design = ($("#mmc-design").value || "MY_DESIGN").trim();
+    const template = () => ({ design_name: design, clocks: [{ name: clk[0], port: clk[1] || "clk", period: parseFloat(clk[2] || 5.0) }] });
     try {
-      const res = await post("/api/mmc", {
-        template: { design_name: $("#mmc-design").value || "MY_DESIGN", clocks: [{ name: clk[0], port: clk[1] || "clk", period: parseFloat(clk[2] || 5.0) }] },
-        corners: CORNER_PRESETS.CLASSIC_3.map(c => ({ name: c.name, operating_condition: c.operating_condition, voltage: c.voltage, temperature: c.temperature, process_type: c.process_type, derate_cell_early: c.derate_cell_early, derate_cell_late: c.derate_cell_late, derate_net_early: c.derate_net_early, derate_net_late: c.derate_net_late, uncertainty_scale: c.uncertainty_scale })),
-      });
+      const res = await post("/api/mmc", { template: template(), corners: cornersPayload() });
       let h = `<div class="metric-row"><div class="metric"><div class="m-num">${res.names.length}</div><div class="m-label">corners</div></div>
         <div class="metric"><div class="m-num">${res.check.errors}</div><div class="m-label">errors</div></div>
-        <div class="metric"><div class="m-num">${res.check.warnings}</div><div class="m-label">warnings</div></div></div>`;
-      res.names.forEach(name => {
-        h += accordion(`SDC — ${name}`, `<pre class="mono" style="font-size:11.5px;white-space:pre-wrap;color:var(--text-secondary);margin:0">${esc(res.sdcs[name])}</pre>`);
+        <div class="metric"><div class="m-num">${res.check.warnings}</div><div class="m-label">warnings</div></div></div>
+        <div style="margin:8px 0"><button class="btn btn-sm" id="mmc-zip" type="button">📦 Download all (.zip)</button></div>`;
+      res.names.forEach((name, i) => {
+        h += accordion(`SDC — ${name}`,
+          `<div style="margin-bottom:6px"><button class="btn btn-sm" data-cdl="${i}" type="button">Download .sdc</button></div>
+           <pre class="mono" style="font-size:11.5px;white-space:pre-wrap;color:var(--text-secondary);margin:0">${esc(res.sdcs[name])}</pre>`);
       });
       if (res.diffs && res.diffs.length) {
         h += `<div class="section-title">Corner diffs</div>`;
@@ -859,6 +877,26 @@ function wireMMC(main) {
         });
       }
       $("#mmc-out").innerHTML = h;
+      const z = $("#mmc-zip");
+      if (z) z.addEventListener("click", async () => {
+        try {
+          const r = await fetch("/api/mmc/zip", { method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ template: template(), corners: cornersPayload() }) });
+          if (!r.ok) { toast("ZIP generation failed", true); return; }
+          const b = await r.blob();
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(b); a.download = `${design}_corners.zip`; a.click();
+          setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+          toast(`Downloaded ${design}_corners.zip`);
+        } catch (e2) { toast("ZIP generation failed", true); }
+      });
+      main.querySelectorAll("[data-cdl]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const name = res.names[+btn.dataset.cdl];
+          if (name) dl(`${name}.sdc`, res.sdcs[name], "text/plain");
+        });
+      });
     } catch (e) { toast("MMC generation failed", true); }
   });
 }
@@ -867,6 +905,16 @@ function wireMMC(main) {
 function wireRules(main) {
   main.querySelectorAll("[data-seg]").forEach(btn => {
     btn.addEventListener("click", () => { App.state.ruleFilter = btn.dataset.seg; route(); });
+  });
+  const rj = $("#rules-dl-json");
+  if (rj) rj.addEventListener("click", () => {
+    dl("sdc_rules.json", JSON.stringify(App.state.rules || [], null, 2), "application/json");
+  });
+  const rm = $("#rules-dl-md");
+  if (rm) rm.addEventListener("click", () => {
+    const md = (App.state.rules || []).map(r =>
+      `### ${r.code} — ${r.short_name} (${r.severity})\n\n${r.description}${r.why_matters ? `\n\nWhy: ${r.why_matters}` : ""}`).join("\n\n");
+    dl("sdc_rules.md", md, "text/markdown");
   });
 }
 
@@ -890,6 +938,11 @@ function wireTestDrive(main) {
       App.state.filters = { sev: "All", rule: "All", q: "" };
       route();
     } catch (e) { toast("Analysis failed", true); }
+  });
+  const tdl = $("#td-dl");
+  if (tdl) tdl.addEventListener("click", () => {
+    if (!App.state.analysis) { toast("Run a sample first", true); return; }
+    dl("sample_results.json", JSON.stringify(App.state.analysis, null, 2), "application/json");
   });
 }
 
