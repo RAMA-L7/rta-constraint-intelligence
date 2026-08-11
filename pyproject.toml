@@ -1,5 +1,9 @@
 [build-system]
-requires = ["setuptools>=68.0"]
+# PEP 639: `license = "MIT"` (SPDX expression) + `license-files` require
+# setuptools >= 77 to parse; older floors reject the string form with a
+# `project.license` configuration error (verified: 68.1.2 fails, 77.0.1 builds).
+# 77.0.0 was yanked from PyPI, so the floor is 77.0.1.
+requires = ["setuptools>=77.0.1"]
 build-backend = "setuptools.build_meta"
 
 [project]

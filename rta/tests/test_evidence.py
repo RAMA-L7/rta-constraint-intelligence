@@ -130,6 +130,10 @@ def test_wheel_metadata_declares_mit():
     pyproject = _read("pyproject.toml")
     assert 'license = "MIT"' in pyproject  # PEP 639 SPDX expression
     assert "license-files" in pyproject
+    # PEP 639 license string + license-files need setuptools >= 77 to build;
+    # an older floor fails with a `project.license` configuration error
+    # (regression guard — 68.1.2 fails, 77.0.1 builds; 77.0.0 was yanked).
+    assert 'requires = ["setuptools>=77.0.1"]' in pyproject
 
 
 # ── Public surfaces consume the manifest ────────────────────────────────────

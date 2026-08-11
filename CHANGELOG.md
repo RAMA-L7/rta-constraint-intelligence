@@ -13,6 +13,10 @@ All notable changes to Ṛta (formerly SDC Tools) are documented here.
 - Rebranded project to **Ṛta**; engine reorganized under `rta/` as a proper package (top-level modules are now thin migration shims for backward compatibility).
 - Premium visual redesign of the web UI (light, flat, single-accent theme) — navigation kept as the original flat tab bar by design; new tabs added alongside existing ones rather than restructuring around them.
 
+### 🐛 Bug Fixes
+
+- **Packaging / `pip install`** — raised the `pyproject.toml` build-system floor to `setuptools>=77.0.1`. The PEP 639 SPDX license expression (`license = "MIT"` + `license-files`) cannot be parsed by older setuptools (verified: 68.1.2 fails with a `project.license` configuration error; 77.0.1 builds — 77.0.0 was yanked from PyPI). `release_cleanroom.py` now builds the wheel itself from a fresh venv pinned to the declared floor, so this class of regression is caught by the gate instead of slipping past a pre-built wheel.
+
 ### 🔧 Notes
 
 - All 95 pre-existing rule codes retained with identical severity/behavior — verified via direct functional comparison, not just static diff.

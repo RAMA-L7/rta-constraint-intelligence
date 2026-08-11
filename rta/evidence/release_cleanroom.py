@@ -7,6 +7,7 @@ documented workflow. Returns nonzero on any failure.
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -38,11 +39,37 @@ def main():
     tmp = tempfile.mkdtemp(prefix="p14_cleanroom_")
     print("temp:", tmp)
 
-    # 1. Build wheel
-    wheels = [f for f in os.listdir(os.path.join(ROOT, "dist")) if f.endswith(".whl")]
-    assert wheels, "no wheel built"
-    wheel = os.path.join(ROOT, "dist", wheels[0])
-    print("wheel:", wheel)
+    # 0. Build the wheel from a genuinely fresh venv, pinned to the DECLARED
+    #    build-system floor — not whatever setuptools happens to be installed.
+    #    release_cleanroom.py previously consumed a pre-built wheel from dist/,
+    #    which is why the PEP 639 license-string regression (floor >=68 could
+    #    not parse `license = "MIT"`) slipped past this gate.
+    pyproject = open(os.path.join(ROOT, "pyproject.toml"), encoding="utf-8").read()
+    m = re.search(r"setuptools>=([0-9][0-9.]*)", pyproject)
+    assert m, "setuptools floor not found in pyproject.toml [build-system]"
+    floor_v = m.group(1)
+    print("build floor: setuptools ==", floor_v)
+    build_venv = os.path.join(tmp, "build_venv")
+    venv.create(build_venv, with_pip=True)
+    bpy = os.path.join(build_venv, "Scripts", "python.exe") if os.name == "nt" \
+        else os.path.join(build_venv, "bin", "python")
+    r = run(bpy, "-m", "pip", "install", "--quiet", f"setuptools=={floor_v}", "wheel")
+    if r.returncode != 0:
+        print("BUILD GATE FAILED: could not install declared floor",
+              f"setuptools=={floor_v}", r.stderr[-300:])
+        return 1
+    wheel_dir = os.path.join(tmp, "wheel")
+    os.makedirs(wheel_dir, exist_ok=True)
+    r = run(bpy, "-m", "pip", "wheel", ".", "--no-deps",
+            "--no-build-isolation", "-w", wheel_dir)
+    if r.returncode != 0:
+        print("BUILD GATE FAILED: wheel could not be built at the declared",
+              f"floor setuptools=={floor_v}:", r.stderr[-400:])
+        return 1
+    wheels = [f for f in os.listdir(wheel_dir) if f.endswith(".whl")]
+    assert wheels, "wheel build produced no wheel"
+    wheel = os.path.join(wheel_dir, wheels[0])
+    print("wheel built at floor:", os.path.basename(wheel))
 
     # 2. Fresh venv
     venv_dir = os.path.join(tmp, "venv")
