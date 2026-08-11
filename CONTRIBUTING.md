@@ -28,7 +28,7 @@ pip install -e .
 pip install pytest
 
 # Run the test suite
-python -m pytest tests/ -q
+python -m pytest rta/tests/ -q
 ```
 
 ### Optional Dependencies
@@ -50,38 +50,31 @@ pip install -e ".[all]"
 
 ```bash
 # Run all tests
-python -m pytest tests/ -q
+python -m pytest rta/tests/ -q
 
 # Run with verbose output
-python -m pytest tests/ -v
+python -m pytest rta/tests/ -v
 
 # Run a specific test file
-python -m pytest tests/test_checker.py -v
+python -m pytest rta/tests/test_checker.py -v
 
 # Run a specific test
-python -m pytest tests/test_checker.py::TestCheckSdc::test_no_clock_creates_error -v
+python -m pytest rta/tests/test_checker.py::TestCheckSdc::test_no_clock_creates_error -v
 ```
 
 ### Test Coverage
 
-The project currently has **311 tests** across 14 test files:
+⚠️ **PLACEHOLDER-TEST-COUNT** — after running `python rta/evidence/build_evidence.py`
+on your machine, it prints the real live count; replace this line with
+`The project currently has **N pytest tests** across M test files:` using the
+exact numbers it printed, and regenerate the table below from
+`rta/evidence/manifest/RELEASE_EVIDENCE.json`'s `test_files_detail` field
+(don't hand-count — that's exactly what went stale here last time).
 
-| File | Module | Tests |
-|------|--------|-------|
-| `test_checker.py` | SDC validation | 38 |
-| `test_generator.py` | SDC generation | 30 |
-| `test_custom_rules.py` | Custom rules | 29 |
-| `test_cli.py` | CLI integration | 27 |
-| `test_rules_registry.py` | Rules registry | 22 |
-| `test_tcl_resolver.py` | TCL resolution | 20 |
-| `test_linter.py` | SDC linting | 19 |
-| `test_wildcard_analyzer.py` | Wildcard analysis | 19 |
-| `test_reporter.py` | HTML reports | 16 |
-| `test_coverage.py` | Coverage analysis | 15 |
-| `test_clock_relations.py` | Clock relations | 13 |
-| `test_constraint_diff.py` | Constraint diff | 12 |
-| `test_converter.py` | SDC conversion | 16 |
-| `test_batch_runner.py` | Batch processing | 8 |
+```bash
+python rta/evidence/build_evidence.py
+```
+
 
 ### Writing New Tests
 
@@ -273,7 +266,7 @@ Include:
 
 Before submitting a PR:
 
-- [ ] Tests pass: `python -m pytest tests/ -q`
+- [ ] Tests pass: `python -m pytest rta/tests/ -q`
 - [ ] New features have tests
 - [ ] No existing tests break
 - [ ] Code follows project style
@@ -287,7 +280,7 @@ Before submitting a PR:
 2. Create a feature branch: `git checkout -b feature/my-feature`
 3. Make your changes
 4. Write tests for your changes
-5. Run the test suite: `python -m pytest tests/ -q`
+5. Run the test suite: `python -m pytest rta/tests/ -q`
 6. Commit your changes: `git commit -m "Add my-feature"`
 7. Push to your fork: `git push origin feature/my-feature`
 8. Open a Pull Request

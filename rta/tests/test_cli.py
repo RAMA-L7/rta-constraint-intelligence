@@ -34,10 +34,11 @@ class TestCliHelp:
 
     def test_version(self):
         """--version should show the Ṛta version string (Unicode brand)."""
+        from rules_registry import APP_VERSION
         result = run_cli("--version")
         assert result.returncode == 0
         assert "Ṛta v" in result.stdout
-        assert "1.3.0" in result.stdout
+        assert APP_VERSION in result.stdout
 
     def test_help_flag(self):
         result = run_cli("--help")

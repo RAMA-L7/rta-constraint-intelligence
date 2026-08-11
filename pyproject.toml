@@ -1,13 +1,13 @@
 [build-system]
 requires = ["setuptools>=68.0"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "rta-constraint-intelligence"
 version = "1.5.0"
 description = "Ṛta — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking. No EDA tool required."
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.10"
 keywords = ["sdc", "vlsi", "timing", "constraints", "synopsys", "eda", "signoff", "sta", "constraint-intelligence"]
 authors = [

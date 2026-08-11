@@ -1,1 +1,1 @@
-"""UI modules for SDC Tools Streamlit app."""
+"""UI modules for the Ṛta Streamlit app."""

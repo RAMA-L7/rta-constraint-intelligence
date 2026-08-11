@@ -54,8 +54,13 @@ python3 cli.py --help                                 # see all commands
 ### Verify your setup
 ```bash
 python3 smoke_test.py                # fast engine check, no browser needed
-pytest rta/tests -q                   # full test suite (27 files)
+pytest rta/tests -q                   # full test suite
 ```
+
+<!-- PLACEHOLDER-TEST-COUNT: after running `python rta/evidence/build_evidence.py`,
+     replace this line with "Ṛta ships with **N pytest tests** across the engine,
+     covering deterministic checks, netlist resolution, interactions, and
+     readiness scoring." using the exact N it prints. -->
 
 ### Docker
 ```bash
@@ -391,7 +396,7 @@ rta lint samples/example.sdc
 rta convert samples/example.sdc --format json
 
 # Run the full test suite
-python -m pytest tests/ -q
+python -m pytest rta/tests/ -q
 ```
 
 ---

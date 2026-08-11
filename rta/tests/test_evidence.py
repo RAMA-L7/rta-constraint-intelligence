@@ -106,7 +106,7 @@ def test_collection_count_matches_manifest(manifest):
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     proc = subprocess.run(
         [sys.executable, "-m", "pytest", "rta/tests/", "--collect-only", "-q"],
-        cwd=ROOT, capture_output=True, text=True, env=env,
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", env=env,
     )
     out = proc.stdout + proc.stderr
     m = re.search(r"(\d+)\s+test(?:s)? collected", out)
@@ -200,7 +200,7 @@ def test_cli_version_matches_manifest(manifest):
     env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     proc = subprocess.run(
         [sys.executable, "cli.py", "--version"],
-        cwd=ROOT, capture_output=True, text=True, env=env,
+        cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", env=env,
     )
     out = (proc.stdout or "") + (proc.stderr or "")
     assert proc.returncode == 0, out
