@@ -45,7 +45,11 @@ def main():
     #    which is why the PEP 639 license-string regression (floor >=68 could
     #    not parse `license = "MIT"`) slipped past this gate.
     pyproject = open(os.path.join(ROOT, "pyproject.toml"), encoding="utf-8").read()
-    m = re.search(r"setuptools>=([0-9][0-9.]*)", pyproject)
+    # Anchored to the [build-system] section so a prose comment mentioning
+    # "setuptools>=X" can never shadow the real floor (re.S spans the
+    # comment lines between the header and the requires line).
+    m = re.search(r'\[build-system\].*?requires\s*=\s*\["setuptools>=([0-9][0-9.]*)',
+                  pyproject, re.S)
     assert m, "setuptools floor not found in pyproject.toml [build-system]"
     floor_v = m.group(1)
     print("build floor: setuptools ==", floor_v)

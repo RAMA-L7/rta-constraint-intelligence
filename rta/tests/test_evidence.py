@@ -133,7 +133,14 @@ def test_wheel_metadata_declares_mit():
     # PEP 639 license string + license-files need setuptools >= 77 to build;
     # an older floor fails with a `project.license` configuration error
     # (regression guard — 68.1.2 fails, 77.0.1 builds; 77.0.0 was yanked).
-    assert 'requires = ["setuptools>=77.0.1"]' in pyproject
+    # Regex-parse the [build-system] floor (robust to reformatting/extra
+    # build requirements; anchored so comments can't satisfy the check).
+    m = re.search(r'\[build-system\].*?requires\s*=\s*\["setuptools>=(\d+)',
+                  pyproject, re.S)
+    assert m, "build-system floor for setuptools missing in pyproject.toml"
+    assert int(m.group(1)) >= 77, (
+        f"setuptools floor {m.group(1)} < 77 — PEP 639 license string "
+        "requires setuptools >= 77 (68.x fails with a project.license error)")
 
 
 # ── Public surfaces consume the manifest ────────────────────────────────────
