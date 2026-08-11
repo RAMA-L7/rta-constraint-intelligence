@@ -517,6 +517,7 @@ export async function pageClocks() {
     { label: "Asynchronous", value: cr.stats.asynchronous ?? 0 }, { label: "Exclusive", value: (cr.stats.physically_exclusive ?? 0) + (cr.stats.logically_exclusive ?? 0) },
     { label: "Mismatches", value: cr.stats.mismatches ?? 0 }, { label: "Missing groups", value: cr.stats.missing ?? 0 },
   ]);
+  html += `<div style="margin:8px 0"><button class="btn btn-sm" type="button" data-exp="clocks">Download relations JSON</button></div>`;
 
   if (mismatches.length) {
     html += sectionTitle("Relation mismatches");
@@ -572,6 +573,7 @@ export async function pageContext() {
     { label: "Nets", value: ctx.nets ? Object.keys(ctx.nets).length : 0 },
     { label: "Pins", value: ctx.pins ? ctx.pins.length : 0 },
   ]);
+  html += `<div style="margin:8px 0"><button class="btn btn-sm" type="button" data-exp="context">Download design JSON</button></div>`;
   if (ctx.modules && ctx.modules.length) {
     html += sectionTitle("Hierarchy", "from the parsed netlist");
     html += `<div class="src" style="padding:10px 0">`;
@@ -606,6 +608,7 @@ export async function pageCoverage() {
     { label: "Clocks defined", value: (sum.clocks || {}).defined ?? "—" },
     { label: "Exceptions", value: (sum.exceptions || {}).total ?? "—" },
   ]);
+  html += `<div style="margin:8px 0"><button class="btn btn-sm" type="button" data-exp="coverage">Download coverage JSON</button></div>`;
   const ports = [...(cov.inputs || []), ...(cov.outputs || [])];
   html += sectionTitle("Port detail", `${ports.length} ports`);
   html += table([{ label: "Port" }, { label: "Dir" }, { label: "Class" }, { label: "Status" }, { label: "Evidence" }],
@@ -644,6 +647,7 @@ export async function pageInteractions() {
     { label: "Overrides", value: sum.overrides ?? 0 }, { label: "Conflicts", value: sum.definite_conflicts ?? 0 },
     { label: "Need STA", value: sum.possible_conflicts ?? 0 },
   ]);
+  html += `<div style="margin:8px 0"><button class="btn btn-sm" type="button" data-exp="interactions">Download interactions JSON</button></div>`;
   html += `<p class="callout co-info"><span><strong>Interactions are a separate dimension from correctness</strong> — a duplicate is redundant, an override silently replaces an earlier value, SDC-069 is a provable conflict, SDC-070 needs STA/path analysis.</span></p>`;
   if (!findings.length) {
     html += emptyState("No interactions found", "No duplicate, override, contradiction or overlap findings in this constraint set.");
@@ -672,6 +676,7 @@ export async function pageReadiness() {
   const rdy = a.readiness;
   html += `<div class="rdy-overall"><div><div class="ro-label">Overall readiness</div><div class="ro-value">${statusBadge("readiness", rdy.overall)}</div></div><div style="margin-left:auto" class="mono" style="font-size:12px;color:var(--text-muted)">mode: ${esc((rdy.mode || "SDC_ONLY").replace(/_/g, " "))} · not_timing_signoff: true</div></div>`;
   html += readinessRail(rdy);
+  html += `<div style="margin:8px 0"><button class="btn btn-sm" type="button" data-exp="readiness">Download readiness JSON</button></div>`;
   if (rdy.limited_design_verification) html += `<p class="callout co-info"><span><strong>Limited design verification</strong> — SDC-only mode.</span></p>`;
   if (rdy.engine_failed) html += typedError("engine", "One or more analysis engines failed — readiness is incomplete.");
   if (rdy.blockers && rdy.blockers.length) {
@@ -721,6 +726,7 @@ export async function pageDiff() {
   const d = App.state.diffResult;
   const r = d.readiness || {};
   html += `<div class="diff-head"><span class="dh-side">Baseline <b>${esc(r.baseline || "?")}</b></span><span class="dh-arrow">→</span><span class="dh-side">Current <b>${esc(r.current || "?")}</b></span><span class="dh-side mono" style="color:var(--accent)">${esc(d.classification || "")}</span><span class="dh-side mono" style="color:var(--text-muted)">Δ ${esc(r.overall_delta || "")}</span></div>`;
+  html += `<div style="margin:8px 0"><button class="btn btn-sm" type="button" data-exp="diff">Download diff JSON</button></div>`;
   if (d.gate) {
     const g = d.gate;
     html += `<div class="ilink"><span class="il-rule">GATE</span><span class="il-kind" style="color:${g.result === "PASS" ? "var(--success)" : "var(--error)"}">${esc(g.result)}</span><span class="il-a mono">exit ${esc(g.exit_code)}</span><span class="il-loc mono">${esc((g.reasons || []).slice(0, 2).join(" · "))}</span></div>`;
@@ -762,6 +768,7 @@ export async function pageReports() {
   // Build snapshot client-side mirroring the backend build
   html += `<div class="ilink"><span class="il-rule">HTML</span><span class="il-kind" style="color:var(--accent-2)">REPORT</span><span class="il-a">Full checker report (errors/warnings/scope) as a standalone HTML file.</span><span class="il-loc"><button class="btn btn-sm" id="rep-html" type="button">Download</button></span></div>`;
   html += `<div class="ilink"><span class="il-rule">JSON</span><span class="il-kind" style="color:var(--accent-2)">RESULT</span><span class="il-a">Complete machine-readable analysis result.</span><span class="il-loc"><button class="btn btn-sm" id="rep-json" type="button">Download</button></span></div>`;
+  html += `<div class="ilink"><span class="il-rule">READINESS</span><span class="il-kind" style="color:var(--accent-2)">SNAPSHOT</span><span class="il-a">Serialized readiness object — the CLI baseline format for CI.</span><span class="il-loc"><button class="btn btn-sm" type="button" data-exp="readiness">Download</button></span></div>`;
   html += `<p class="callout co-info"><span><strong>Readiness snapshot</strong> — served by the CLI (\`sdc-tools snapshot\`) for CI baselines; the Diff page compares snapshots.</span></p>`;
   return html + "</div>";
 }
@@ -794,7 +801,7 @@ export async function pageExport() {
   }
   html += `<div class="ilink"><span class="il-rule">JSON</span><span class="il-kind" style="color:var(--accent-2)">RESULT</span><span class="il-a">Complete machine-readable analysis result (issues, scope, clocks, readiness).</span><span class="il-loc"><button class="btn btn-sm" id="exp-json" type="button">Download</button></span></div>`;
   html += `<div class="ilink"><span class="il-rule">HTML</span><span class="il-kind" style="color:var(--accent-2)">REPORT</span><span class="il-a">Standalone checker report — shareable, self-contained.</span><span class="il-loc"><button class="btn btn-sm" id="exp-html" type="button">Download</button></span></div>`;
-  html += `<div class="ilink"><span class="il-rule">READINESS</span><span class="il-kind" style="color:var(--accent-2)">EVIDENCE</span><span class="il-a">Serialized readiness object for the current run (JSON, client-side from real evidence).</span><span class="il-loc"><button class="btn btn-sm" id="exp-rdy" type="button">Download</button></span></div>`;
+  html += `<div class="ilink"><span class="il-rule">READINESS</span><span class="il-kind" style="color:var(--accent-2)">EVIDENCE</span><span class="il-a">Serialized readiness object for the current run (JSON, client-side from real evidence).</span><span class="il-loc"><button class="btn btn-sm" type="button" data-exp="readiness">Download</button></span></div>`;
   html += sectionTitle("CLI equivalents", "canonical snapshot & baseline flow");
   html += `<div class="kv" style="margin:8px 0">`;
   html += `<dt>Readiness snapshot</dt><dd><span class="mono">sdc-tools snapshot design.sdc --output baseline.json</span></dd>`;

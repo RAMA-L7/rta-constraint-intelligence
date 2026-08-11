@@ -56,6 +56,33 @@ function dl(name, content, mime) {
   toast(`Downloaded ${name}`);
 }
 
+/* Per-dimension evidence downloads — shared by the analysis pages. Each page
+   renders a button with data-exp="<kind>" and this serializes the matching
+   slice of the live analysis payload (or the diff result). */
+function wireExpDownload(main) {
+  main.querySelectorAll("[data-exp]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const a = App.state.analysis;
+      // (a || {}) — the Diff page can render a button before any analysis,
+      // and the falsy-data guard below runs AFTER the dataFn, so a null `a`
+      // must never be dereferenced inside it.
+      const pick = {
+        clocks:       ["clock_relations.json",   () => (a || {}).clock_relations || {}],
+        coverage:     ["coverage_evidence.json", () => (a || {}).coverage || {}],
+        readiness:    ["readiness_evidence.json", () => (a || {}).readiness || {}],
+        interactions: ["interactions_evidence.json", () => (a || {}).interactions || {}],
+        context:      ["design_context.json",     () => (a || {}).context || {}],
+        diff:         ["constraint_diff.json",    () => App.state.diffResult],
+      }[btn.dataset.exp];
+      if (!pick) return;
+      const [name, dataFn] = pick;
+      const data = dataFn();
+      if (!data) { toast("Run an analysis first", true); return; }
+      dl(name, JSON.stringify(data, null, 2), "application/json");
+    });
+  });
+}
+
 /* ── Bootstrap ──────────────────────────────────────────────────────────── */
 async function boot() {
   initBackground($("#bg"));
@@ -624,6 +651,7 @@ async function post(path, body) {
 
 /* ── Clocks (inspector on node/row click) ───────────────────────────────── */
 function wireClocks(main) {
+  wireExpDownload(main);
   main.querySelectorAll(".ct-node").forEach(n => {
     n.addEventListener("click", () => {
       const a = App.state.analysis;
@@ -676,6 +704,7 @@ function wireDiff(main) {
   main.querySelectorAll("#diff-seg [data-seg]").forEach(btn => {
     btn.addEventListener("click", () => { App.state.diffFilter = btn.dataset.seg; route(); });
   });
+  wireExpDownload(main);
 }
 
 /* ── Reports ────────────────────────────────────────────────────────────── */
@@ -689,6 +718,7 @@ function wireReports(main) {
       dl("sdc_report.html", res.html, "text/html");
     } catch (e) { toast("Report generation failed", true); }
   });
+  wireExpDownload(main);
 }
 
 /* ── Export ─────────────────────────────────────────────────────────────── */
@@ -704,11 +734,7 @@ function wireExport(main) {
       dl("sdc_report.html", res.html, "text/html");
     } catch (e) { toast("Report generation failed", true); }
   });
-  const rdy = $("#exp-rdy");
-  if (rdy) rdy.addEventListener("click", () => {
-    const r = (App.state.analysis || {}).readiness || {};
-    dl("readiness_evidence.json", JSON.stringify(r, null, 2), "application/json");
-  });
+  wireExpDownload(main);
 }
 
 /* ── Generator ──────────────────────────────────────────────────────────── */
@@ -968,6 +994,7 @@ function wireFeedback(main) {
 /* ── Cross-page links (overview → clocks / validator) ──────────────────── */
 function wireCrossLinks(main) {
   main.querySelectorAll('a[href^="#/"]').forEach(a => { /* default hash nav works */ });
+  wireExpDownload(main);
 }
 
 boot();
