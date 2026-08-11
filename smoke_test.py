@@ -20,6 +20,12 @@ under 2 seconds after every edit, before you even open a browser.
 import sys
 import traceback
 
+# Force UTF-8 on stdout/stderr — Windows consoles default to cp1252, which
+# cannot encode the ✅/⚠️ glyphs used below (same guard as api_server.py).
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 PASS = []
 FAIL = []
 

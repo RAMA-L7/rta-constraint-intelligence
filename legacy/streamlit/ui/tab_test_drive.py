@@ -6,12 +6,12 @@ Pick a sample or upload your own to see every feature in action.
 import json
 import os
 import streamlit as st
-from ui.components import (
+from .components import (
     section_header, status_banner, metric_cards_row,
     progress_bar, styled_code_block,
     sdc_upload_area, download_button,
 )
-from ui.feedback import feedback_widget, SAMPLE_SDCS, get_sample_sdc
+from .feedback import feedback_widget, SAMPLE_SDCS, get_sample_sdc
 
 
 def _run_analysis(text: str, filename: str):

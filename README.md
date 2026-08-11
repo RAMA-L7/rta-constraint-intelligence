@@ -41,7 +41,7 @@ cd rta-constraint-intelligence
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 pip install -e ".[web]"
-streamlit run app.py                 # launch browser UI
+streamlit run legacy/streamlit/app.py   # preserved legacy Streamlit UI
 ```
 
 ### CLI
@@ -91,7 +91,7 @@ docker run -p 8501:8501 rta web                     # Web UI
 | 14 | [**Rules Registry**](docs/features/README-08-rules-registry.md) | `rules_registry.py` | `rta rules` | Centralized documentation of all 111+ rule codes |
 | 15 | [**HTML Signoff Reports**](docs/features/README-09-reports.md) | `reporter.py` | `rta report` | Self-contained, zero-dependency HTML reports |
 
-Plus a [**Streamlit Web UI**](docs/features/README-10-web-ui.md) (`app.py`) with all 12 tools as equal-prominence tabs — Checker, Generator, Linter, Converter, Corner Mgr, MMC SDC, Diff, Clock, Coverage, Interactions, Readiness, Rules.
+Plus a preserved legacy [**Streamlit Web UI**](docs/features/README-10-web-ui.md) (`legacy/streamlit/app.py`) with all 12 tools as equal-prominence tabs — Checker, Generator, Linter, Converter, Corner Mgr, MMC SDC, Diff, Clock, Coverage, Interactions, Readiness, Rules (retired from the launch path; kept in `legacy/`).
 
 ---
 
@@ -286,12 +286,9 @@ rta-constraint-intelligence/    (clone dir)
 │
 ├── interfaces ─────────────────────────────────
 │   ├── cli.py               # Command-line interface (12 commands)
-│   ├── app.py               # Streamlit web UI (10 tabs)
-│   └── ui/                  # Tab modules (modular UI)
-│       ├── components.py    # Shared CSS, helpers, dark mode
-│       ├── tab_linter.py    # Linter tab
-│       ├── tab_converter.py # Converter tab
-│       └── tab_rules.py     # Rules Reference tab
+│   └── legacy/streamlit/    # Preserved legacy Streamlit UI (retired)
+│       ├── app.py           # Legacy Streamlit shell
+│       └── ui/              # Legacy tab modules (modular UI)
 │
 ├── packaging & deployment ─────────────────────
 │   ├── pyproject.toml       # PyPI package configuration
@@ -409,7 +406,7 @@ Contributions welcome! The project is organized for easy extension:
 - **Add a new custom condition:** Edit `custom_rules.py` (add `@_cond("name")` handler)
 - **Add a new coverage item:** Edit `coverage.py` (add to appropriate category)
 - **Add a new report section:** Edit `reporter.py` (add generator function)
-- **Add a new tab:** Create `ui/tab_<name>.py` and add to `app.py` tab list
+- **Add a new tab (legacy UI):** Create `legacy/streamlit/ui/tab_<name>.py` and add to `legacy/streamlit/app.py` tab list
 - **Add a new Streamlit tab:** Edit `app.py` (add to `st.tabs()` list)
 
 ---

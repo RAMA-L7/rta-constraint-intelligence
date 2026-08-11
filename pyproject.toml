@@ -18,7 +18,6 @@ authors = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -52,7 +51,7 @@ python_files = ["test_*.py"]
 
 [tool.setuptools]
 py-modules = [
-    "cli", "checker", "generator", "corner_manager", "mmc",
+    "cli", "api_server", "checker", "generator", "corner_manager", "mmc",
     "tcl_resolver", "wildcard_analyzer", "constraint_diff",
     "clock_relations", "rules_registry", "reporter",
     "coverage", "custom_rules", "linter", "converter",
@@ -64,7 +63,7 @@ py-modules = [
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["rta*", "ui*"]
+include = ["rta*", "legacy*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.yaml", "*.sdc", "*.tcl", ".pre-commit-config.yaml"]

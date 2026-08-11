@@ -502,7 +502,7 @@ def report_html_json(analysis: dict, sdc: str) -> dict:
 
 
 def feedback_json(entry: dict) -> dict:
-    from ui.feedback import FeedbackEntry, save_feedback
+    from rta.workspace.server.feedback import FeedbackEntry, save_feedback
     e = FeedbackEntry(
         timestamp=str(entry.get("timestamp", "")),
         feature=str(entry.get("feature", "")),
@@ -517,7 +517,7 @@ def feedback_json(entry: dict) -> dict:
 
 def design_meta() -> dict:
     """Design tokens + status metadata — single source of truth for the UI."""
-    from ui import theme
+    from rta.branding.tokens import theme
     return {
         "version": APP_VERSION,
         "colors": theme.COLORS,

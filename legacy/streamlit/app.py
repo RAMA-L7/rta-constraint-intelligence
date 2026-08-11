@@ -4,6 +4,15 @@ Deterministic checking, generation, and multi-corner management for
 synthesis design constraint (SDC) files.
 """
 
+# Preserved legacy Streamlit app (legacy/streamlit/). The engine imports below
+# resolve through the root-level compat shims, so the repository root must be
+# on sys.path when this app is launched from its legacy home.
+import os as _os
+import sys as _sys
+_ROOT = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+if _ROOT not in _sys.path:
+    _sys.path.insert(0, _ROOT)
+
 from typing import Dict
 import difflib
 import streamlit as st

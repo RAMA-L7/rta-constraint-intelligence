@@ -20,15 +20,15 @@ COPY cli.py checker.py generator.py corner_manager.py mmc.py \
      design_context.py design_coverage.py constraint_interactions.py \
      constraint_readiness.py readiness_diff.py policy_engine.py \
      evidence.py finding_identity.py support_boundary.py sdc_preprocess.py \
-     custom_rules_example.yaml app.py \
+     custom_rules_example.yaml \
      .pre-commit-config.yaml .pre-commit-hooks/ \
      ./
 
 # Copy the real engine package
 COPY rta/ ./rta/
 
-# Copy UI modules
-COPY ui/ ./ui/
+# Copy preserved legacy material (legacy Streamlit app + ui package)
+COPY legacy/ ./legacy/
 
 # Copy samples
 COPY samples/ ./samples/
@@ -42,5 +42,5 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 ENTRYPOINT ["python", "cli.py"]
 CMD ["--help"]
 
-# For web UI:
-# docker run -p 8501:8501 rta streamlit run app.py
+# For the preserved legacy Streamlit UI:
+# docker run -p 8501:8501 rta streamlit run legacy/streamlit/app.py

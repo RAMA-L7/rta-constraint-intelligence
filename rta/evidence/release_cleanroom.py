@@ -62,14 +62,14 @@ def main():
     r = run(vpy, "-m", "cli", "--help", cwd=work)
     check("cli-help", r.returncode == 0 and "check" in r.stdout, r.stderr[-200:])
 
-    # 6. sdc-tools entry point (console script)
-    entry = os.path.join(venv_dir, "Scripts", "sdc-tools.exe") if os.name == "nt" \
-        else os.path.join(venv_dir, "bin", "sdc-tools")
+    # 6. rta entry point (console script)
+    entry = os.path.join(venv_dir, "Scripts", "rta.exe") if os.name == "nt" \
+        else os.path.join(venv_dir, "bin", "rta")
     env = dict(os.environ)
     env["PYTHONIOENCODING"] = "utf-8"
     r = subprocess.run([entry, "--version"], capture_output=True, text=True,
                        cwd=work, env=env)
-    check("entry-point", r.returncode == 0 and "1.3.0" in (r.stdout + r.stderr),
+    check("entry-point", r.returncode == 0 and "1.5.0" in (r.stdout + r.stderr),
           (r.stdout + r.stderr)[-200:])
 
     # 7. Validate a sample SDC (written in the fresh work dir)

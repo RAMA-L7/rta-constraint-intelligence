@@ -78,7 +78,9 @@ def get_sample_sdc(name: str) -> tuple:
 
     Returns (text, filename) or (None, None) if not found.
     """
-    path = os.path.join(os.path.dirname(os.path.dirname(__file__)), SAMPLE_SDCS.get(name, ""))
+    # 4 dirname() levels: legacy/streamlit/ui/feedback.py -> repo root; the
+    # samples/ tree lives at the repository root (unchanged by the Phase 9 move).
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), SAMPLE_SDCS.get(name, ""))
     try:
         with open(path, "r", encoding="utf-8") as f:
             return f.read(), os.path.basename(path)
@@ -97,7 +99,7 @@ def feedback_widget(
     Two lines: [Yes helpful] [No, not helpful]  →  optional comment + submit.
     """
     import streamlit as st
-    from ui.components import status_banner
+    from .components import status_banner
 
     st.divider()
     st.caption("How was this analysis?")
@@ -158,7 +160,7 @@ FEATURE_ICONS = {
 def render_dashboard():
     """Render the public feedback dashboard."""
     import streamlit as st
-    from ui.components import section_header, status_banner, metric_cards_row
+    from .components import section_header, status_banner, metric_cards_row
 
     section_header("📊 Community Feedback", "Transparent — all feedback is visible to every visitor.")
 

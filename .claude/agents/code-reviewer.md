@@ -35,8 +35,8 @@ Review Python code changes for the SDC Tools project. Focus on:
 - `tcl_resolver.py` — TCL variable resolution
 - `wildcard_analyzer.py` — Wildcard pattern risk analysis
 - `cli.py` — CLI interface (12 commands)
-- `app.py` — Streamlit web UI
-- `ui/` — Streamlit tab modules
+- `legacy/streamlit/app.py` — preserved Streamlit web UI (retired from launch path)
+- `legacy/streamlit/ui/` — preserved Streamlit tab modules
 
 ## Key Dependencies
 

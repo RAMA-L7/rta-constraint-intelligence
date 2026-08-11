@@ -167,7 +167,7 @@ rta-constraint-intelligence/
 │   └── wildcard_analyzer.py # Wildcard analysis
 │
 ├── CLI (cli.py)            # Command-line interface
-├── Web UI (app.py + ui/)   # Streamlit interface
+├── Legacy UI (legacy/streamlit/)  # preserved Streamlit app + ui package
 ├── Tests (tests/)          # 763 pytest tests
 └── Documentation (docs/)   # Feature documentation
 ```

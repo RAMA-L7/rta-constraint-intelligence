@@ -5,11 +5,11 @@
 import streamlit as st
 import json
 from rules_registry import APP_VERSION, get_all_rules
-from ui.components import (
+from .components import (
     download_button, MODULE_ICONS, section_header,
     metric_cards_row, status_banner,
 )
-from ui.feedback import feedback_widget
+from .feedback import feedback_widget
 
 
 def render():

@@ -69,30 +69,10 @@ SHIMS = [
     # Surfaces
     ("cli", "rta.cli", "cli"),
     ("api_server", "rta.api", "api_server"),
-    # ui package — production modules
-    ("ui/theme", "rta.branding.tokens", "theme"),
-    ("ui/feedback", "rta.workspace.server", "feedback"),
-    # ui package — legacy Streamlit modules
-    ("ui/components", "legacy.streamlit.ui", "components"),
-    ("ui/validator", "legacy.streamlit.ui", "validator"),
-    ("ui/state", "legacy.streamlit.ui", "state"),
-    ("ui/workspace", "legacy.streamlit.ui", "workspace"),
-    ("ui/overview", "legacy.streamlit.ui", "overview"),
-    ("ui/clocks", "legacy.streamlit.ui", "clocks"),
-    ("ui/context", "legacy.streamlit.ui", "context"),
-    ("ui/coverage", "legacy.streamlit.ui", "coverage"),
-    ("ui/diff", "legacy.streamlit.ui", "diff"),
-    ("ui/interactions", "legacy.streamlit.ui", "interactions"),
-    ("ui/readiness", "legacy.streamlit.ui", "readiness"),
-    ("ui/reports", "legacy.streamlit.ui", "reports"),
-    ("ui/ci", "legacy.streamlit.ui", "ci"),
-    ("ui/tab_converter", "legacy.streamlit.ui", "tab_converter"),
-    ("ui/tab_corners", "legacy.streamlit.ui", "tab_corners"),
-    ("ui/tab_generator", "legacy.streamlit.ui", "tab_generator"),
-    ("ui/tab_linter", "legacy.streamlit.ui", "tab_linter"),
-    ("ui/tab_mmc", "legacy.streamlit.ui", "tab_mmc"),
-    ("ui/tab_rules", "legacy.streamlit.ui", "tab_rules"),
-    ("ui/tab_test_drive", "legacy.streamlit.ui", "tab_test_drive"),
+    # NOTE: the former ui/ package is NOT shimmed — it was moved wholesale to
+    # legacy/streamlit/ui/ (Phase 9) with no root shims, and its production
+    # modules (theme, feedback) now live at rta.branding.tokens and
+    # rta.workspace.server. Active code imports those production homes directly.
 ]
 
 

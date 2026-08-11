@@ -76,7 +76,9 @@ def get_sample_sdc(name: str) -> tuple:
 
     Returns (text, filename) or (None, None) if not found.
     """
-    path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), SAMPLE_SDCS.get(name, ""))
+    # 4 dirname() levels: rta/workspace/server/feedback.py -> repo root, then
+    # rta/examples/samples/ (the packaged sample tree).
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), SAMPLE_SDCS.get(name, ""))
     try:
         with open(path, "r", encoding="utf-8") as f:
             return f.read(), os.path.basename(path)
@@ -95,6 +97,7 @@ def feedback_widget(
     Two lines: [Yes helpful] [No, not helpful]  →  optional comment + submit.
     """
     import streamlit as st
+    from legacy.streamlit.ui.components import status_banner
 
     st.divider()
     st.caption("How was this analysis?")
@@ -155,7 +158,8 @@ FEATURE_ICONS = {
 def render_dashboard():
     """Render the public feedback dashboard."""
     import streamlit as st
-    from ui.components import section_header, status_banner, metric_cards_row
+    from legacy.streamlit.ui.components import (section_header, status_banner,
+                                                metric_cards_row)
 
     section_header("📊 Community Feedback", "Transparent — all feedback is visible to every visitor.")
 

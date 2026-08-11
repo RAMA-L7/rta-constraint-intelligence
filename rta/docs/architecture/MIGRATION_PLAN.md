@@ -1,10 +1,10 @@
 # Ṛta — Migration Plan (product-first targets)
 
-> **Document kind:** execution plan · **Status:** PROPOSED — no file has been moved.
+> **Document kind:** execution plan · **Status:** Phases 0–8 complete · **Phase 9
+> (legacy/) executed 2026-08-12** with founder sign-off (see
+> `MIGRATION_LOG.md` row 9 for the executed scope and deviations).
 > **Date:** 2026-08-07 · **Revision:** targets updated to the product-first
-> blueprint (founder corrections). **Approval required:** founder sign-off on
-> `REPOSITORY_BLUEPRINT.md` + `MIGRATION_READINESS.md` before any `git mv` /
-> copy executes.
+> blueprint (founder corrections).
 > **Hard rule:** nothing is deleted. Every legacy item lands in `legacy/`.
 
 ---
@@ -146,4 +146,7 @@ coupling is introduced.
 
 ---
 
-*Plan complete (product-first targets). Awaiting founder approval. No files moved.*
+*Plan complete (product-first targets). Phase 9 executed 2026-08-12; Phases 1–8
+were completed in prior sprints (see `MIGRATION_LOG.md`). Deviations recorded in
+`MIGRATION_LOG.md` row 9 and `legacy/LEGACY_README.md`: `svg/`, `graphify-out/`,
+`.streamlit/` were already absent from the tree when Phase 9 ran.*

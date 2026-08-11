@@ -3,11 +3,11 @@
 """
 
 import streamlit as st
-from ui.components import (
+from .components import (
     sdc_upload_area, download_button, section_header,
     metric_cards_row, status_banner, styled_code_block,
 )
-from ui.feedback import feedback_widget
+from .feedback import feedback_widget
 from converter import sdc_to_json, sdc_to_yaml
 
 

@@ -106,18 +106,16 @@ class TestAsciiIdentifier:
 class TestLegacyNamesRemoved:
     """Proper-noun legacy names are gone from migrated surfaces."""
 
-    # Note: this project deliberately did not adopt api_server.py or the
-    # legacy/streamlit/ grouped-workspace UI redesign — it kept the original
-    # flat tab-bar app.py + ui/components.py instead (see project history).
-    # Those files don't exist here by design, so they're excluded from this
-    # surface list rather than left to fail with FileNotFoundError.
+    # Note: the flat tab-bar Streamlit UI (app.py + ui/) is preserved under
+    # legacy/streamlit/ (retired from the launch path). It is still branded
+    # and therefore still checked as a surface.
     SURFACES = (
         ["README.md", "cli.py", "reporter.py", "generator.py",
          "rta/workspace/webui/index.html",
          "rta/website/index.html", "rta/website/assets/js/site.js",
          "rta/docs/rta/BRAND_FOUNDATION.md", "rta/docs/rta/PRODUCT_TAXONOMY.md"]
         + [f"rta/website/capabilities/{f}" for f in os.listdir("rta/website/capabilities") if f.endswith(".html")]
-        + [f"ui/{f}" for f in os.listdir("ui") if f.endswith(".py")]
+        + [f"legacy/streamlit/ui/{f}" for f in os.listdir("legacy/streamlit/ui") if f.endswith(".py")]
         + [f"rta/workspace/webui/assets/js/{f}" for f in os.listdir("rta/workspace/webui/assets/js") if f.endswith(".js")]
         + [f"rta/docs/features/{f}" for f in os.listdir("rta/docs/features") if f.endswith(".md")]
     )
