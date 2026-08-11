@@ -6,12 +6,17 @@ synthesis design constraint (SDC) files.
 
 # Preserved legacy Streamlit app (legacy/streamlit/). The engine imports below
 # resolve through the root-level compat shims, so the repository root must be
-# on sys.path when this app is launched from its legacy home.
+# on sys.path when this app is launched from its legacy home. The app's own
+# directory must also be on the path so its local `ui` package resolves
+# regardless of the launch cwd (streamlit adds it when using `streamlit run`;
+# AppTest / python -m do not).
 import os as _os
 import sys as _sys
+_APP_DIR = _os.path.dirname(_os.path.abspath(__file__))
 _ROOT = _os.path.dirname(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
-if _ROOT not in _sys.path:
-    _sys.path.insert(0, _ROOT)
+for _p in (_APP_DIR, _ROOT):
+    if _p not in _sys.path:
+        _sys.path.insert(0, _p)
 
 from typing import Dict
 import difflib
