@@ -34,9 +34,11 @@ class TestCliHelp:
 
     def test_version(self):
         """--version should show version string."""
+        from rules_registry import APP_VERSION
         result = run_cli("--version")
         assert result.returncode == 0
-        assert "SDC Tools" in result.stdout
+        assert "Ṛta" in result.stdout
+        assert APP_VERSION in result.stdout
 
     def test_help_flag(self):
         result = run_cli("--help")

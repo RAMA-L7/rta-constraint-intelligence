@@ -100,7 +100,8 @@ class TestRulesRegistry:
 
     def test_rules_have_module_category(self):
         """Every rule has a module in the valid set."""
-        valid_modules = {"checker", "mmc", "clock_relations", "constraint_diff"}
+        valid_modules = {"checker", "mmc", "clock_relations", "constraint_diff",
+                         "design_context", "design_coverage", "constraint_interactions"}
         for r in get_all_rules():
             assert r.module in valid_modules, f"Rule {r.code} has invalid module: {r.module}"
 

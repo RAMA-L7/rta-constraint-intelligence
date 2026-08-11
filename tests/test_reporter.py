@@ -33,9 +33,11 @@ class TestGenerateCheckReport:
         assert "test.sdc" in html
 
     def test_contains_version(self, minimal_sdc):
+        from rules_registry import APP_VERSION
         result = check_sdc(minimal_sdc)
         html = generate_check_report(result, "test.sdc")
-        assert "SDC Tools" in html
+        assert "Ṛta" in html
+        assert APP_VERSION in html
 
     def test_contains_metrics(self, minimal_sdc):
         result = check_sdc(minimal_sdc)
@@ -68,11 +70,13 @@ class TestGenerateDiffReport:
         assert html.strip().startswith("<!DOCTYPE html>")
 
     def test_contains_version(self):
+        from rules_registry import APP_VERSION
         v1 = ""
         v2 = "create_clock -name clk -period 5.0"
         result = analyze_constraint_changes(v1, v2)
         html = generate_diff_report(result, "old.sdc", "new.sdc")
-        assert "SDC Tools" in html
+        assert "Ṛta" in html
+        assert APP_VERSION in html
 
     def test_contains_file_names(self):
         v1 = ""
@@ -100,9 +104,11 @@ class TestGenerateClockReport:
         assert html.strip().startswith("<!DOCTYPE html>")
 
     def test_contains_version(self, full_sdc):
+        from rules_registry import APP_VERSION
         result = analyze_clock_relations(full_sdc)
         html = generate_clock_report(result, "full.sdc")
-        assert "SDC Tools" in html
+        assert "Ṛta" in html
+        assert APP_VERSION in html
 
     def test_empty_result(self):
         result = analyze_clock_relations("")
@@ -152,8 +158,10 @@ class TestGenerateRulesReport:
         assert html.strip().startswith("<!DOCTYPE html>")
 
     def test_contains_version(self):
+        from rules_registry import APP_VERSION
         html = generate_rules_report([], "Empty")
-        assert "SDC Tools" in html
+        assert "Ṛta" in html
+        assert APP_VERSION in html
 
     def test_contains_rule_codes(self):
         rules = get_all_rules()

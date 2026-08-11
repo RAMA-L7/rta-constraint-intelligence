@@ -33,6 +33,14 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
 
+      - name: Run comprehensive CLI checks
+        # Standalone integration script (all CLI commands, end-to-end).
+        # Deliberately not a pytest module: pytest only collects test_*.py.
+        run: |
+          python tests/run_comprehensive_test.py
+        env:
+          PYTHONIOENCODING: utf-8
+
   lint:
     runs-on: ubuntu-latest
     steps:

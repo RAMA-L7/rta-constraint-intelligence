@@ -9,8 +9,11 @@ from datetime import datetime
 from dataclasses import dataclass, field, asdict
 from typing import List, Optional
 
-import streamlit as st
-from ui.components import section_header, status_banner, metric_cards_row
+# NOTE: streamlit and ui.components are imported lazily inside the widget/dashboard
+# functions. The storage API here (save_feedback/load_feedback/FeedbackEntry) is
+# used by the stdlib-only API server (rta/api/api_server.py) and by the
+# CLI-level comprehensive test (tests/run_comprehensive_test.py), which do not
+# install streamlit — importing this module must never require it.
 
 # ── Storage ────────────────────────────────────────────────────────────────────
 
@@ -93,6 +96,9 @@ def feedback_widget(
 
     Two lines: [Yes helpful] [No, not helpful]  →  optional comment + submit.
     """
+    import streamlit as st
+    from ui.components import status_banner
+
     st.divider()
     st.caption("How was this analysis?")
 
@@ -151,6 +157,9 @@ FEATURE_ICONS = {
 
 def render_dashboard():
     """Render the public feedback dashboard."""
+    import streamlit as st
+    from ui.components import section_header, status_banner, metric_cards_row
+
     section_header("📊 Community Feedback", "Transparent — all feedback is visible to every visitor.")
 
     entries = load_feedback()
