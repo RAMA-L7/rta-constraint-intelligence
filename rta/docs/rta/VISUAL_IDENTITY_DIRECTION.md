@@ -81,8 +81,13 @@ the tab is hidden; 60 fps target; reduced motion disables levels 1–2 and 4.
 A single canonical background grammar: **silicon topology** — sparse netlist
 nodes, routing-like arcs, occasional clock-edge pulses. Not particles, not
 stars, not Matrix rain, not floating orbs. The background must be *visible
-when observed* but must never compete with technical data. This is a known
-Phase 17 gap that the next phase fixes deliberately.
+when observed* but must never compete with technical data. The Phase 17
+visibility gap (background too faint to be visible when observed) is fixed in
+`rta/workspace/webui/` — see `assets/css/app.css` (`#bg` layers) and
+`assets/js/viz.js` (canvas draw); the broader motion system stays per §5.
+The fix targets the current light surface; the dark-first workspace (§8)
+remains future work and must re-derive these background values from the
+color tokens.
 
 ## 7. Icon philosophy
 

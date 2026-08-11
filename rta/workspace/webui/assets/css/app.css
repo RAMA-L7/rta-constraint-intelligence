@@ -60,19 +60,25 @@ a { color: var(--accent-2); text-decoration: none; }
 a:hover { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
 
-/* ── Background layers (0..5) — Silicon Graph ───────────────────────────── */
+/* ── Background layers (0..5) — Silicon Graph ─────────────────────────────
+   Phase 17 gap fix: the silicon-topology grammar must be *visible when
+   observed* but never compete with data (VISUAL_IDENTITY_DIRECTION §6).
+   Blueprint tint + hairline grid strengthened so the canvas topology reads;
+   content still dominates (panels sit above at z-index 1, own surfaces).
+   Token-driven via color-mix so a future dark-first pass (VID §8) retints
+   automatically from :root vars — no hardcoded rgba here. */
 #bg {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   background:
-    radial-gradient(1100px 500px at 12% -8%, rgba(37,99,235,.05), transparent 60%),
-    linear-gradient(rgba(24,24,27,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24,24,27,.06) 1px, transparent 1px),
+    radial-gradient(1100px 500px at 12% -8%, color-mix(in srgb, var(--accent-2) 7%, transparent), transparent 60%),
+    linear-gradient(color-mix(in srgb, var(--text-primary) 8.5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 8.5%, transparent) 1px, transparent 1px),
     var(--bg-primary);
   background-size: auto, 44px 44px, 44px 44px, auto;
 }
-#bg::after { /* subtle vignette so content pops */
+#bg::after { /* vignette so content pops (reinforces non-competition) */
   content: ""; position: absolute; inset: 0;
-  background: radial-gradient(1200px 700px at 50% 40%, transparent 55%, rgba(24,24,27,.05));
+  background: radial-gradient(1200px 700px at 50% 40%, transparent 55%, color-mix(in srgb, var(--text-primary) 6%, transparent));
 }
 #bg canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 

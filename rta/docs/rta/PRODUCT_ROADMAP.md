@@ -18,9 +18,9 @@
 
 - From-scratch Ṛta application experience (workspace is the proven vertical
   slice; extend the design system across all pages).
-- Motion system per VISUAL_IDENTITY_DIRECTION.md levels 1–4, including the
-  canonical silicon-topology background (fixing the Phase 17 background
-  visibility gap).
+- Motion system per VISUAL_IDENTITY_DIRECTION.md levels 1–4 (the Phase 17
+  background visibility gap on the canonical silicon-topology background is
+  fixed — `rta/workspace/webui/assets/{css/app.css,js/viz.js}`).
 - Technical visualizations: clock tree, relation matrix, bus coverage strips,
   readiness dimension rail, constraint interaction links, baseline→current diff.
 - Website → workspace continuity (shared tokens, typography, background

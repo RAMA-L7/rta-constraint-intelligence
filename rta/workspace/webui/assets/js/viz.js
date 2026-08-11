@@ -52,7 +52,7 @@ export function initBackground(container) {
       nodes.push({
         x: margin + Math.random() * (w - margin * 2),
         y: margin + Math.random() * (h - margin * 2),
-        r: 1.5 + Math.random() * 1.8,
+        r: 1.8 + Math.random() * 2.0,
         phase: Math.random() * Math.PI * 2,
         speed: 0.15 + Math.random() * 0.35,
         leaf: Math.random() < 0.35,
@@ -77,6 +77,11 @@ export function initBackground(container) {
     }
   }
 
+  // Phase 17 gap fix (VISUAL_IDENTITY_DIRECTION §6): the topology must be
+  // *visible when observed* but never compete with data. Opacity/size values
+  // below are raised so nodes/arcs/pulses read on the light surface. Colors
+  // mirror the light tokens (text_primary #18181B, accent_secondary #2563EB)
+  // by design; a future dark-first pass must re-derive these from the tokens.
   let last = 0;
   function frame(ts) {
     if (!running) return;
@@ -94,7 +99,7 @@ export function initBackground(container) {
     ctx.lineWidth = 1;
     for (const e of edges) {
       const a = e.a, b = e.b;
-      ctx.strokeStyle = "rgba(24,24,27,0.10)";
+      ctx.strokeStyle = "rgba(24,24,27,0.16)";
       ctx.beginPath(); ctx.moveTo(a.x, a.y);
       // slight curve for routing feel
       const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 - e.len * 0.08;
@@ -112,18 +117,18 @@ export function initBackground(container) {
       const x = uu * uu * a.x + 2 * uu * u * mx + u * u * b.x;
       const y = uu * uu * a.y + 2 * uu * u * my + u * u * b.y;
       const fade = Math.sin(p.t * Math.PI);
-      ctx.fillStyle = `rgba(37,99,235,${0.5 * fade})`;
-      ctx.beginPath(); ctx.arc(x, y, 1.8, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = `rgba(37,99,235,${0.62 * fade})`;
+      ctx.beginPath(); ctx.arc(x, y, 2.0, 0, Math.PI * 2); ctx.fill();
       // trailing glow
-      ctx.fillStyle = `rgba(37,99,235,${0.12 * fade})`;
-      ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = `rgba(37,99,235,${0.16 * fade})`;
+      ctx.beginPath(); ctx.arc(x, y, 5.5, 0, Math.PI * 2); ctx.fill();
     }
     // nodes (layer 2) — subtle idle illumination
     for (const n of nodes) {
       const glow = 0.35 + 0.3 * Math.sin(t * n.speed + n.phase);
       ctx.fillStyle = n.leaf
-        ? `rgba(37,99,235,${0.22 + 0.18 * glow})`
-        : `rgba(113,113,122,${0.20 + 0.16 * glow})`;
+        ? `rgba(37,99,235,${0.30 + 0.20 * glow})`
+        : `rgba(113,113,122,${0.28 + 0.18 * glow})`;
       ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2); ctx.fill();
     }
   }
