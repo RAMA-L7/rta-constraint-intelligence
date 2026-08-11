@@ -265,6 +265,25 @@ with tab_checker:
             c3.metric("ℹ️ Info tips", len(result.info))
             c4.metric("🕐 Clocks",   result.stats.get("Clocks", 0))
 
+            # ── Download the full analysis result ────────────────────────────────
+            st.download_button(
+                "⬇️ Download analysis JSON",
+                data=json.dumps({
+                    "filename": filename,
+                    "check": _jsonable(result),
+                    "custom_rules": [
+                        {"id": r.rule.id, "name": r.rule.name,
+                         "severity": r.rule.severity, "passed": r.passed,
+                         "msg": r.msg}
+                        for r in custom_rule_results
+                    ] if custom_rule_results else [],
+                }, indent=2, ensure_ascii=False),
+                file_name="analysis_result.json",
+                mime="application/json",
+                use_container_width=True,
+                key="checker_dl",
+            )
+
             # ── Verdict ──────────────────────────────────────────────────────────
             if errors:
                 st.error(f"**{len(errors)} error{'s' if len(errors)!=1 else ''} must be fixed** before synthesis will work correctly.")
