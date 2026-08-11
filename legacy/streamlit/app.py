@@ -15,6 +15,8 @@ if _ROOT not in _sys.path:
 
 from typing import Dict
 import difflib
+import json
+from dataclasses import asdict, is_dataclass
 import streamlit as st
 from checker import check_sdc
 from generator import (
@@ -105,6 +107,19 @@ def _netlist_upload_widget(key_prefix: str):
             f"{len(ctx.ports)} ports, {len(ctx.instances)} instances."
         )
         return ctx
+
+
+def _jsonable(obj):
+    """Convert engine result objects to JSON-safe structures (dataclasses → dicts)."""
+    if obj is None or isinstance(obj, (str, int, float, bool)):
+        return obj
+    if isinstance(obj, (list, tuple)):
+        return [_jsonable(x) for x in obj]
+    if isinstance(obj, dict):
+        return {str(k): _jsonable(v) for k, v in obj.items()}
+    if is_dataclass(obj):
+        return _jsonable(asdict(obj))
+    return str(obj)
 
 
 def _render_netlist_cross_checks(findings, ctx):
@@ -1379,6 +1394,16 @@ with tab_analyzer:
         sev2.metric("📥 V1 constraints", result.stats.get("v1_constraints", 0))
         sev3.metric("📥 V2 constraints", result.stats.get("v2_constraints", 0))
 
+        # ── Download the semantic diff result ────────────────────────────────
+        st.download_button(
+            "⬇️ Download diff JSON",
+            data=json.dumps(_jsonable(result), indent=2, ensure_ascii=False),
+            file_name="constraint_diff.json",
+            mime="application/json",
+            use_container_width=True,
+            key="analyzer_dl",
+        )
+
         # ── Variable resolution info ────────────────────────────────────────
         if result.symbol_table_v1 or result.symbol_table_v2:
             with st.expander("📊 Variable Resolution View", expanded=False):
@@ -1537,6 +1562,16 @@ with tab_clock_rel:
             rc3.metric("🟢 Correct", s["pairs"] - s["mismatches"] - s["missing"])
             rc4.metric("🔴 Mismatches", s["mismatches"])
             rc5.metric("⬜ Missing", s["missing"])
+
+            # ── Download the clock relations result ──────────────────────────
+            st.download_button(
+                "⬇️ Download relations JSON",
+                data=json.dumps(_jsonable(cr_result), indent=2, ensure_ascii=False),
+                file_name="clock_relations.json",
+                mime="application/json",
+                use_container_width=True,
+                key="clockrel_dl",
+            )
 
             # ── Clock Relation Matrix ──────────────────────────────────────
             st.subheader("📊 Clock Relation Matrix")
@@ -1749,6 +1784,19 @@ with tab_coverage:
             mc3.metric("❌ Missing", cv_result.total_missing)
             mc4.metric("📁 Categories", len(cv_result.categories))
 
+            # ── Download the coverage evidence ───────────────────────────────
+            st.download_button(
+                "⬇️ Download coverage JSON",
+                data=json.dumps({
+                    "gap_analysis": _jsonable(cv_result),
+                    "design_coverage": _jsonable(cv_design_cov) if cv_design_cov is not None else None,
+                }, indent=2, ensure_ascii=False),
+                file_name="coverage_evidence.json",
+                mime="application/json",
+                use_container_width=True,
+                key="coverage_dl",
+            )
+
             # ── Category cards ──────────────────────────────────────────────
             for cat in cv_result.categories:
                 bar_color = "#059669" if cat.score >= 80 else "#d97706" if cat.score >= 50 else "#dc2626"
@@ -1905,6 +1953,17 @@ with tab_interactions:
         ic3.metric("🟡 Overrides", len(cats.get("OVERRIDE", [])))
         ic4.metric("🔵 Duplicates", len(cats.get("EXACT_DUPLICATE", [])) + len(cats.get("SEMANTIC_DUPLICATE", [])))
 
+        # ── Download the interactions result ─────────────────────────────────
+        st.download_button(
+            "⬇️ Download interactions JSON",
+            data=json.dumps(ia_result.to_dict() if hasattr(ia_result, "to_dict") else _jsonable(ia_result),
+                            indent=2, ensure_ascii=False),
+            file_name="interactions_evidence.json",
+            mime="application/json",
+            use_container_width=True,
+            key="interactions_dl",
+        )
+
         if not ia_result.findings:
             st.success("✅ No duplicate, overriding, or contradictory constraints found.")
         else:
@@ -1978,6 +2037,17 @@ with tab_readiness:
         rc1.metric("🔴 Blockers", len(rd_result.blockers))
         rc2.metric("🟡 Review items", len(rd_result.review_items))
         rc3.metric("🔵 Advisories", len(rd_result.advisories))
+
+        # ── Download the readiness evidence ──────────────────────────────────
+        st.download_button(
+            "⬇️ Download readiness JSON",
+            data=json.dumps(rd_result.to_dict() if hasattr(rd_result, "to_dict") else _jsonable(rd_result),
+                            indent=2, ensure_ascii=False),
+            file_name="readiness_evidence.json",
+            mime="application/json",
+            use_container_width=True,
+            key="readiness_dl",
+        )
 
         st.subheader("📐 Readiness Dimensions")
         for dim_name, evidence in rd_result.dimensions.items():
