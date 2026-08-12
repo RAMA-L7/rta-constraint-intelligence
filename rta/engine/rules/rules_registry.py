@@ -10,7 +10,7 @@ this module is the single documentation source for the UI reference table.
 from dataclasses import dataclass
 from typing import List, Dict, Optional
 
-APP_VERSION = "1.5.4"
+APP_VERSION = "1.5.5"
 
 
 @dataclass
@@ -618,19 +618,33 @@ _r("SDC-151", "warning", "Unconstrained Reset Tree",
    "A net structurally driving >= 2 flip-flop reset pins (RESET-class instance pins) has no timing exception touching it.",
    "An async reset tree with no exception leaves the deassertion path and CDC paths unconstrained — silent false hold violations or missed CDC analysis.",
    "Add a targeted exception, e.g. set_false_path -from [get_ports <reset>] -to [all_registers], or set_ideal_network on the reset net, and verify the reset synchronizer input.",
-   "", "checker", "1.5.4")
+   "", "checker", "1.5.5")
 
 _r("SDC-152", "warning", "Suspect Blanket False Path",
    "A wildcard set_false_path (all_inputs / * / all_ports) provably covers a reset tree while no targeted exception exists.",
    "A blanket false path hides the sync-input vs deassertion distinction that an async-reset synchronizer requires — the mechanism is never actually verified.",
    "Replace the blanket cut with a targeted set_false_path on the reset net (or -through its synchronizer), and consider whether set_clock_groups -asynchronous is masking CDC paths.",
-   "", "checker", "1.5.4")
+   "", "checker", "1.5.5")
 
 _r("SDC-153", "warning", "Reset Synchronizer Input Unconstrained",
    "A reset tree whose net also drives data input(s) — the structural shape of an async-reset synchronizer sync stage — has no exception.",
    "The synchronizer's sync input and the deassertion path need distinct handling, not one blanket false path; a blanket exception silently ignores the difference.",
    "Constrain the synchronizer input and the deassertion path separately (e.g. a targeted false path on the sync flops' D pins, and a separate one on the reset deassertion).",
-   "", "checker", "1.5.4")
+   "", "checker", "1.5.5")
+
+# ── DFT / scan-mode constraint completeness (SDC-154..155) — Feature F3 ───────
+
+_r("SDC-154", "warning", "Scan Enable Without Mode Coverage",
+   "A scan_en / scan_enable / test_mode-style signal is referenced in the SDC (proving the design is DFT) but has NO set_case_analysis mode assignment, or only a non-mode value (rising/falling).",
+   "Without case analysis for every mode, STA blends shift-timing and capture-timing paths into one report — a silent, specific DFT failure. A single-value assignment (0 or 1) is legitimate per-mode practice.",
+   "Add set_case_analysis 0 [get_ports <sig>] (function/capture) and set_case_analysis 1 [get_ports <sig>] (scan shift) — or verify each mode is constrained in its own corner file.",
+   "", "checker", "1.5.5")
+
+_r("SDC-155", "warning", "Scan False Path Too Broad",
+   "A fully-blanket set_false_path (both -from and -to sides all_*/wildcard) in a DFT design — and, when a netlist is present, a cut matching all flops while the design shows a scan-chain shape.",
+   "A blanket cut cannot distinguish scan-chain-present flops from genuinely non-scan flops, silently exempting scan paths (lock-up latch trap). Targeted cuts (e.g. -through [get_pins *scan*]) are the recommended pattern and never fire.",
+   "Restrict the exception to genuinely non-scan flops (e.g. -to [get_cells non_scan_*]) or use mode-specific set_case_analysis. Never false-path flops present in the scan chain, even though they appear in non-scan reports.",
+   "", "checker", "1.5.5")
 
 # ── Constraint change rules (CHG-*) ───────────────────────────────────────────
 

@@ -2,6 +2,32 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.5] — 2026-08-12
+
+### Added
+
+- **DFT / scan-mode constraint completeness (Feature F3)** — new module
+  `rta/engine/analysis/dft_scan_check.py` with two rules:
+  - `SDC-154` (warning) Scan enable without mode coverage — a
+    `scan_en`/`scan_enable`/`test_mode`-style signal referenced in the SDC
+    with NO mode-value `set_case_analysis`. A single-value assignment
+    (`set_case_analysis 0` **or** `1`) is legitimate per-mode practice
+    (function and shift modes live in separate corner files — verified
+    against the project's own READY fixtures HR02/HR12).
+  - `SDC-155` (warning) Scan false path too broad — a fully-blanket false
+    path (`-from [all_inputs] -to [all_registers]`, `*`) in a DFT design, or
+    a cut matching all flops while the netlist shows a scan chain. Phase B
+    detects scan-chain shapes (SI→Q→SI→Q shift chains) from `net_pins` only
+    — zero touch to `design_context.py`. Includes the lock-up latch guard.
+- Root shim + `py-modules` entry (the v1.5.2 wheel-bug lesson); 11 new tests.
+
+### Fixed
+
+- Readiness golden fixtures HR02/HR12 carried undocumented
+  `set_case_analysis` lines that F1's SDC-150 (v1.5.2) legitimately flagged
+  — added the inline rationale comments F1's rule prescribes, restoring the
+  fixtures' intended READY status (readiness golden back to 15/15).
+
 ## [1.5.4] — 2026-08-12
 
 ### Added

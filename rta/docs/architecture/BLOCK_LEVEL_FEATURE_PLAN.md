@@ -238,6 +238,26 @@ the fixed ≥2 reset-pin threshold as approved, and produced **zero noise** on t
 existing `netlist_aware` fixture corpus (NA01 is covered by a targeted
 `set_false_path -from [get_ports rst_n]`; NA10's flops have no reset pins).
 
+**F3 status: SHIPPED** (v1.5.5, `SDC-154..155`, module `dft_scan_check.py`).
+Implementation notes — two data-driven refinements validated against the
+project's own golden corpus (the approved plan's literal test cases were
+adjusted where the corpus proved them too loud):
+1. **SDC-154 fires only on TOTAL absence of mode coverage** (a
+   scan-enable/test-mode signal referenced with no `set_case_analysis`, or
+   only non-mode values like rising/falling). A single-value assignment
+   (`set_case_analysis 0` **or** `1`) is legitimate per-mode block practice —
+   the READY fixtures HR02/HR12 use it, and the plan's literal "only 0 →
+   SDC-154" would have broken the readiness golden (13/15).
+2. **SDC-155's broad-cut trigger requires a FULLY-blanket cut** (both -from
+   and -to sides all_*/*) in a provably-DFT file; targeted scan constraints
+   (`-through [get_pins U_SCAN*/scan_en]`, `-from [get_ports scan_en]`) are
+   the RECOMMENDED pattern and never fire (they appear in
+   `false_paths_valid.sdc` and `full_featured.sdc`). Phase B chain-shape
+   detection (SI→Q→SI→Q, ≥2 links from `net_pins` only) fires only when a
+   cut matches all flops.
+Readiness golden 15/15, golden 22/22, golden-semantic 9/9, and zero noise on
+the `netlist_aware`, `golden/`, `valid/`, and `reset_demo` fixtures.
+
 ---
 
 ## 7. Test plan (shared gates)

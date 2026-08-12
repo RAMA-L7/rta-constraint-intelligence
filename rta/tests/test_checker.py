@@ -214,6 +214,151 @@ class TestAsyncResetCheck:
         assert self._codes(sdc) == ["SDC-151"]
 
 
+class TestDftScanCheck:
+    """Tests for F3 — DFT/scan-mode constraint completeness (SDC-154/155).
+
+    SDC-154 (Phase A, SDC-only): a scan-enable/test-mode signal referenced in
+    the SDC with NO mode-value case analysis. Single-value assignment
+    (``set_case_analysis 0`` OR ``1``) is legitimate per-mode practice — the
+    project's own READY fixtures (HR02/HR12) use it. SDC-155: a fully-blanket
+    false path in a DFT design (Phase A), or a cut matching all flops while
+    the netlist shows a scan chain (Phase B, from net_pins only).
+    """
+
+    # 3 flops in a SI->Q->SI->Q shift chain — a provable scan-chain shape.
+    CHAIN_NETLIST = """module top ( input clk, input si, input [1:0] d,
+        output [1:0] qout, output so );
+        dff f0 ( .clk(clk), .si(si), .d(1'b0), .q(n1) );
+        dff f1 ( .clk(clk), .si(n1), .d(1'b0), .q(n2) );
+        dff f2 ( .clk(clk), .si(n2), .d(1'b0), .q(so) );
+    endmodule
+    module dff ( input clk, input si, input d, output q );
+        reg qr; always @(posedge clk) qr <= si; assign q = qr;
+    endmodule
+    """
+
+    # 2 flops — BELOW the 2-link (3-flop) chain threshold.
+    SHORT_NETLIST = """module top ( input clk, input si, output so );
+        dff f0 ( .clk(clk), .si(si), .q(n1) );
+        dff f1 ( .clk(clk), .si(n1), .q(so) );
+    endmodule
+    module dff ( input clk, input si, output q );
+        assign q = si;
+    endmodule
+    """
+
+    def _ctx(self, netlist: str = None):
+        from design_context import parse_verilog
+        outcome = parse_verilog(netlist or self.CHAIN_NETLIST, "top")
+        assert outcome.context is not None, outcome.errors
+        return outcome.context
+
+    def _codes(self, text: str, ctx=None):
+        from dft_scan_check import dft_findings
+        return [f.code for f in dft_findings(text, ctx)]
+
+    # ── SDC-154 — scan enable without mode coverage ────────────────────────
+
+    def test_referenced_scan_signal_no_case_analysis(self):
+        """scan_en referenced (false path) but never case-analyzed -> SDC-154."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_false_path -from [get_ports scan_en] -to [get_ports dout]\n"
+        assert self._codes(sdc) == ["SDC-154"]
+
+    def test_single_mode_value_is_clean(self):
+        """set_case_analysis 0 alone is legitimate per-mode practice -> clean."""
+        sdc = "set sdc_version 2.2\nset_case_analysis 0 [get_ports scan_en]\n"
+        assert self._codes(sdc) == []
+
+    def test_both_mode_values_clean(self):
+        sdc = "set sdc_version 2.2\n" \
+              "set_case_analysis 0 [get_ports scan_en]\n" \
+              "set_case_analysis 1 [get_ports scan_en]\n"
+        assert self._codes(sdc) == []
+
+    def test_non_mode_value_fires(self):
+        """rising/falling is not a mode assignment -> SDC-154."""
+        sdc = "set sdc_version 2.2\nset_case_analysis rising [get_ports scan_en]\n"
+        assert self._codes(sdc) == ["SDC-154"]
+
+    def test_non_dft_file_clean(self):
+        """No scan/test references -> no findings (golden-corpus gate)."""
+        sdc = ("set sdc_version 2.2\n"
+               "create_clock -name clk -period 5.0 [get_ports clk]\n"
+               "set_input_delay -max 2.0 -clock clk [get_ports din]\n"
+               "set_output_delay -max 2.0 -clock clk [get_ports dout]\n")
+        assert self._codes(sdc) == []
+
+    # ── SDC-155 — scan false path too broad ────────────────────────────────
+
+    def test_fully_blanket_fp_in_dft_design(self):
+        """Fully-blanket cut (from [all_inputs] to [all_registers]) in a DFT
+        design -> SDC-155."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_case_analysis 0 [get_ports scan_en]\n" \
+              "set_false_path -from [all_inputs] -to [all_registers]\n"
+        assert self._codes(sdc) == ["SDC-155"]
+
+    def test_blanket_fp_without_dft_silent(self):
+        """Blanket cut with NO DFT signal stays SDC-020/152 territory."""
+        sdc = "set sdc_version 2.2\nset_false_path -from [all_inputs] -to [all_registers]\n"
+        assert self._codes(sdc) == []
+
+    def test_targeted_scan_fp_is_clean(self):
+        """-through [get_pins U_SCAN*/scan_en] is the RECOMMENDED pattern."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_case_analysis 0 [get_ports scan_en]\n" \
+              "set_false_path -through [get_pins U_SCAN*/scan_en]\n"
+        assert self._codes(sdc) == []
+
+    def test_chain_shape_plus_all_flops_cut(self):
+        """Phase B: netlist shows a scan chain and the cut matches all flops
+        -> SDC-155 with lock-up latch guard."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_false_path -from [all_inputs] -to [all_registers]\n"
+        fs = [f for f in self._codes(sdc, self._ctx())]
+        assert fs == ["SDC-155"]
+
+    def test_chain_shape_no_fp_silent(self):
+        """Chain exists but no false path -> no SDC-155."""
+        sdc = ("set sdc_version 2.2\n"
+               "create_clock -name clk -period 5.0 [get_ports clk]\n")
+        assert self._codes(sdc, self._ctx()) == []
+
+    def test_short_chain_below_threshold(self):
+        """2 flops (1 link) is below SCAN_CHAIN_MIN_LINKS -> silent."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_false_path -from [all_inputs] -to [all_registers]\n"
+        assert self._codes(sdc, self._ctx(self.SHORT_NETLIST)) == []
+
+    # ── wiring + registry ─────────────────────────────────────────────────
+
+    def test_wired_into_check_sdc(self):
+        """SDC-154 surfaces through the full checker (additive)."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_false_path -from [get_ports scan_en] -to [get_ports dout]\n"
+        result = check_sdc(sdc)
+        codes = [i.code for i in result.issues]
+        assert "SDC-154" in codes
+
+    def test_registry_has_sdc154_155(self):
+        from rules_registry import get_rule
+        for code in ("SDC-154", "SDC-155"):
+            rule = get_rule(code)
+            assert rule is not None
+            assert rule.severity == "warning"
+            assert "scan" in rule.description.lower()
+
+    def test_no_findings_on_reset_demo(self):
+        """F2 demo fixtures (no DFT) must stay silent for F3."""
+        from pathlib import Path
+        demo = Path(__file__).resolve().parents[2] / "samples" / "reset_demo"
+        for name in ("top.sdc", "blanket.sdc", "covered.sdc"):
+            p = demo / name
+            assert p.exists(), f"missing fixture {p}"
+            assert self._codes(p.read_text(encoding="utf-8")) == [], name
+
+
 class TestIssue:
     """Tests for the Issue dataclass."""
 

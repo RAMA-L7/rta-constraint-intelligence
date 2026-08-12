@@ -10,4 +10,4 @@ set_input_delay -max 2.0 -min 0.5 -clock clk_core [get_ports {din_a din_b}]
 set_input_transition 0.2 [all_inputs]
 set_output_delay -max 3.0 -min 1.0 -clock clk_core [get_ports {dout_a dout_b}]
 set_load 0.05 [get_ports {dout_a dout_b}]
-set_case_analysis 0 [get_ports scan_en]
+set_case_analysis 0 [get_ports scan_en]  # functional mode; scan shift constrained in the shift corner file

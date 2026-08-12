@@ -762,6 +762,20 @@ def check_sdc(text: str, context=None) -> CheckResult:
     except Exception as exc:  # never let async-reset analysis break the check
         info.append(InfoItem("SDC-140", f"Async-reset analysis skipped: {exc}"))
 
+    # ── DFT / scan-mode constraint completeness (SDC-154..155) — Feature F3 ───
+    # Flag incomplete scan_enable/test_mode mode coverage (SDC-154, SDC-only
+    # Phase A) and scan false paths that are provably too broad (SDC-155,
+    # Phase A SDC-only + Phase B scan-chain shape from net_pins when a netlist
+    # is present). Never invents DFT intent: SDC-154 fires only on PARTIAL
+    # case analysis of a scan-named signal; SDC-155 fires only on blanket
+    # wildcards or explicit scan/test references. Zero noise on non-DFT files.
+    try:
+        from dft_scan_check import dft_findings
+        for f in dft_findings(orig, context):
+            issues.append(Issue(f.sev, f.code, f.msg, line=f.line))
+    except Exception as exc:  # never let DFT analysis break the check
+        info.append(InfoItem("SDC-140", f"DFT/scan analysis skipped: {exc}"))
+
     # ── Analysis coverage / trust scope (Phase 7 + 8) ────────────────────────
     # Records how completely the validator understood the input: fully analyzed
     # commands vs partially analyzed (ignored options) vs netlist-dependent refs

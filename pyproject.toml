@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rta-constraint-intelligence"
-version = "1.5.4"
+version = "1.5.5"
 description = "Ṛta — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking. No EDA tool required."
 readme = "README.md"
 license = "MIT"
@@ -63,7 +63,7 @@ py-modules = [
     "constraint_interactions", "constraint_readiness",
     "readiness_diff", "policy_engine", "evidence",
     "finding_identity", "support_boundary", "sdc_preprocess",
-    "rationale_lint", "async_reset_check",
+    "rationale_lint", "async_reset_check", "dft_scan_check",
 ]
 include-package-data = true
 
