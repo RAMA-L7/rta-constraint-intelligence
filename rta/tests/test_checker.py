@@ -342,6 +342,30 @@ class TestCheckSdc:
 class TestCheckerWarnings:
     """Tests for checker warning rules (SDC-020..045)."""
 
+    def test_false_path_message_quotes_full_collection(self):
+        """SDC-020 message must quote the complete bracketed -from/-to
+        references, not truncate at the first space inside a collection.
+        Regression: 'set_false_path from [get_ports to [all_registers]' —
+        the 'rst_n]' was swallowed by the old `\S+` capture."""
+        text = ("create_clock -name clk -period 10 [get_ports clk]\n"
+                "set_false_path -from [get_ports rst_n] -to [all_registers]\n")
+        result = check_sdc(text)
+        sdc_020 = [i for i in result.warnings if i.code == "SDC-020"]
+        assert len(sdc_020) == 1
+        msg = sdc_020[0].msg
+        assert "[get_ports rst_n]" in msg, f"truncated -from in message: {msg}"
+        assert "[all_registers]" in msg, f"truncated -to in message: {msg}"
+        assert "[get_ports to [all_registers]" not in msg
+
+    def test_false_path_message_bare_refs(self):
+        """SDC-020 message still works for bare (non-bracketed) references."""
+        text = ("create_clock -name clk -period 10 [get_ports clk]\n"
+                "set_false_path -from a -to b\n")
+        result = check_sdc(text)
+        sdc_020 = [i for i in result.warnings if i.code == "SDC-020"]
+        assert len(sdc_020) == 1
+        assert "from a to b" in sdc_020[0].msg
+
     def test_no_clock_groups_with_multiple_clocks(self):
         """SDC-024: Multiple clocks but no set_clock_groups."""
         text = "create_clock -name clk_a -period 5.0 [get_ports clk_a]\ncreate_clock -name clk_b -period 10.0 [get_ports clk_b]"

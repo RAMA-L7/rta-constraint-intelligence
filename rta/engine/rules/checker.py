@@ -444,8 +444,12 @@ def check_sdc(text: str, context=None) -> CheckResult:
     # ── WARNINGS ──────────────────────────────────────────────────────────────
     for fp in false_paths:
         if not re.search(r'-from.*async|-to.*async|-through.*scan|-from.*test', fp, re.I):
-            f_m = re.search(r'-from\s+(\S+)', fp)
-            t_m = re.search(r'-to\s+(\S+)', fp)
+            # Match a bare token OR a full bracketed collection as one unit so
+            # the message quotes the complete reference (e.g. "[get_ports rst_n]"
+            # instead of truncating at the first space). Same pattern as
+            # _mcp_endpoint_sig above.
+            f_m = re.search(r'-from\s+([^\s\[\]]+|\[[^\]]*\])', fp)
+            t_m = re.search(r'-to\s+([^\s\[\]]+|\[[^\]]*\])', fp)
             if f_m and t_m:
                 issues.append(Issue("warning", "SDC-020",
                     f'set_false_path from {f_m.group(1)} to {t_m.group(1)} — confirm this is a genuine false path.'))

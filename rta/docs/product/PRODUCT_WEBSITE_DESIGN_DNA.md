@@ -22,7 +22,7 @@
 |---|---|---|
 | Structure | Hero → customers → features grid → stats band → solutions list → platform bullets → use-cases → CTA. One idea per section, full-width rhythm, generous vertical pacing | Home page section order; Platform page; Release page |
 | Typography | Eyebrow micro-label above a large multi-line headline; tight tracking; short subhead; CTA pair (primary + secondary) | All marketing heroes (eyebrow "SDC VALIDATOR" / headline / subhead / Launch + Docs) |
-| Formatting | Stats band with big tabular numerals ("2.5M+ / 15B / 99.8%") | Benchmarks release-evidence header (793 / 9 / 42 / 17 / 16 / 10) |
+| Formatting | Stats band with big tabular numerals ("2.5M+ / 15B / 99.8%") | Benchmarks release-evidence header (795 / 9 / 42 / 17 / 16 / 10) |
 | Formatting | Feature grids → alternating full-width solution rows → platform bullet lists (rhythm variety, no repeated 3-card blocks) | Capabilities overview + platform pipeline |
 | Credibility | Specs-style bullets, CTA near the end | Trust Center + release verification |
 | **Reject** | Customer logos/testimonials, manufacturing claims (2.5M chips etc.), "revolutionize" language, AI-powered claims, exact copy/colors | — |

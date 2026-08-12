@@ -61,7 +61,7 @@ pytest rta/tests -q                   # full test suite
 
 > 📖 **New to the CLI?** Read the complete [**Ṛta CLI User Guide — Every Feature**](docs/features/README-11-cli-user-guide.md): installation, all 12 commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
 
-Ṛta ships with **793 pytest tests** across the engine, covering deterministic
+Ṛta ships with **795 pytest tests** across the engine, covering deterministic
 checks, netlist resolution, interactions, and readiness scoring — backed by
 **9 golden runners** and **42 benchmark suites**. All counts are recorded in
 `RELEASE_EVIDENCE.json` and regenerated via `python rta/evidence/build_evidence.py`.
