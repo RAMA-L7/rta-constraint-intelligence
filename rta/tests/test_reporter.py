@@ -37,6 +37,23 @@ class TestGenerateCheckReport:
         html = generate_check_report(result, "test.sdc")
         assert "Ṛta" in html
 
+    def test_report_includes_readiness_verdict(self, minimal_sdc):
+        """The HTML check report must include the 7-dimension readiness section.
+
+        Readiness is the product's core differentiator; if the reporter ever
+        drops it, this test fails.
+        """
+        result = check_sdc(minimal_sdc)
+        assert getattr(result, "readiness", None), "checker must produce readiness"
+        html = generate_check_report(result, "test.sdc")
+        assert "readiness" in html.lower()
+        # Each dimension verdict (READY / REVIEW_REQUIRED / ...) must be present.
+        dims = result.readiness.get("dimensions", {})
+        assert dims, "readiness must carry dimension verdicts"
+        for dim, ev in dims.items():
+            assert str(ev.get("status", "")) in html, f"dimension {dim} missing from report"
+        assert "READY does not mean" in html or "not an STA" in html.lower() or "signoff" in html.lower()
+
     def test_contains_metrics(self, minimal_sdc):
         result = check_sdc(minimal_sdc)
         html = generate_check_report(result, "test.sdc")

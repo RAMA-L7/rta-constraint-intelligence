@@ -715,11 +715,230 @@ def cmd_corners(args):
 # ── Subcommand: analyze ──────────────────────────────────────────────────────
 
 def cmd_analyze(args):
-    """Analyze clock relations in an SDC file."""
+    """Analyze an SDC file (clock relations, or `all` for the full E2E run)."""
     if args.analysis_type == "clock-relations":
         _analyze_clock_relations(args)
+    elif args.analysis_type == "all":
+        _analyze_all(args)
     else:
         fatal(f"unknown analysis type: {args.analysis_type}")
+
+
+def _analyze_all(args):
+    """One-shot E2E: check + coverage + clock relations + interactions + readiness.
+
+    Runs every deterministic engine over the same SDC (+ optional netlist) and
+    emits a single combined result. Purely orchestration — the engine modules
+    themselves are unchanged.
+    """
+    from checker import check_sdc
+    import clock_relations as cr
+    from coverage import parse_sdc_coverage
+
+    try:
+        text = args.file.read()
+    except Exception as e:
+        fatal(f"cannot read {args.file.name}: {e}")
+    finally:
+        args.file.close()
+
+    ctx, design_note = _load_design_context(args)
+
+    # 1. Checker (includes scope, interactions, readiness, coverage when ctx)
+    check = check_sdc(text, context=ctx)
+    # 2. Coverage (category gap analysis)
+    cov = parse_sdc_coverage(text, args.file.name)
+    # 3. Clock relations
+    clock = cr.analyze_clock_relations(text)
+
+    out = OutputWriter(args.output)
+
+    if args.output.lower().endswith(".html"):
+        _write_analyze_all_html(args, text, check, cov, clock, ctx)
+        sys.exit(1 if check.errors else 0)
+
+    if args.json:
+        data = {
+            "version": APP_VERSION,
+            "file": args.file.name,
+            "check": {
+                "errors": [{"code": i.code, "msg": i.msg, "line": i.line} for i in check.errors],
+                "warnings": [{"code": i.code, "msg": i.msg, "line": i.line} for i in check.warnings],
+                "info": [{"code": i.code, "msg": i.msg} for i in check.info],
+                "stats": check.stats,
+                "analysis_scope": check.scope,
+            },
+            "coverage": {
+                "score_pct": round(cov.score, 1),
+                "total_present": cov.total_present,
+                "total_items": cov.total_items,
+                "missing": cov.total_missing,
+            },
+            "clock_relations": {
+                "stats": clock.stats,
+                "mismatches": [
+                    {"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
+                     "clock_b": m.clock_b, "message": m.msg}
+                    for m in clock.mismatches
+                ],
+            },
+            "constraint_interactions": getattr(check, "interactions", {}) or {},
+            "constraint_readiness": getattr(check, "readiness", {}) or {},
+        }
+        if ctx is not None:
+            from design_coverage import analyze_coverage as analyze_design_coverage
+            data["design_aware_coverage"] = analyze_design_coverage(text, ctx).summary()
+        out.json_out(data)
+    else:
+        sep = "-" * 60
+        out.writeln(f"Ṛta v{APP_VERSION} — Full Analysis (E2E)")
+        out.writeln(f"File: {args.file.name}")
+        if design_note:
+            out.writeln(f"  {design_note}")
+        out.writeln(sep)
+
+        out.writeln(f"  Checker:    {len(check.errors)} errors, {len(check.warnings)} warnings, "
+                    f"{len(check.info)} info")
+        out.writeln(f"  Coverage:   {cov.score:.1f}%  ({cov.total_present}/{cov.total_items} items, "
+                    f"{cov.total_missing} missing)")
+        out.writeln(f"  Clocks:     {clock.stats.get('clocks', 0)} defined, "
+                    f"{clock.stats.get('pairs', 0)} pairs, "
+                    f"{clock.stats.get('mismatches', 0)} mismatches")
+        _int = getattr(check, "interactions", {}) or {}
+        _is = _int.get("summary", {})
+        if _is:
+            out.writeln(f"  Interactions: {_is.get('constraints_analyzed', 0)} analyzed, "
+                        f"{_is.get('exact_duplicates', 0)} duplicates, "
+                        f"{_is.get('overrides', 0)} overrides, "
+                        f"{_is.get('definite_conflicts', 0)} conflicts")
+        _rdy = getattr(check, "readiness", {}) or {}
+        if _rdy.get("overall"):
+            out.writeln(f"  Readiness:  {_rdy['overall']} (mode={_rdy.get('mode', 'SDC_ONLY')})")
+            for dim, ev in sorted(_rdy.get("dimensions", {}).items()):
+                out.writeln(f"    {dim.replace('_', ' '):<18} {ev.get('status', '—')}")
+        out.writeln(sep)
+
+        # Findings (most severe first)
+        if check.errors:
+            out.writeln("\nErrors:")
+            for i in check.errors:
+                ln = f" :{i.line}" if i.line else ""
+                out.writeln(f"  [{i.code}]{ln} {i.msg}")
+        if check.warnings:
+            out.writeln("\nWarnings:")
+            for i in check.warnings:
+                ln = f" :{i.line}" if i.line else ""
+                out.writeln(f"  [{i.code}]{ln} {i.msg}")
+        if clock.mismatches:
+            out.writeln("\nClock relation mismatches:")
+            for m in clock.mismatches:
+                out.writeln(f"  [{m.code}] {m.clock_a} vs {m.clock_b}: {m.msg}")
+        out.writeln("\n  NOTE: constraint-readiness review, NOT an STA timing signoff.")
+
+    out.flush()
+    sys.exit(1 if check.errors else 0)
+
+
+def _write_analyze_all_html(args, text, check, cov, clock, ctx):
+    """Compose the one-shot E2E HTML report for `rta analyze all -o x.html`.
+
+    Reuses the reporter's existing section helpers — this is presentation
+    only; every number comes from the same engines the text/JSON paths use.
+    """
+    from reporter import esc, _page, _summary_metrics, _badge, _table, _issue_rows
+
+    err_c, warn_c, info_c = len(check.errors), len(check.warnings), len(check.info)
+    total = err_c + warn_c + info_c
+    stats = check.stats or {}
+
+    body = _summary_metrics([
+        (str(total), "Total Issues", "blue"),
+        (str(err_c), "Errors", "red"),
+        (str(warn_c), "Warnings", "yellow"),
+        (f"{cov.score:.0f}%", "Coverage", "green"),
+    ])
+    body += _badge(err_c, "Errors", "red") + _badge(warn_c, "Warnings", "yellow")
+
+    # ── Issues ────────────────────────────────────────────────────────────────
+    rows = _issue_rows(check.errors, "error", "ERROR")
+    rows += _issue_rows(check.warnings, "warn", "WARNING")
+    if args.verbose:
+        rows += _issue_rows(check.info, "info", "INFO")
+    table = _table(["Code", "Severity", "Message", "Rule"], rows) if rows else ""
+    body += f"""<div class="section">
+<div class="section-title">Issues</div>
+{table if table else '<div class="empty-state">No issues found.</div>'}
+</div>"""
+
+    # ── Coverage (SDC category gaps) ─────────────────────────────────────────
+    cat_rows = ""
+    for cat in getattr(cov, "categories", []) or []:
+        name = getattr(cat, "name", cat.get("name", "") if isinstance(cat, dict) else str(cat))
+        present = getattr(cat, "present", cat.get("present", 0) if isinstance(cat, dict) else 0)
+        total_c = getattr(cat, "total", cat.get("total", 0) if isinstance(cat, dict) else 0)
+        cat_rows += f"<tr><td>{esc(str(name))}</td><td>{present}/{total_c}</td></tr>\n"
+    body += f"""<div class="section">
+<div class="section-title">Coverage — {cov.score:.1f}% ({cov.total_present}/{cov.total_items} items, {cov.total_missing} missing)</div>
+{_table(["Category", "Present"], cat_rows) if cat_rows else '<div class="empty-state">No categories.</div>'}
+</div>"""
+
+    # ── Clock relations ──────────────────────────────────────────────────────
+    mm = clock.mismatches or []
+    mm_rows = "".join(
+        f"<tr><td>{esc(m.clock_a)}</td><td>{esc(m.clock_b)}</td><td><code>{esc(m.code)}</code></td><td>{esc(m.msg)}</td></tr>\n"
+        for m in mm
+    )
+    body += f"""<div class="section">
+<div class="section-title">Clock Relations — {clock.stats.get('clocks', 0)} clocks, {clock.stats.get('pairs', 0)} pairs, {len(mm)} mismatches</div>
+{_table(["Clock A", "Clock B", "Code", "Message"], mm_rows) if mm_rows else '<div class="empty-state">No clock relation mismatches.</div>'}
+</div>"""
+
+    # ── Constraint interactions ──────────────────────────────────────────────
+    _int = getattr(check, "interactions", {}) or {}
+    _is = _int.get("summary", {}) or {}
+    if _is:
+        stat_rows = "".join(
+            f'<div class="stat-item"><span class="stat-key">{esc(str(k).replace("_", " ").title())}</span><span class="stat-val">{esc(v)}</span></div>'
+            for k, v in sorted(_is.items())
+        )
+        body += f"""<div class="section">
+<div class="section-title">Constraint Interactions</div>
+<div class="stats-grid">{stat_rows}</div>
+</div>"""
+
+    # ── Constraint readiness ─────────────────────────────────────────────────
+    _rdy = getattr(check, "readiness", {}) or {}
+    if _rdy.get("overall"):
+        dim_rows = "".join(
+            f'<div class="stat-item"><span class="stat-key">{esc(d.replace("_", " ").title())}</span><span class="stat-val">{esc(ev.get("status", "—"))}</span></div>'
+            for d, ev in sorted(_rdy.get("dimensions", {}).items())
+        )
+        body += f"""<div class="section">
+<div class="section-title">Constraint Readiness — {esc(_rdy['overall'])} (mode={esc(_rdy.get('mode', 'SDC_ONLY'))})</div>
+<div class="stats-grid">{dim_rows}</div>
+</div>"""
+
+    # ── Design-aware coverage (netlist given) ───────────────────────────────
+    if ctx is not None:
+        from design_coverage import analyze_coverage as analyze_design_coverage
+        dc = analyze_design_coverage(text, ctx).summary()
+        dc_rows = "".join(
+            f'<div class="stat-item"><span class="stat-key">{esc(k.replace("_", " ").title())}</span><span class="stat-val">{esc(v)}</span></div>'
+            for k, v in sorted(dc.items())
+        )
+        body += f"""<div class="section">
+<div class="section-title">Design-Aware Coverage (top={esc(ctx.top_module)})</div>
+<div class="stats-grid">{dc_rows}</div>
+</div>"""
+
+    html = _page(
+        f"Full Analysis — {os.path.basename(args.file.name)}",
+        f"Ṛta v{APP_VERSION} — check + coverage + clock relations + interactions + readiness",
+        body,
+    )
+    with open(args.output, "w", encoding="utf-8") as fh:
+        fh.write(html)
+    print(f"Written to {args.output}")
 
 
 def _analyze_clock_relations(args):
@@ -733,7 +952,23 @@ def _analyze_clock_relations(args):
     finally:
         args.file.close()
 
+    ctx, design_note = _load_design_context(args)
+
     result = cr.analyze_clock_relations(text)
+
+    # Netlist cross-check: reference-resolution findings on lines that define
+    # a clock are the ones that matter most here (a broken clock source port).
+    clock_net_findings = []
+    if ctx is not None:
+        from design_context import validate_design_references
+        net_findings = validate_design_references(text, ctx)
+        text_lines = text.splitlines()
+        clock_net_findings = [
+            f for f in net_findings
+            if f.line and 0 < f.line <= len(text_lines)
+            and "create_" in text_lines[f.line - 1] and "clock" in text_lines[f.line - 1]
+        ]
+
     out = OutputWriter(args.output)
 
     if args.json:
@@ -758,10 +993,20 @@ def _analyze_clock_relations(args):
                 for p in result.pairs
             ],
         }
+        if clock_net_findings:
+            data["netlist_check"] = {
+                "top": ctx.top_module,
+                "clock_source_issues": [
+                    {"code": f.code, "line": f.line, "msg": f.msg}
+                    for f in clock_net_findings
+                ],
+            }
         out.json_out(data)
     else:
         out.writeln(f"Ṛta v{APP_VERSION} — Clock Relations Analysis")
         out.writeln(f"File: {args.file.name}")
+        if design_note:
+            out.writeln(f"  {design_note}")
         out.writeln()
         out.writeln(f"  {'Clocks:':<24} {result.stats.get('clocks', 0)}")
         out.writeln(f"  {'Pairs:':<24} {result.stats.get('pairs', 0)}")
@@ -781,6 +1026,14 @@ def _analyze_clock_relations(args):
                 out.writeln(f"          Expected:  {m.expected}")
                 out.writeln(f"          {m.msg}")
                 out.writeln()
+
+        # Netlist cross-check of clock source ports (only when a netlist was given)
+        if clock_net_findings:
+            out.writeln("Netlist check — clock source ports:")
+            for f in clock_net_findings:
+                ln = f" :{f.line}" if f.line else ""
+                out.writeln(f"  [{f.code}]{ln} {f.msg}")
+            out.writeln()
 
         if result.pairs and args.verbose:
             out.writeln("All Clock Pairs:")
@@ -878,6 +1131,32 @@ def cmd_rules(args):
 
 # ── Subcommand: coverage ─────────────────────────────────────────────────────
 
+def _load_design_context(args):
+    """Parse an optional --netlist into a DesignContext; returns (ctx, note).
+
+    Shared by coverage / analyze clock-relations / report check so the
+    netlist flag behaves identically across commands (additive — the core
+    parser module is never touched here).
+    """
+    if not getattr(args, "netlist", None):
+        return None, ""
+    try:
+        v_text = args.netlist.read()
+    except Exception as e:
+        fatal(f"cannot read netlist {args.netlist.name}: {e}")
+    finally:
+        args.netlist.close()
+    from design_context import parse_verilog
+    outcome = parse_verilog(v_text, top=getattr(args, "top", "") or "")
+    if outcome.errors:
+        fatal(f"netlist: {outcome.errors[0]}")
+    ctx = outcome.context
+    counts = ctx.object_counts()
+    note = (f"Design context: {ctx.top_module} "
+            f"({counts['ports']} ports, {counts['instances']} instances)")
+    return ctx, note
+
+
 def cmd_coverage(args):
     """Analyze constraint coverage in an SDC file."""
     from coverage import parse_sdc_coverage
@@ -889,7 +1168,15 @@ def cmd_coverage(args):
     finally:
         args.file.close()
 
+    ctx, design_note = _load_design_context(args)
+
     result = parse_sdc_coverage(text, args.file.name)
+    # Optional design-aware port coverage (SDC-064..066) when a netlist is given.
+    design_cov = None
+    if ctx is not None:
+        from design_coverage import analyze_coverage as analyze_design_coverage
+        design_cov = analyze_design_coverage(text, ctx)
+
     out = OutputWriter(args.output)
 
     if args.json:
@@ -915,10 +1202,19 @@ def cmd_coverage(args):
                 for cat in result.categories
             ],
         }
+        if design_cov is not None:
+            data["design_aware"] = design_cov.summary()
+            data["design_context"] = {
+                "top": ctx.top_module,
+                "ports": ctx.object_counts()["ports"],
+                "instances": ctx.object_counts()["instances"],
+            }
         out.json_out(data)
     else:
         out.writeln(f"Ṛta v{APP_VERSION} — Constraint Coverage Analysis")
         out.writeln(f"File: {args.file.name}")
+        if design_note:
+            out.writeln(f"  {design_note}")
         out.writeln()
         out.writeln(f"  Overall Coverage: {result.score:.1f}%  ({result.total_present}/{result.total_items} items)")
         out.writeln(f"  Missing: {result.total_missing}")
@@ -946,6 +1242,20 @@ def cmd_coverage(args):
                     out.writeln(f"    [{mark}] {item.name}{crit}")
                     if item.detail:
                         out.writeln(f"         {item.detail}")
+
+        # Design-aware port coverage (only when a netlist was supplied)
+        if design_cov is not None:
+            out.writeln("-" * 60)
+            out.writeln("Design-aware port coverage (netlist supplied):")
+            s = design_cov.summary()
+            out.writeln(f"    inputs:  {_fmt_cov_bucket(s['inputs'])}")
+            out.writeln(f"    outputs: {_fmt_cov_bucket(s['outputs'])}")
+            out.writeln(f"    clocks:  {s['clocks']['defined']} defined, "
+                        f"{s['clocks']['structurally_resolved']} structurally resolved")
+            exc = s["exceptions"]
+            out.writeln(f"    exceptions: {exc['total']} total "
+                        f"(resolved={exc['objects_resolved']}, empty={exc['empty_collection']})")
+            out.writeln("    coverage is NOT correctness — a fully covered design can still have timing errors.")
 
     out.flush()
 
@@ -1000,14 +1310,15 @@ def cmd_report(args):
         finally:
             args.file.close()
 
-        result = check_sdc(text)
+        ctx, _ = _load_design_context(args)
+        result = check_sdc(text, context=ctx)
         # Phase 12: optional readiness-diff section in the report when a
         # baseline snapshot is supplied (--baseline).
         diff_for_report = None
         if getattr(args, "baseline", ""):
             baseline_snap = _read_baseline(args.baseline)
             from readiness_diff import build_snapshot, diff_snapshots
-            cur_snap = build_snapshot(result, source_name=args.file.name)
+            cur_snap = build_snapshot(result, context=ctx, source_name=args.file.name)
             diff_for_report = diff_snapshots(baseline_snap, cur_snap)
             if getattr(args, "gate", ""):
                 from readiness_diff import evaluate_gate
@@ -1262,11 +1573,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     # ── analyze ──
     p_analyze = sub.add_parser("analyze", help="Analyze clock relations / constraints", description="Deep analysis of SDC content such as clock relation inference and mismatch detection.")
-    p_analyze.add_argument("analysis_type", choices=["clock-relations"], help="Type of analysis")
+    p_analyze.add_argument("analysis_type", choices=["clock-relations", "all"], help="Type of analysis: clock-relations, or all (full E2E run)")
     p_analyze.add_argument("file", type=argparse.FileType("r", encoding="utf-8"), help="SDC file to analyze")
     p_analyze.add_argument("--json", action="store_true", help="Output JSON")
     p_analyze.add_argument("--output", "-o", default="", help="Write output to file")
     p_analyze.add_argument("--verbose", "-v", action="store_true", help="Show all clock pairs and definitions")
+    p_analyze.add_argument("--netlist", "-n", type=argparse.FileType("r", encoding="utf-8"), default=None,
+                           help="Optional Verilog netlist — cross-checks clock source ports against real design objects")
+    p_analyze.add_argument("--top", default="", help="Top module name (required if netlist has multiple candidates)")
 
     # ── rules ──
     p_rules = sub.add_parser("rules", help="Look up rule codes from the Rules Registry", description="Search, list, and inspect all SDC-NNN, CHG-XXX-NNN rule codes with descriptions and engineering context.")
@@ -1288,6 +1602,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_cov.add_argument("--json", action="store_true", help="Output JSON")
     p_cov.add_argument("--missing-only", action="store_true", help="Show only missing items")
     p_cov.add_argument("--output", "-o", default="", help="Write output to file")
+    p_cov.add_argument("--netlist", "-n", type=argparse.FileType("r", encoding="utf-8"), default=None,
+                       help="Optional Verilog netlist — design-aware port-level coverage (SDC-064..066) in addition to the category gap analysis")
+    p_cov.add_argument("--top", default="", help="Top module name (required if netlist has multiple candidates)")
 
     # ── report ──
     p_report = sub.add_parser("report", help="Generate HTML signoff reports", description="Generate professional HTML signoff reports from checker, diff, or analysis results.")
@@ -1300,6 +1617,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_rcheck.add_argument("--output", "-o", default="", help="Output HTML file")
     p_rcheck.add_argument("--baseline", default="", metavar="JSON",
                           help="Optional readiness baseline snapshot to include a Readiness Diff section")
+    p_rcheck.add_argument("--netlist", "-n", type=argparse.FileType("r", encoding="utf-8"), default=None,
+                          help="Optional Verilog netlist — report includes design-aware findings (SDC-055..066)")
+    p_rcheck.add_argument("--top", default="", help="Top module name (required if netlist has multiple candidates)")
     p_rcheck.add_argument("--gate", choices=["BLOCKERS_ONLY", "NO_READINESS_REGRESSION", "STRICT", "CUSTOM"],
                           default="", help="Optional CI gate verdict included in the report (requires --baseline)")
     p_rcheck.add_argument("--gate-policy", default="", metavar="FILE",

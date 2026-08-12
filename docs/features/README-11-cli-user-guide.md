@@ -48,6 +48,7 @@ rta check samples/real_design_full.sdc     # run from the repo root
 | `rta diff` | Semantic diff between two SDC versions | Constraint change review |
 | `rta corners` | List/inspect PVT corner presets | MMC setup |
 | `rta analyze clock-relations` | Clock group inference & mismatch detection | Clock domain sanity |
+| `rta analyze all` | **One-shot E2E** — check + coverage + clock + interactions + readiness | Full block review |
 | `rta rules` | Browse the SDC rule registry | Look up what an SDC-NNN code means |
 | `rta coverage` | Constraint gap analysis (coverage vs. missing) | Signoff readiness |
 | `rta report` | HTML signoff reports (check/diff/clock/coverage) | Documentation / review |
@@ -221,7 +222,9 @@ rta corners list -o corners.txt
 
 ---
 
-## 7. `rta analyze clock-relations` — clock domain analysis
+## 7. `rta analyze` — clock domain analysis & the one-shot E2E run
+
+### `rta analyze clock-relations` — clock domain analysis
 
 Infers expected clock relations and flags mismatches (incorrect clock groups):
 
@@ -229,10 +232,38 @@ Infers expected clock relations and flags mismatches (incorrect clock groups):
 rta analyze clock-relations my_block.sdc
 rta analyze clock-relations my_block.sdc --verbose   # show all clock pairs + definitions
 rta analyze clock-relations my_block.sdc --json -o clocks.json
+rta analyze clock-relations my_block.sdc --netlist my_block.v   # cross-check clock source ports
 ```
 
 Example finding (`SDC-062`): a clock pair that should be `-physically_exclusive`
 but is specified `-asynchronous`, or is missing a `set_clock_groups` entirely.
+With `--netlist`, clock-definition lines are additionally cross-checked against
+the design (e.g. SDC-055 — a clock source port that doesn't exist).
+
+### `rta analyze all` — the one-shot full-block E2E run
+
+Runs **every deterministic analysis** over the same SDC (+ optional netlist)
+and emits one combined result — the fastest way to get the complete picture of
+a block before STA:
+
+```bash
+# one text summary of check + coverage + clocks + interactions + readiness
+rta analyze all my_block.sdc
+
+# one HTML report containing every section — shareable / archivable
+rta analyze all my_block.sdc -o full_report.html
+
+# design-aware (same engine as rta check --netlist)
+rta analyze all my_block.sdc --netlist my_block.v --top top -o full_report.html
+
+# machine-readable for CI
+rta analyze all my_block.sdc --json -o full.json
+```
+
+The HTML report includes sections for **Issues**, **Coverage**, **Clock
+Relations**, **Constraint Interactions**, **Constraint Readiness**, and (with a
+netlist) **Design-Aware Coverage**. Exit code matches `rta check`: `0` = no
+errors, `1` = errors found — so it works as a CI gate too.
 
 ---
 
@@ -270,6 +301,7 @@ Measures which constraint categories are covered vs. missing — 39 items across
 rta coverage my_block.sdc
 rta coverage my_block.sdc --missing-only   # show only the gaps
 rta coverage my_block.sdc --json -o coverage.json
+rta coverage my_block.sdc --netlist my_block.v --top top   # design-aware port coverage
 ```
 
 ```bash
@@ -278,7 +310,8 @@ rta coverage samples/real_design_full.sdc --json
 ```
 
 With a netlist, coverage becomes design-aware (SDC-064..066): constraints are
-verified against actual design objects instead of assumed.
+verified against actual design objects instead of assumed — the output adds a
+design-aware section (inputs/outputs/clocks/exceptions port coverage).
 
 ---
 
@@ -288,6 +321,7 @@ Generate professional HTML reports for documentation, review, or signoff:
 
 ```bash
 rta report check my_block.sdc -o check_report.html
+rta report check my_block.sdc --netlist my_block.v --top top -o check_report.html   # design-aware
 rta report diff old.sdc new.sdc -o diff_report.html
 rta report clock-relations my_block.sdc -o clocks_report.html
 rta report coverage my_block.sdc -o coverage_report.html
@@ -380,25 +414,28 @@ deterministic engine as the CLI.
 ## 15. Suggested workflow for an engineer
 
 ```bash
-# 1. Baseline quality — how bad is it?
+# 1. The complete picture in one command (recommended starting point)
+rta analyze all my_block.sdc --netlist my_block.v --top top -o my_block_report.html
+
+# 2. Baseline quality — how bad is it?
 rta check my_block.sdc --verbose
 
-# 2. What's missing?
+# 3. What's missing?
 rta coverage my_block.sdc --missing-only
 
-# 3. Verify object references against the netlist (if available)
+# 4. Verify object references against the netlist (if available)
 rta check my_block.sdc --netlist my_block.v --top top
 
-# 4. Fix issues → re-check until clean
+# 5. Fix issues → re-check until clean
 rta check my_block.sdc            # exit 0 = no errors
 
-# 5. Keep the style consistent
+# 6. Keep the style consistent
 rta lint my_block.sdc --check
 
-# 6. Before a hand-off, generate the HTML report
+# 7. Before a hand-off, generate the HTML report
 rta report check my_block.sdc -o my_block_report.html
 
-# 7. When constraints change, review the semantic diff
+# 8. When constraints change, review the semantic diff
 rta diff baseline.sdc my_block.sdc
 ```
 
@@ -442,10 +479,10 @@ check   rta check f.sdc [--json|--junit|-f csv|--netlist v.v|--top T|--custom-ru
 generate rta generate -d CHIP -c clk=10.0:port [-u 0.15] [--derate|--scan|--propagated]
 diff    rta diff a.sdc b.sdc [--json] [--linked-v1 t.tcl] [--linked-v2 t.tcl]
 corners rta corners list | rta corners show "<name>"
-analyze rta analyze clock-relations f.sdc [--verbose|--json]
+analyze rta analyze clock-relations f.sdc [--verbose|--json] | rta analyze all f.sdc [--netlist v.v] [-o r.html|--json]
 rules   rta rules list [-m mod] [-s sev] [--search q] | rta rules show SDC-060
-coverage rta coverage f.sdc [--missing-only|--json]
-report  rta report {check|diff|clock-relations|coverage} ... -o out.html
+coverage rta coverage f.sdc [--missing-only|--json|--netlist v.v]
+report  rta report {check|diff|clock-relations|coverage} ... -o out.html   # check also: --netlist v.v
 lint    rta lint f.sdc [--check|--fix|-o out.sdc]
 convert rta convert f.sdc [-f json|yaml] [-o out]
 batch   rta batch {check|lint|report} <dir>

@@ -8,6 +8,8 @@
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-gray" alt="Platform">
   <img src="https://img.shields.io/badge/Scope-Block--Level-lightgrey" alt="Scope">
+  <img src="https://img.shields.io/github/actions/workflow/status/RAMA-L7/rta-constraint-intelligence/ci.yml?branch=main" alt="CI">
+  <img src="https://img.shields.io/pypi/v/rta-constraint-intelligence" alt="PyPI version">
 </p>
 
 ---
@@ -59,7 +61,7 @@ pytest rta/tests -q                   # full test suite
 
 > 📖 **New to the CLI?** Read the complete [**Ṛta CLI User Guide — Every Feature**](docs/features/README-11-cli-user-guide.md): installation, all 12 commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
 
-Ṛta ships with **763 pytest tests** across the engine, covering deterministic
+Ṛta ships with **767 pytest tests** across the engine, covering deterministic
 checks, netlist resolution, interactions, and readiness scoring — backed by
 **9 golden runners** and **42 benchmark suites**. All counts are recorded in
 `RELEASE_EVIDENCE.json` and regenerated via `python rta/evidence/build_evidence.py`.

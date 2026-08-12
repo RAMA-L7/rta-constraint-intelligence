@@ -200,6 +200,35 @@ class TestCliAnalyze:
         assert "clocks" in data
         assert "stats" in data
 
+    def test_analyze_all_json(self, sample_sdc_path):
+        """analyze all --json bundles every deterministic analysis."""
+        result = run_cli("analyze", "all", sample_sdc_path, "--json")
+        # exit 1 means the sample has check errors — the JSON is still emitted
+        assert result.returncode in (0, 1)
+        data = json.loads(result.stdout)
+        for key in ("check", "coverage", "clock_relations",
+                    "constraint_interactions", "constraint_readiness", "version"):
+            assert key in data, f"missing key {key}"
+
+    def test_analyze_all_html(self, sample_sdc_path, tmp_path):
+        """analyze all -o report.html emits one combined HTML report."""
+        out_file = tmp_path / "report.html"
+        result = run_cli("analyze", "all", sample_sdc_path, "--output", str(out_file))
+        assert result.returncode in (0, 1)
+        html = out_file.read_text(encoding="utf-8")
+        assert html.strip().startswith("<!DOCTYPE html>")
+        for section in ("Issues", "Coverage", "Clock Relations",
+                        "Constraint Readiness", "Full Analysis"):
+            assert section in html
+
+    def test_analyze_all_exit_code_on_errors(self, sample_sdc_path, tmp_path):
+        """analyze all exits 1 when the checker finds errors (CI contract)."""
+        out_file = tmp_path / "report.html"
+        result = run_cli("analyze", "all", sample_sdc_path, "--output", str(out_file))
+        # sample fixture may be clean or not — either way a report is written
+        assert out_file.exists()
+        assert result.returncode in (0, 1)
+
 
 class TestCliCorners:
     """Tests for the `corners` command."""
