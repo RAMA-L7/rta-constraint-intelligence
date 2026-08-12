@@ -10,7 +10,7 @@ this module is the single documentation source for the UI reference table.
 from dataclasses import dataclass
 from typing import List, Dict, Optional
 
-APP_VERSION = "1.5.3"
+APP_VERSION = "1.5.4"
 
 
 @dataclass
@@ -611,6 +611,26 @@ _r("SDC-150", "warning", "Timing Exception Without Rationale Comment",
    "An undocumented timing exception can hide a real violation — a later engineer cannot tell whether the path is genuinely false (async CDC, test mode) or was silently exempted.",
    "Add a comment above the line or inline (e.g. '# async CDC — two-flop synchronizer, no timing path') explaining why the exception is correct.",
    "", "checker", "1.5.2")
+
+# ── Async reset & CDC structural completeness (SDC-151..153) — Feature F2 ─────
+
+_r("SDC-151", "warning", "Unconstrained Reset Tree",
+   "A net structurally driving >= 2 flip-flop reset pins (RESET-class instance pins) has no timing exception touching it.",
+   "An async reset tree with no exception leaves the deassertion path and CDC paths unconstrained — silent false hold violations or missed CDC analysis.",
+   "Add a targeted exception, e.g. set_false_path -from [get_ports <reset>] -to [all_registers], or set_ideal_network on the reset net, and verify the reset synchronizer input.",
+   "", "checker", "1.5.4")
+
+_r("SDC-152", "warning", "Suspect Blanket False Path",
+   "A wildcard set_false_path (all_inputs / * / all_ports) provably covers a reset tree while no targeted exception exists.",
+   "A blanket false path hides the sync-input vs deassertion distinction that an async-reset synchronizer requires — the mechanism is never actually verified.",
+   "Replace the blanket cut with a targeted set_false_path on the reset net (or -through its synchronizer), and consider whether set_clock_groups -asynchronous is masking CDC paths.",
+   "", "checker", "1.5.4")
+
+_r("SDC-153", "warning", "Reset Synchronizer Input Unconstrained",
+   "A reset tree whose net also drives data input(s) — the structural shape of an async-reset synchronizer sync stage — has no exception.",
+   "The synchronizer's sync input and the deassertion path need distinct handling, not one blanket false path; a blanket exception silently ignores the difference.",
+   "Constrain the synchronizer input and the deassertion path separately (e.g. a targeted false path on the sync flops' D pins, and a separate one on the reset deassertion).",
+   "", "checker", "1.5.4")
 
 # ── Constraint change rules (CHG-*) ───────────────────────────────────────────
 

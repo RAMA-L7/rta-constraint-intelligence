@@ -104,6 +104,116 @@ class TestRationaleLint:
         assert "comment" in rule.fix.lower()
 
 
+class TestAsyncResetCheck:
+    """Tests for F2 — async reset & CDC structural completeness (SDC-151/152/153).
+
+    Design-aware only: flags nets structurally driving >= 2 flip-flop reset
+    pins with no (or only blanket) timing exception. SDC-only mode (no
+    context) returns zero findings — provable-only ethos.
+    """
+
+    # Two flops on one reset net — a reset tree. Flop reset pin is named
+    # 'rst' (matches NA01's shape); the top-level port is 'rst_n'.
+    NETLIST = """module top (
+        input clk, input rst_n, input [7:0] din, output [7:0] dout
+    );
+        flop u_reg0 ( .clk(clk), .rst(rst_n), .d(din), .q(dout) );
+        flop u_reg1 ( .clk(clk), .rst(rst_n), .d(dout), .q() );
+    endmodule
+    module flop ( input clk, input rst, input [7:0] d, output [7:0] q );
+        reg [7:0] r;
+        always @(posedge clk or negedge rst) if (!rst) r <= 8'h0; else r <= d;
+        assign q = r;
+    endmodule
+    """
+
+    SDC_BASE = (
+        "set sdc_version 2.2\n"
+        "create_clock -name clk -period 5.0 [get_ports clk]\n"
+        "set_input_delay -max 2.0 -min 0.5 -clock clk [get_ports din]\n"
+        "set_output_delay -max 2.0 -min 0.5 -clock clk [get_ports dout]\n"
+    )
+
+    def _ctx(self, netlist: str = None):
+        from design_context import parse_verilog
+        outcome = parse_verilog(netlist or self.NETLIST, "top")
+        assert outcome.context is not None, outcome.errors
+        return outcome.context
+
+    def _codes(self, text: str, netlist: str = None):
+        from async_reset_check import reset_findings
+        return [f.code for f in reset_findings(text, self._ctx(netlist))]
+
+    def test_unconstrained_reset_tree(self):
+        """Reset tree with no exception -> SDC-151."""
+        assert self._codes(self.SDC_BASE) == ["SDC-151"]
+
+    def test_targeted_false_path_is_coverage(self):
+        """A targeted false path on the reset port covers the tree -> clean."""
+        sdc = self.SDC_BASE + "set_false_path -from [get_ports rst_n] -to [all_registers]\n"
+        assert self._codes(sdc) == []
+
+    def test_targeted_false_path_with_comment_is_coverage(self):
+        sdc = self.SDC_BASE + (
+            "# async reset — synchronizer handles deassertion\n"
+            "set_false_path -from [get_ports rst_n] -to [all_registers]\n")
+        assert self._codes(sdc) == []
+
+    def test_blanket_wildcard_false_path(self):
+        """Wildcard all_inputs false path covering the reset -> SDC-152."""
+        sdc = self.SDC_BASE + "set_false_path -from [all_inputs] -to [all_registers]\n"
+        assert self._codes(sdc) == ["SDC-152"]
+
+    def test_blanket_star_false_path(self):
+        sdc = self.SDC_BASE + "set_false_path -from * -to *\n"
+        assert self._codes(sdc) == ["SDC-152"]
+
+    def test_sync_shape_reset_drives_data_pin(self):
+        """Reset net that also feeds a flop data pin (sync stage) -> SDC-153."""
+        netlist = """module top (
+            input clk, input rst_n, input [7:0] din, output [7:0] dout
+        );
+            flop u_sync ( .clk(clk), .rst(rst_n), .d(rst_n), .q(dout) );
+            flop u_reg1 ( .clk(clk), .rst(rst_n), .d(dout), .q() );
+        endmodule
+        module flop ( input clk, input rst, input [7:0] d, output [7:0] q );
+            reg [7:0] r;
+            always @(posedge clk or negedge rst) if (!rst) r <= 8'h0; else r <= d;
+            assign q = r;
+        endmodule
+        """
+        assert self._codes(self.SDC_BASE, netlist) == ["SDC-153"]
+
+    def test_no_netlist_returns_zero(self):
+        """SDC-only mode (ctx=None) -> no findings, no crash."""
+        from async_reset_check import reset_findings
+        assert reset_findings(self.SDC_BASE, None) == []
+
+    def test_wired_into_check_sdc(self):
+        """SDC-151 surfaces through the full checker when context is supplied."""
+        result = check_sdc(self.SDC_BASE, context=self._ctx())
+        codes = [i.code for i in result.issues]
+        assert "SDC-151" in codes
+
+    def test_sdc_only_mode_clean_through_checker(self):
+        """No netlist -> the F2 rules stay silent through the full checker."""
+        result = check_sdc(self.SDC_BASE)
+        codes = [i.code for i in result.issues]
+        assert not any(c in ("SDC-151", "SDC-152", "SDC-153") for c in codes)
+
+    def test_registry_has_sdc151_153(self):
+        from rules_registry import get_rule
+        for code in ("SDC-151", "SDC-152", "SDC-153"):
+            rule = get_rule(code)
+            assert rule is not None
+            assert rule.severity == "warning"
+
+    def test_substring_port_name_not_covered(self):
+        """A false path on 'rst_n_sync' must NOT cover reset tree 'rst_n'."""
+        sdc = self.SDC_BASE + "set_false_path -from [get_ports rst_n_sync] -to [all_registers]\n"
+        assert self._codes(sdc) == ["SDC-151"]
+
+
 class TestIssue:
     """Tests for the Issue dataclass."""
 

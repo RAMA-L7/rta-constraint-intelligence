@@ -1,8 +1,8 @@
 # Ṛta CLI — Engineer's Guide to Every Feature
 
-> **Version:** 1.5.3 · **Command:** `rta` · **Platform:** Linux / macOS / Windows (Python ≥ 3.10)
+> **Version:** 1.5.4 · **Command:** `rta` · **Platform:** Linux / macOS / Windows (Python ≥ 3.10)
 
-This guide walks through **every feature** of Ṛta's command-line interface. Everything below was verified against the v1.5.3 release — the examples are real command output, not pseudocode.
+This guide walks through **every feature** of Ṛta's command-line interface. Everything below was verified against the v1.5.4 release — the examples are real command output, not pseudocode.
 
 ---
 
@@ -15,7 +15,7 @@ pip install rta-constraint-intelligence
 ```
 
 ```bash
-rta --version          # Ṛta v1.5.3
+rta --version          # Ṛta v1.5.4
 ```
 
 > The Streamlit UI (section 14) is an optional extra: `pip install "rta-constraint-intelligence[web]"`.
@@ -84,9 +84,10 @@ If the tool says `can't open '...': No such file or directory`, the path is wron
 Parses an SDC and runs **40+ semantic checks**, reporting:
 
 - **Errors** (`SDC-001..011`…) — must fix; synthesis would produce wrong results
-- **Warnings** (`SDC-020..061`, `SDC-150`) — should review; potential design issues
+- **Warnings** (`SDC-020..061`, `SDC-150..153`) — should review; potential design issues
 - **Info** (`SDC-100..132`) — best practices
 - **Rationale linting** (`SDC-150`) — flags `set_false_path` / `set_multicycle_path` / `set_case_analysis` lines that lack an explanatory comment (the advice SDC-020 already gives, now enforced). Pure text check — no netlist needed
+- **Async reset / CDC completeness** (`SDC-151..153`) — design-aware only (needs `--netlist`): flags reset trees (nets driving ≥2 flop reset pins) with no targeted timing exception (`SDC-151`), blanket wildcard false paths that hide the sync-input vs deassertion distinction (`SDC-152`), and reset synchronizer sync-stage shapes with no exception (`SDC-153`). Provable-only: SDC-only mode stays silent
 - **Stats** — clocks, delays, exceptions found
 - **Readiness review** — a 7-dimension signoff-readiness verdict (Clocks, I/O, Exceptions, Coverage, Consistency, Analysis Trust, Design Context)
 

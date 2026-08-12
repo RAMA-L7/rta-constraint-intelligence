@@ -2,6 +2,24 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.4] — 2026-08-12
+
+### Added
+
+- **Async reset & CDC structural completeness (Feature F2)** — new module
+  `rta/engine/analysis/async_reset_check.py` with three design-aware rules:
+  - `SDC-151` (warning) Unconstrained reset tree — a net structurally driving
+    ≥2 flip-flop reset pins with no timing exception touching it.
+  - `SDC-152` (warning) Suspect blanket false path — a wildcard
+    `set_false_path` (`-from [all_inputs]` / `*`) covers a reset tree while no
+    targeted exception exists, hiding the sync-input vs deassertion distinction.
+  - `SDC-153` (warning) Reset synchronizer input unconstrained — a reset tree
+    whose net also drives data input(s), the async-reset synchronizer shape.
+  - Provable-only: all three rules run ONLY when a netlist is supplied
+    (`--netlist` / design context); SDC-only mode stays completely silent.
+    Fixed ≥2 reset-pin threshold (documented), zero noise on the existing
+    `netlist_aware` fixture corpus.
+
 ## [1.5.3] — 2026-08-12
 
 ### Fixed

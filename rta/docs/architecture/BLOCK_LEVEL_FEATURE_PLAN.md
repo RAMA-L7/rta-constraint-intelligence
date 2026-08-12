@@ -231,10 +231,12 @@ cannot see this because they only validate values, not methodology.
    closes the loop on existing SDC-020 advice); F2 immediately after F1's
    regression gate is green. *(resolved: F1 approved, F2 sequenced)*
 
-**F1 status: APPROVED — implementation in progress.** F2 starts only after F1's
-full regression gate is green. If F2's ≥2 threshold produces noisy findings on
-existing sample designs during implementation, stop and report back rather
-than silently adjusting the number.
+**F1 status: SHIPPED** (v1.5.2, `SDC-150`, module `rationale_lint.py`).
+**F2 status: SHIPPED** (v1.5.4, `SDC-151..153`, module `async_reset_check.py`).
+Implementation notes: F2 is design-aware only (skipped in SDC-only mode), uses
+the fixed ≥2 reset-pin threshold as approved, and produced **zero noise** on the
+existing `netlist_aware` fixture corpus (NA01 is covered by a targeted
+`set_false_path -from [get_ports rst_n]`; NA10's flops have no reset pins).
 
 ---
 

@@ -40,13 +40,13 @@ trustworthy to a physical-design/STA engineer in the first ten seconds.
 |---|---|
 | Version | **1.3.0** |
 | Release status | **RC_READY_WITH_KNOWN_LIMITATIONS** |
-| pytest | **782/782** |
+| pytest | **793/793** |
 | Golden runners | **9/9** (parser 22/22 · semantic 9/9 · reference 8/8 · coverage 12/12 · netlist-aware 10/10 · interactions 20/20 · readiness 15/15 · readiness-diff 22/22 · production-hardening 49) |
 | Benchmark suites | **42/42** |
 | Clean-room wheel journey | **17/17** |
 | CLI contract audit | **16/16** |
 | Release smoke suite | **10/10** |
-| Rules catalog | **112 rules** (71 checker · 21 constraint_diff · 5 design_context · 4 mmc · 4 clock_relations · 4 constraint_interactions · 3 design_coverage) |
+| Rules catalog | **115 rules** (74 checker · 21 constraint_diff · 5 design_context · 4 mmc · 4 clock_relations · 4 constraint_interactions · 3 design_coverage) |
 | Severity mix | 15 error · 47 warning · 43 info · 6 fatal |
 | Modules | 15 production modules + `ui/` (5 files) + `app.py` |
 | CLI commands | check · generate · diff · corners · analyze · rules · coverage · report · lint · convert · batch · web |
@@ -194,7 +194,7 @@ valid benchmarking exists for that comparison, and we do not claim it.
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | SDC preprocessing (comments, multiline, collections, scientific notation) | Normalize input for analysis | All | `sdc_preprocess.py` | implicit | — | — | No | core |
 | 1a | Tcl scalar-variable resolution (bounded) | Resolve `${var}`/`$var` scalars from linked TCL definition files | Infra/constraints | `tcl_resolver.py` | `diff --linked-v1/--linked-v2`, implicit in check | ✅ (via diff) | — | No | bounded subset; execution-required disclosed |
-| 2 | Deterministic rule checking (112 rules) | Errors/warnings/info with provenance | PD/STA/constraints | `checker.py` + `rules_registry.py` | `check` | ✅ | ✅ | No | VALIDATED (per command) |
+| 2 | Deterministic rule checking (115 rules) | Errors/warnings/info with provenance | PD/STA/constraints | `checker.py` + `rules_registry.py` | `check` | ✅ | ✅ | No | VALIDATED (per command) |
 | 3 | Severity + rule catalog | Understand findings | All | `rules_registry.py` | `rules list/show` | ✅ | ✅ | No | — |
 | 4 | Clock & generated-clock extraction | Inventory clocks | Constraints/STA | `checker.py`, `clock_relations.py` | `check`, `analyze clock-relations` | ✅ | ✅ | No | VALIDATED |
 | 5 | Clock relationship inference & matrix | Detect missing/mismatched groups | STA | `clock_relations.py` | `analyze clock-relations` | ✅ | ✅ | No | PARTIALLY_VALIDATED (heuristic) |
@@ -279,10 +279,10 @@ valid benchmarking exists for that comparison, and we do not claim it.
 
 ## 12. Product Evidence Inventory (all traceable)
 
-- **782 pytest tests** in `tests/` (26 files).
+- **793 pytest tests** in `tests/` (26 files).
 - **9 golden runners** in `benchmarks/` (`run_golden*.py`, `run_reference*.py`, `run_design_coverage.py`, `run_netlist_aware.py`, `run_constraint_interactions.py`, `run_readiness*.py`, `run_production_hardening.py`).
 - **42 benchmark suites** (`test_*.py` in `benchmarks/`).
-- **112 rules** with per-rule descriptions, why-it-matters, fix, module, added version, reference URL (`rules_registry.py`).
+- **115 rules** with per-rule descriptions, why-it-matters, fix, module, added version, reference URL (`rules_registry.py`).
 - **Release evidence:** `PHASE14_RELEASE_CANDIDATE_AUDIT_REPORT.md`, `RELEASE_MANIFEST.md`, `release_cleanroom.py`, `release_cli_audit.py`, `test_release_smoke.py`.
 - **Phase reports:** PHASE3..PHASE14 in `benchmarks/`.
 - **Sample corpus:** `samples/` (realistic clean/problem designs, diff fixtures, edge cases, Tcl variables).
@@ -571,9 +571,9 @@ No wall of numbers: each benchmark is a card (see template §30).
 ## 29. Benchmark Overview (executive)
 
 Headline evidence (all verified in this audit cycle):
-- 782/782 pytest · 9/9 golden runners · 42/42 benchmark suites
+- 793/793 pytest · 9/9 golden runners · 42/42 benchmark suites
 - 17/17 clean-room wheel journey · 16/16 CLI contract · 10/10 release smoke
-- 112 rules · 1.5.3 · RC_READY_WITH_KNOWN_LIMITATIONS
+- 115 rules · 1.5.4 · RC_READY_WITH_KNOWN_LIMITATIONS
 
 Each headline links to its detail card with version/date/environment context.
 
@@ -1017,7 +1017,7 @@ This is conceptual only — no domains, no deployment in this phase. One click b
 ## 65. Content Source-of-Truth Strategy
 
 Prevent drift between product content and implementation by deriving content from machine-readable sources:
-- **`rules_registry.py`** → rule catalog pages (112 rules, descriptions, fixes, versions).
+- **`rules_registry.py`** → rule catalog pages (115 rules, descriptions, fixes, versions).
 - **`support_boundary.py`** → support matrix + Trust Center statuses.
 - **benchmark manifests / results** → benchmark cards (§32 traceability model).
 - **`RELEASE_MANIFEST.md` + phase reports** → release pages.

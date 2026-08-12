@@ -746,6 +746,18 @@ def check_sdc(text: str, context=None) -> CheckResult:
     except Exception as exc:  # never let rationale linting break the check
         info.append(InfoItem("SDC-140", f"Rationale-comment linting skipped: {exc}"))
 
+    # ── Async reset & CDC structural completeness (SDC-151..153) — Feature F2 ──
+    # Design-aware only: flags nets that structurally drive >=2 flip-flop reset
+    # pins but have no (or only blanket/wildcard) timing exception. Provable-only
+    # — SDC-only mode (context=None) returns zero findings. Complements SDC-020
+    # (false-path documentation) without duplicating any existing rule.
+    try:
+        from async_reset_check import reset_findings
+        for f in reset_findings(orig, context):
+            issues.append(Issue(f.sev, f.code, f.msg, line=f.line))
+    except Exception as exc:  # never let async-reset analysis break the check
+        info.append(InfoItem("SDC-140", f"Async-reset analysis skipped: {exc}"))
+
     # ── Analysis coverage / trust scope (Phase 7 + 8) ────────────────────────
     # Records how completely the validator understood the input: fully analyzed
     # commands vs partially analyzed (ignored options) vs netlist-dependent refs

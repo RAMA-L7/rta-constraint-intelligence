@@ -89,7 +89,7 @@ Optionally, the engineer provides:
 The workspace sends the SDC (and optional inputs) to the API server. The server runs the frozen deterministic pipeline:
 1. Preprocessing (normalize SDC text).
 2. Tcl variable resolution (bounded).
-3. Rule engine (112 rules → findings).
+3. Rule engine (115 rules → findings).
 4. Clock analysis (inventory + relations).
 5. Design context resolution (if netlist provided).
 6. Coverage analysis (object-level, bus-level).
