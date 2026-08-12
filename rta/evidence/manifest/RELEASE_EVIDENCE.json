@@ -5,12 +5,12 @@
   "release_status": "RC_READY_WITH_KNOWN_LIMITATIONS",
   "license": "MIT",
   "python_requirement": ">=3.10",
-  "test_count": 767,
+  "test_count": 781,
   "test_files": 26,
   "test_files_detail": {
     "test_batch_runner.py": 7,
     "test_branding.py": 52,
-    "test_checker.py": 40,
+    "test_checker.py": 54,
     "test_cli.py": 54,
     "test_clock_relations.py": 15,
     "test_constraint_diff.py": 13,
@@ -35,7 +35,7 @@
     "test_tcl_resolver.py": 30,
     "test_wildcard_analyzer.py": 26
   },
-  "rule_count": 111,
+  "rule_count": 112,
   "golden_runners": [
     "run_golden",
     "run_golden_semantic",

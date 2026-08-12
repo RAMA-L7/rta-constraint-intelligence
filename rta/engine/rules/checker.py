@@ -733,6 +733,19 @@ def check_sdc(text: str, context=None) -> CheckResult:
     except Exception as exc:
         info.append(InfoItem("SDC-140", f"Constraint-interaction analysis skipped: {exc}"))
 
+    # ── Rationale-comment linting (SDC-150) — Feature F1 ─────────────────────
+    # Enforces the advice SDC-020 already gives: every timing exception that
+    # can hide a violation should carry an explanatory comment. Pure text /
+    # line-proximity check — no netlist, no clock model. Runs in BOTH SDC-only
+    # and design-aware modes. Provable-only: a finding fires only when no
+    # substantive comment exists nearby (3 lines above or inline).
+    try:
+        from rationale_lint import rationale_findings
+        for f in rationale_findings(orig):
+            issues.append(Issue(f.sev, f.code, f.msg, line=f.line))
+    except Exception as exc:  # never let rationale linting break the check
+        info.append(InfoItem("SDC-140", f"Rationale-comment linting skipped: {exc}"))
+
     # ── Analysis coverage / trust scope (Phase 7 + 8) ────────────────────────
     # Records how completely the validator understood the input: fully analyzed
     # commands vs partially analyzed (ignored options) vs netlist-dependent refs

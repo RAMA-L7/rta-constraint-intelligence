@@ -2,6 +2,18 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.2] — 2026-08-12
+
+### Added
+
+- **Rationale-comment linting (`SDC-150`)** — Feature F1. Flags
+  `set_false_path` / `set_multicycle_path` / `set_case_analysis` lines that
+  lack a substantive explanatory comment (within 3 lines above or inline,
+  incl. multiline continuation lines). Enforces the advice SDC-020 already
+  gives, turning an advisory fix suggestion into an enforceable check. Pure
+  text / line-proximity — runs in SDC-only and design-aware modes, no netlist
+  needed. 781 pytest tests, 112 rules.
+
 ## [1.5.1] — 2026-08-12
 
 ### Added

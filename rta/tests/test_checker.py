@@ -4,6 +4,104 @@ Tests for the SDC Checker/Validator module.
 
 import pytest
 from checker import check_sdc, Issue, InfoItem, CheckResult, KNOWN_COMMON_COND
+from rationale_lint import rationale_findings
+
+
+class TestRationaleLint:
+    """Tests for F1 — rationale-comment linting (SDC-150).
+
+    Every timing exception that can hide a violation (false path, multicycle
+    path, case analysis) must carry a substantive explanatory comment within
+    the 3 lines above or inline. Pure text check — no netlist required.
+    """
+
+    def _codes(self, text: str) -> list:
+        return [f.code for f in rationale_findings(text)]
+
+    def test_undocumented_false_path(self):
+        text = "create_clock -name clk -period 10 [get_ports clk]\n" \
+               "set_false_path -from [get_ports a] -to [get_ports b]\n"
+        assert self._codes(text) == ["SDC-150"]
+
+    def test_comment_above_counts(self):
+        text = "# async CDC — two-flop synchronizer, no timing path\n" \
+               "set_false_path -from [get_ports a] -to [get_ports b]\n"
+        assert self._codes(text) == []
+
+    def test_inline_comment_counts(self):
+        text = "set_false_path -from [get_ports a] -to [get_ports b]  # scan shift\n"
+        assert self._codes(text) == []
+
+    def test_fence_before_exception_does_not_count(self):
+        text = "# -----------------------------------\n" \
+               "set_false_path -from [get_ports a] -to [get_ports b]\n"
+        # a decorative fence is not substantive rationale
+        assert self._codes(text) == ["SDC-150"]
+
+    def test_short_inline_comment_does_not_count(self):
+        """A token 'ok' comment is below the substantive threshold."""
+        text = "set_false_path -from [get_ports a] -to [get_ports b]  # ok\n"
+        assert self._codes(text) == ["SDC-150"]
+
+    def test_multiline_command_trailing_comment_counts(self):
+        """Comment on the last continuation line of a multiline exception."""
+        text = "set_false_path \\\n" \
+               "  -from [get_ports a] \\\n" \
+               "  -to [get_ports b]  # async CDC — no timing path\n"
+        assert self._codes(text) == []
+
+    def test_undocumented_case_analysis(self):
+        text = "set_case_analysis 0 [get_ports scan_en]\n"
+        assert self._codes(text) == ["SDC-150"]
+
+    def test_documented_multicycle_clean(self):
+        text = "# two-cycle setup for cross-domain path\n" \
+               "set_multicycle_path 2 -from [get_ports a] -to [get_ports b]\n"
+        assert self._codes(text) == []
+
+    def test_comment_three_lines_above_counts(self):
+        text = "create_clock -name clk -period 10 [get_ports clk]\n" \
+               "set_input_delay 1.0 -clock clk [get_ports a]\n" \
+               "# reset synchronizer input — intentional false path\n" \
+               "set_false_path -from [get_ports rst_sync] -to [get_ports b]\n"
+        assert self._codes(text) == []
+
+    def test_four_lines_away_does_not_count(self):
+        text = "# rationale comment four lines above\n" \
+               "create_clock -name clk -period 10 [get_ports clk]\n" \
+               "set_input_delay 1.0 -clock clk [get_ports a]\n" \
+               "set_output_delay 1.0 -clock clk [get_ports b]\n" \
+               "set_false_path -from [get_ports a] -to [get_ports b]\n"
+        assert self._codes(text) == ["SDC-150"]
+
+    def test_finding_has_line_number(self):
+        text = "create_clock -name clk -period 10 [get_ports clk]\n" \
+               "set_false_path -from [get_ports a] -to [get_ports b]\n"
+        fs = rationale_findings(text)
+        assert fs[0].line == 2
+
+    def test_wired_into_check_sdc(self):
+        """SDC-150 surfaces through the full checker (additive, SDC-only mode)."""
+        text = "create_clock -name clk -period 10 [get_ports clk]\n" \
+               "set_false_path -from [get_ports a] -to [get_ports b]\n"
+        result = check_sdc(text)
+        codes = [i.code for i in result.issues]
+        assert "SDC-150" in codes
+
+    def test_documented_exception_clean_through_checker(self):
+        text = "create_clock -name clk -period 10 [get_ports clk]\n" \
+               "# async CDC — no timing path\n" \
+               "set_false_path -from [get_ports a] -to [get_ports b]\n"
+        result = check_sdc(text)
+        codes = [i.code for i in result.issues]
+        assert "SDC-150" not in codes
+
+    def test_registry_has_sdc150(self):
+        from rules_registry import get_rule
+        rule = get_rule("SDC-150")
+        assert rule is not None
+        assert rule.severity == "warning"
+        assert "comment" in rule.fix.lower()
 
 
 class TestIssue:

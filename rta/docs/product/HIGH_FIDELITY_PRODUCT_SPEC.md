@@ -178,7 +178,7 @@ closes with ✕ or Esc; on <1024px the inspector becomes an overlay drawer; on
 │ │  timing signoff."                                                    │ │
 │ └───────────────────────────────────────────────────────────────────────┘ │
 │ ┌─ BENCHMARK EVIDENCE ──────────────────────────────────────────────────┐ │
-│ │  767 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·          │ │
+│ │  781 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·          │ │
 │ │  16/16 CLI · 10/10 smoke   (Evidence Metric cards → Benchmarks page)  │ │
 │ └───────────────────────────────────────────────────────────────────────┘ │
 │ ┌─ DETERMINISTIC ARCHITECTURE ──────────────────────────────────────────┐ │
@@ -235,7 +235,7 @@ modules, each a node (square) with an arc to the next:
 ```
 INPUT (SDC [+ Verilog])
   → PREPROCESS (Tcl vars · comments · collections)
-  → VALIDATE (111 rules · semantic checks)
+  → VALIDATE (112 rules · semantic checks)
   → CLOCK ANALYSIS (primary · generated · relations)
   → DESIGN CONTEXT (structural resolution)
   → COVERAGE (inputs/outputs/buses)
@@ -298,7 +298,7 @@ icon). No page ships without it.
 RELEASE EVIDENCE HEADER
   v1.3.0 · verified 2026-08-06 · RC_READY_WITH_KNOWN_LIMITATIONS
 KEY VERIFIED RESULTS (6 Evidence Metric cards)
-  767 pytest  |  9/9 golden runners  |  42/42 benchmark suites
+  781 pytest  |  9/9 golden runners  |  42/42 benchmark suites
   17/17 clean-room wheel journey  |  16/16 CLI contract  |  10/10 release smoke
 CATEGORY TABS
   CORRECTNESS · DESIGN-AWARE · ROBUSTNESS · SECURITY · PERFORMANCE · RELEASE QUALITY
@@ -337,7 +337,7 @@ report in the repo.
 **Placeholder rule:** any scorecard used as a *template* in designs or mockups
 must display `[n] / [n]` with an explicit "populate from runner output"
 annotation — never a hard-coded count. Only verified Phase 14 numbers may
-appear literally: 767 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·
+appear literally: 781 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·
 16/16 CLI · 10/10 smoke.
 
 ---
@@ -401,7 +401,7 @@ A single technical specifications table page (exact repository evidence):
 | Snapshots | Schema v2, v1 read-compatible |
 | Policies | BLOCKERS_ONLY · NO_READINESS_REGRESSION · STRICT · CUSTOM (safe declarative) |
 | CI | Exit codes 0/1/2/3 · machine-clean JSON stdout · never PASS on engine failure |
-| Rules | 111 rules across 7 modules (rules_registry.py) |
+| Rules | 112 rules across 7 modules (rules_registry.py) |
 | Trust statuses | 6-level support boundary (support_boundary.py) |
 
 Each row links to its evidence (module file, docs page).
@@ -944,7 +944,7 @@ Coverage.
 ## 46. P1 Pages
 
 - Workspace: Interactions full page · Design Context full page · source syntax
-  highlighting · light mode · docs search · rule pages for all 111 rules.
+  highlighting · light mode · docs search · rule pages for all 112 rules.
 - Product site: individual capability pages for all 9 capabilities · full
   benchmark detail pages · engineering story page · specifications page ·
   performance charts with more series.

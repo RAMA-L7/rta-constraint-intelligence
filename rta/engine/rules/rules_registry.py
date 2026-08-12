@@ -604,6 +604,14 @@ _r("SDC-140", "info", "Clock Relation Analysis Skipped",
    "Check that clock_relations.py is importable and the SDC text is valid.",
    "", "checker", "1.2.0")
 
+# ── Rationale-comment linting (SDC-150) — Feature F1 ──────────────────────────
+
+_r("SDC-150", "warning", "Timing Exception Without Rationale Comment",
+   "A set_false_path / set_multicycle_path / set_case_analysis line has no substantive explanatory comment within the 3 lines above or inline.",
+   "An undocumented timing exception can hide a real violation — a later engineer cannot tell whether the path is genuinely false (async CDC, test mode) or was silently exempted.",
+   "Add a comment above the line or inline (e.g. '# async CDC — two-flop synchronizer, no timing path') explaining why the exception is correct.",
+   "", "checker", "1.5.2")
+
 # ── Constraint change rules (CHG-*) ───────────────────────────────────────────
 
 _r("CHG-FP-001", "fatal", "False Path Removed",

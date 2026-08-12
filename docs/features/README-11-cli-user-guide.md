@@ -84,8 +84,9 @@ If the tool says `can't open '...': No such file or directory`, the path is wron
 Parses an SDC and runs **40+ semantic checks**, reporting:
 
 - **Errors** (`SDC-001..011`…) — must fix; synthesis would produce wrong results
-- **Warnings** (`SDC-020..061`) — should review; potential design issues
+- **Warnings** (`SDC-020..061`, `SDC-150`) — should review; potential design issues
 - **Info** (`SDC-100..132`) — best practices
+- **Rationale linting** (`SDC-150`) — flags `set_false_path` / `set_multicycle_path` / `set_case_analysis` lines that lack an explanatory comment (the advice SDC-020 already gives, now enforced). Pure text check — no netlist needed
 - **Stats** — clocks, delays, exceptions found
 - **Readiness review** — a 7-dimension signoff-readiness verdict (Clocks, I/O, Exceptions, Coverage, Consistency, Analysis Trust, Design Context)
 
