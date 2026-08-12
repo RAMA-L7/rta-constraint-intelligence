@@ -2,6 +2,18 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.3] — 2026-08-12
+
+### Fixed
+
+- **Packaging: root shim `rationale_lint.py` added to `py-modules`.** The
+  v1.5.2 wheel shipped without it, so the installed package's checker
+  silently skipped the rationale-lint import (guarded try/except) and
+  SDC-150 never fired from an installed `rta` — despite working in the repo.
+  New regression test `test_all_root_shims_in_py_modules` fails the suite if
+  any root shim is missing from `py-modules`, so this class of bug is caught
+  by pytest, not by a manual release check.
+
 ## [1.5.2] — 2026-08-12
 
 ### Added

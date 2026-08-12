@@ -1,11 +1,11 @@
 {
   "product": "Ṛta",
   "tagline": "Constraint Intelligence for Digital Design",
-  "version": "1.5.1",
+  "version": "1.5.3",
   "release_status": "RC_READY_WITH_KNOWN_LIMITATIONS",
   "license": "MIT",
   "python_requirement": ">=3.10",
-  "test_count": 781,
+  "test_count": 782,
   "test_files": 26,
   "test_files_detail": {
     "test_batch_runner.py": 7,
@@ -20,7 +20,7 @@
     "test_custom_rules.py": 29,
     "test_design_context.py": 41,
     "test_design_coverage.py": 29,
-    "test_evidence.py": 20,
+    "test_evidence.py": 21,
     "test_finding_identity.py": 30,
     "test_generator.py": 31,
     "test_linter.py": 17,

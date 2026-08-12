@@ -216,3 +216,32 @@ def test_cli_version_matches_manifest(manifest):
     out = (proc.stdout or "") + (proc.stderr or "")
     assert proc.returncode == 0, out
     assert manifest["version"] in out
+
+
+def test_all_root_shims_in_py_modules():
+    """Every root-level shim module must be packaged in the wheel.
+
+    Regression guard for the v1.5.2 release bug: a new root shim
+    (rationale_lint.py) missing from ``[tool.setuptools] py-modules`` shipped
+    a wheel where the checker's guarded import silently failed and its new
+    rule (SDC-150) never fired. This test fails the suite, not a manual
+    release check, if any root ``*.py`` shim is not in py-modules.
+    """
+    pyproject = _read("pyproject.toml")
+    m = re.search(r"py-modules\s*=\s*\[([^\]]*)\]", pyproject, re.S)
+    assert m, "py-modules block not found in pyproject.toml"
+    listed = {n.strip().strip('"').strip("'") for n in m.group(1).split(",") if n.strip()}
+
+    shim_re = re.compile(r"^#.*migration shim.*moved to rta\.", re.M)
+    missing = []
+    for py in sorted((ROOT / "rta").parent.glob("*.py")):
+        if py.name.startswith("_"):
+            continue
+        text = py.read_text(encoding="utf-8", errors="replace")
+        if not shim_re.search(text):
+            continue  # not a shim (e.g. smoke_test.py) — no packaging requirement
+        if py.stem not in listed:
+            missing.append(py.name)
+    assert not missing, (
+        f"root shim(s) missing from py-modules (wheel would ship broken import): {missing}"
+    )

@@ -178,7 +178,7 @@ closes with ✕ or Esc; on <1024px the inspector becomes an overlay drawer; on
 │ │  timing signoff."                                                    │ │
 │ └───────────────────────────────────────────────────────────────────────┘ │
 │ ┌─ BENCHMARK EVIDENCE ──────────────────────────────────────────────────┐ │
-│ │  781 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·          │ │
+│ │  782 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·          │ │
 │ │  16/16 CLI · 10/10 smoke   (Evidence Metric cards → Benchmarks page)  │ │
 │ └───────────────────────────────────────────────────────────────────────┘ │
 │ ┌─ DETERMINISTIC ARCHITECTURE ──────────────────────────────────────────┐ │
@@ -298,7 +298,7 @@ icon). No page ships without it.
 RELEASE EVIDENCE HEADER
   v1.3.0 · verified 2026-08-06 · RC_READY_WITH_KNOWN_LIMITATIONS
 KEY VERIFIED RESULTS (6 Evidence Metric cards)
-  781 pytest  |  9/9 golden runners  |  42/42 benchmark suites
+  782 pytest  |  9/9 golden runners  |  42/42 benchmark suites
   17/17 clean-room wheel journey  |  16/16 CLI contract  |  10/10 release smoke
 CATEGORY TABS
   CORRECTNESS · DESIGN-AWARE · ROBUSTNESS · SECURITY · PERFORMANCE · RELEASE QUALITY
@@ -337,7 +337,7 @@ report in the repo.
 **Placeholder rule:** any scorecard used as a *template* in designs or mockups
 must display `[n] / [n]` with an explicit "populate from runner output"
 annotation — never a hard-coded count. Only verified Phase 14 numbers may
-appear literally: 781 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·
+appear literally: 782 pytest · 9/9 golden · 42/42 suites · 17/17 clean-room ·
 16/16 CLI · 10/10 smoke.
 
 ---

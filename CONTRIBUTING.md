@@ -64,7 +64,7 @@ python -m pytest rta/tests/test_checker.py::TestCheckSdc::test_no_clock_creates_
 
 ### Test Coverage
 
-The project currently has **781 pytest tests** across 26 test files, verified
+The project currently has **782 pytest tests** across 26 test files, verified
 by `python rta/evidence/build_evidence.py` and recorded in
 `rta/evidence/manifest/RELEASE_EVIDENCE.json`'s `test_files_detail` field
 (don't hand-count — that's exactly what went stale here last time).
@@ -168,7 +168,7 @@ rta-constraint-intelligence/
 │
 ├── CLI (cli.py)            # Command-line interface
 ├── Legacy UI (legacy/streamlit/)  # preserved Streamlit app + ui package
-├── Tests (tests/)          # 781 pytest tests
+├── Tests (tests/)          # 782 pytest tests
 └── Documentation (docs/)   # Feature documentation
 ```
 
