@@ -1,8 +1,8 @@
 # Ṛta CLI — Engineer's Guide to Every Feature
 
-> **Version:** 1.5.0 · **Command:** `rta` · **Platform:** Linux / macOS / Windows (Python ≥ 3.10)
+> **Version:** 1.5.1 · **Command:** `rta` · **Platform:** Linux / macOS / Windows (Python ≥ 3.10)
 
-This guide walks through **every feature** of Ṛta's command-line interface. Everything below was verified against the v1.5.0 release — the examples are real command output, not pseudocode.
+This guide walks through **every feature** of Ṛta's command-line interface. Everything below was verified against the v1.5.1 release — the examples are real command output, not pseudocode.
 
 ---
 
@@ -15,7 +15,7 @@ pip install rta-constraint-intelligence
 ```
 
 ```bash
-rta --version          # Ṛta v1.5.0
+rta --version          # Ṛta v1.5.1
 ```
 
 > The Streamlit UI (section 14) is an optional extra: `pip install "rta-constraint-intelligence[web]"`.

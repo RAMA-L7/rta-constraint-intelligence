@@ -2,6 +2,19 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.1] — 2026-08-12
+
+### Added
+
+- **`rta analyze all` — one-shot full-block E2E run.** Runs check + coverage + clock relations + constraint interactions + readiness over the same SDC (+ optional netlist) and emits one combined result in three modes: text summary, `--json`, or a single self-contained HTML report (`-o report.html`). Exit code matches `rta check` (0 = no errors, 1 = errors), so it doubles as a CI gate. Verified design-aware with `--netlist design.v --top top`.
+- **CLI netlist parity.** `rta coverage --netlist`, `rta analyze clock-relations --netlist`, and `rta report check --netlist` now expose the design-aware analysis that was previously UI-only — same deterministic engine, no engine changes.
+- **CI + PyPI badges** in the README (live GitHub Actions status and PyPI version).
+- CLI user guide documents the new one-shot workflow (`docs/features/README-11-cli-user-guide.md`).
+
+### Fixed
+
+- Evidence manifest and public docs re-synced to the current test count (767 pytest tests) after new CLI tests landed.
+
 ## [1.5.0] — 2026-08-11
 
 ### ✨ New Features

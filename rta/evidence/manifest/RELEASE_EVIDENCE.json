@@ -1,7 +1,7 @@
 {
   "product": "Ṛta",
   "tagline": "Constraint Intelligence for Digital Design",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "release_status": "RC_READY_WITH_KNOWN_LIMITATIONS",
   "license": "MIT",
   "python_requirement": ">=3.10",

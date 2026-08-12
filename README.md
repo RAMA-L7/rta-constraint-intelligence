@@ -3,7 +3,7 @@
 > **Constraint Intelligence for Digital Design — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking.**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.5.1-blue" alt="Version">
   <img src="https://img.shields.io/badge/Python-3.10+-yellow" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-gray" alt="Platform">

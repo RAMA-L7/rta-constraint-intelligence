@@ -70,7 +70,7 @@ if REPO_ROOT not in sys.path:
 try:
     from rules_registry import APP_VERSION, get_all_rules, get_rule
 except Exception:  # pragma: no cover - defensive for partial installs
-    APP_VERSION = "1.5.0"
+    APP_VERSION = "1.5.1"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
