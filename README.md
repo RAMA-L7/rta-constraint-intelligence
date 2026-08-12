@@ -3,7 +3,7 @@
 > **Constraint Intelligence for Digital Design — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking.**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.5-blue" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.5.6-blue" alt="Version">
   <img src="https://img.shields.io/badge/Python-3.10+-yellow" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-gray" alt="Platform">
@@ -61,7 +61,7 @@ pytest rta/tests -q                   # full test suite
 
 > 📖 **New to the CLI?** Read the complete [**Ṛta CLI User Guide — Every Feature**](docs/features/README-11-cli-user-guide.md): installation, all 12 commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
 
-Ṛta ships with **809 pytest tests** across the engine, covering deterministic
+Ṛta ships with **824 pytest tests** across the engine, covering deterministic
 checks, netlist resolution, interactions, and readiness scoring — backed by
 **9 golden runners** and **42 benchmark suites**. All counts are recorded in
 `RELEASE_EVIDENCE.json` and regenerated via `python rta/evidence/build_evidence.py`.

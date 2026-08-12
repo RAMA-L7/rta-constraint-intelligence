@@ -1,7 +1,7 @@
 # Ṛta — Next Steps Plan (Block-Level E2E + Feature Gaps)
 
 > **Document kind:** execution plan for review — **no implementation until approved**
-> **Date:** 2026-08-12 · **Baseline:** v1.5.5 published to PyPI; Streamlit app live on Community Cloud; full suite green
+> **Date:** 2026-08-12 · **Baseline:** v1.5.6 published to PyPI; Streamlit app live on Community Cloud; full suite green
 > **Source of truth:** `PRODUCT_ROADMAP.md`, `STARTUP_BACKLOG.md`, `FEATURE_MAPPING.md`, `FULLCHIP_DESIGN_CONTEXT_PLAN.md`
 
 ---
@@ -22,7 +22,7 @@ Make the **block-level flow work end-to-end** — one SDC (+ one optional netlis
 | `rta check` JSON/JUnit/CSV/markdown, `--custom-rules`, `--gate`, baseline diff | ✅ working | 763-test suite + live runs |
 | Streamlit app: Checker, Coverage, Clock tabs thread netlist | ✅ working | `_netlist_upload_widget` wired in all three |
 | Engine `analyze_coverage(text, ctx)` — design-aware coverage | ✅ exists | `rta/engine/analysis/design_coverage.py:515` |
-| PyPI install (`pip install rta-constraint-intelligence`) | ✅ done | v1.5.5 live, wheel+sdist, `[web]` extra verified |
+| PyPI install (`pip install rta-constraint-intelligence`) | ✅ done | v1.5.6 live, wheel+sdist, `[web]` extra verified |
 | CLI docs / engineer guide | ✅ done | `docs/features/README-11-cli-user-guide.md` |
 
 ---

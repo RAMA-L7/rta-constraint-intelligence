@@ -1,8 +1,8 @@
 # Ṛta CLI — Engineer's Guide to Every Feature
 
-> **Version:** 1.5.5 · **Command:** `rta` · **Platform:** Linux / macOS / Windows (Python ≥ 3.10)
+> **Version:** 1.5.6 · **Command:** `rta` · **Platform:** Linux / macOS / Windows (Python ≥ 3.10)
 
-This guide walks through **every feature** of Ṛta's command-line interface. Everything below was verified against the v1.5.5 release — the examples are real command output, not pseudocode.
+This guide walks through **every feature** of Ṛta's command-line interface. Everything below was verified against the v1.5.6 release — the examples are real command output, not pseudocode.
 
 ---
 
@@ -15,7 +15,7 @@ pip install rta-constraint-intelligence
 ```
 
 ```bash
-rta --version          # Ṛta v1.5.5
+rta --version          # Ṛta v1.5.6
 ```
 
 > The Streamlit UI (section 14) is an optional extra: `pip install "rta-constraint-intelligence[web]"`.
@@ -89,6 +89,7 @@ Parses an SDC and runs **40+ semantic checks**, reporting:
 - **Rationale linting** (`SDC-150`) — flags `set_false_path` / `set_multicycle_path` / `set_case_analysis` lines that lack an explanatory comment (the advice SDC-020 already gives, now enforced). Pure text check — no netlist needed
 - **Async reset / CDC completeness** (`SDC-151..153`) — design-aware only (needs `--netlist`): flags reset trees (nets driving ≥2 flop reset pins) with no targeted timing exception (`SDC-151`), blanket wildcard false paths that hide the sync-input vs deassertion distinction (`SDC-152`), and reset synchronizer sync-stage shapes with no exception (`SDC-153`). Provable-only: SDC-only mode stays silent
 - **DFT / scan-mode completeness** (`SDC-154..155`) — Phase A runs in both modes: flags a `scan_en`/`test_mode`-style signal referenced in the SDC with NO `set_case_analysis` mode assignment (`SDC-154`; a single-value `0` or `1` is legitimate per-mode practice), and a fully-blanket false path (`-from [all_inputs] -to [all_registers]`, `*`) in a DFT design (`SDC-155`). Phase B (needs `--netlist`) detects scan-chain shapes (SI→Q→SI→Q shift chains) and flags cuts matching all flops — never false-path flops present in the scan chain (lock-up latch guard)
+- **AOCV/POCV derate methodology** (`SDC-156..157`, info-level) — advisory methodology-consistency axis on top of the value-sanity derate rules: `SDC-156` flags flat-only `set_timing_derate` values on a flow that signals a small node (a `set_operating_conditions` name like `SS_0P72V_16C`, an `Nnm` mention, or a POCV/AOCV keyword in a named condition); `SDC-157` flags flat derates mixed with sigma/table-based derates in one file. Both are info (never warning) by design — flat OCV derate is legitimate for many designs. Temperatures (25C/125C) and voltage fractions (0P7V) never match a node hint. Shown with `rta check --verbose` or in JSON output
 - **Stats** — clocks, delays, exceptions found
 - **Readiness review** — a 7-dimension signoff-readiness verdict (Clocks, I/O, Exceptions, Coverage, Consistency, Analysis Trust, Design Context)
 

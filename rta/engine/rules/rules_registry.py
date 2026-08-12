@@ -10,7 +10,7 @@ this module is the single documentation source for the UI reference table.
 from dataclasses import dataclass
 from typing import List, Dict, Optional
 
-APP_VERSION = "1.5.5"
+APP_VERSION = "1.5.6"
 
 
 @dataclass
@@ -618,19 +618,19 @@ _r("SDC-151", "warning", "Unconstrained Reset Tree",
    "A net structurally driving >= 2 flip-flop reset pins (RESET-class instance pins) has no timing exception touching it.",
    "An async reset tree with no exception leaves the deassertion path and CDC paths unconstrained — silent false hold violations or missed CDC analysis.",
    "Add a targeted exception, e.g. set_false_path -from [get_ports <reset>] -to [all_registers], or set_ideal_network on the reset net, and verify the reset synchronizer input.",
-   "", "checker", "1.5.5")
+   "", "checker", "1.5.4")
 
 _r("SDC-152", "warning", "Suspect Blanket False Path",
    "A wildcard set_false_path (all_inputs / * / all_ports) provably covers a reset tree while no targeted exception exists.",
    "A blanket false path hides the sync-input vs deassertion distinction that an async-reset synchronizer requires — the mechanism is never actually verified.",
    "Replace the blanket cut with a targeted set_false_path on the reset net (or -through its synchronizer), and consider whether set_clock_groups -asynchronous is masking CDC paths.",
-   "", "checker", "1.5.5")
+   "", "checker", "1.5.4")
 
 _r("SDC-153", "warning", "Reset Synchronizer Input Unconstrained",
    "A reset tree whose net also drives data input(s) — the structural shape of an async-reset synchronizer sync stage — has no exception.",
    "The synchronizer's sync input and the deassertion path need distinct handling, not one blanket false path; a blanket exception silently ignores the difference.",
    "Constrain the synchronizer input and the deassertion path separately (e.g. a targeted false path on the sync flops' D pins, and a separate one on the reset deassertion).",
-   "", "checker", "1.5.5")
+   "", "checker", "1.5.4")
 
 # ── DFT / scan-mode constraint completeness (SDC-154..155) — Feature F3 ───────
 
@@ -645,6 +645,20 @@ _r("SDC-155", "warning", "Scan False Path Too Broad",
    "A blanket cut cannot distinguish scan-chain-present flops from genuinely non-scan flops, silently exempting scan paths (lock-up latch trap). Targeted cuts (e.g. -through [get_pins *scan*]) are the recommended pattern and never fire.",
    "Restrict the exception to genuinely non-scan flops (e.g. -to [get_cells non_scan_*]) or use mode-specific set_case_analysis. Never false-path flops present in the scan chain, even though they appear in non-scan reports.",
    "", "checker", "1.5.5")
+
+# ── AOCV/POCV-aware derate methodology (SDC-156..157) — Feature F4 ────────────
+
+_r("SDC-156", "info", "Flat Derate on Advanced-Node Flow",
+   "The file signals an advanced (<=16nm) methodology — a small-node token in a set_operating_conditions command (e.g. SS_0P72V_16C), an explicit Nnm mention, or a POCV/AOCV/sigma keyword — yet all derates are flat single-number set_timing_derate values.",
+   "A derate strategy correct for an older node silently persists after migration — reintroducing excess pessimism (wasted area/power on phantom violations) or insufficient margin (real risk missed). Flat OCV derate is legitimate for many blocks, hence advisory only.",
+   "Consider table-based AOCV or sigma-based POCV derates for the advanced node; if flat values are intentional, add a comment explaining why the methodology was kept.",
+   "", "checker", "1.5.6")
+
+_r("SDC-157", "info", "Derate Methodology Mix",
+   "Flat set_timing_derate values coexist with sigma/table-based derates (a command carrying sigma / pocv / derate_table) in one file.",
+   "Flat and statistical/table derates are not meant to be mixed — the two methodologies answer the same question with different pessimism models, and mixing them makes results inconsistent across the design.",
+   "Pick one derate methodology for the corner — either keep flat derates throughout or move to a single table/sigma-based scheme.",
+   "", "checker", "1.5.6")
 
 # ── Constraint change rules (CHG-*) ───────────────────────────────────────────
 

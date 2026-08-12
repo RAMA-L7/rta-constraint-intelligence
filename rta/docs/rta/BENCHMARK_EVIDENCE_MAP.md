@@ -21,7 +21,7 @@
 
 | Claim | Suite / runner | Command | Expected | Measured (2026-08-06) |
 |---|---|---|---|---|
-| Unit + regression suite green | pytest suite | `python -m pytest tests/ -q` | 809 passed | 809 passed |
+| Unit + regression suite green | pytest suite | `python -m pytest tests/ -q` | 824 passed | 824 passed |
 | Release smoke green | `benchmarks/test_release_smoke.py` | `pytest benchmarks/test_release_smoke.py -q` | 10 passed | 10 passed |
 | Golden runners green | `benchmarks/golden`, `golden_semantic`, `reference_designs`, `netlist_aware` (+ runners) | per-suite runners | 9/9 | 9/9 (Phase 14/15 baselines) |
 | Benchmark suites green | `benchmarks/*` | `benchmarks/run_benchmark.py` | 42/42 | 42/42 (2026-08-07) |

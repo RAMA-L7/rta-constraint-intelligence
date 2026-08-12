@@ -100,7 +100,7 @@ def main():
     env["PYTHONIOENCODING"] = "utf-8"
     r = subprocess.run([entry, "--version"], capture_output=True, text=True,
                        cwd=work, env=env)
-    check("entry-point", r.returncode == 0 and "1.5.5" in (r.stdout + r.stderr),
+    check("entry-point", r.returncode == 0 and "1.5.6" in (r.stdout + r.stderr),
           (r.stdout + r.stderr)[-200:])
 
     # 7. Validate a sample SDC (written in the fresh work dir)

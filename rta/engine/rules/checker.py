@@ -776,6 +776,24 @@ def check_sdc(text: str, context=None) -> CheckResult:
     except Exception as exc:  # never let DFT analysis break the check
         info.append(InfoItem("SDC-140", f"DFT/scan analysis skipped: {exc}"))
 
+    # ── AOCV/POCV derate methodology (SDC-156..157) — Feature F4 ────────────
+    # Advisory methodology-consistency axis on top of the value-sanity derate
+    # rules (SDC-032/033/040-043/054): flags flat-only derates on flows that
+    # signal an advanced (<=16nm) node (SDC-156) and flat+sigma/table derate
+    # mixes (SDC-157). INFO-level by approved decision — never a
+    # warning/error. Provable-only: a condition like SS_0P8V_25C (temperature)
+    # or SSG_0P7V_125C never matches a node hint. Runs in BOTH modes (no
+    # netlist needed).
+    try:
+        from derate_methodology import derate_methodology_findings
+        for f in derate_methodology_findings(orig):
+            if f.sev in ("warning", "error"):
+                issues.append(Issue(f.sev, f.code, f.msg, line=f.line))
+            else:
+                info.append(InfoItem(f.code, f.msg))
+    except Exception as exc:  # never let derate-methodology analysis break the check
+        info.append(InfoItem("SDC-140", f"Derate-methodology analysis skipped: {exc}"))
+
     # ── Analysis coverage / trust scope (Phase 7 + 8) ────────────────────────
     # Records how completely the validator understood the input: fully analyzed
     # commands vs partially analyzed (ignored options) vs netlist-dependent refs

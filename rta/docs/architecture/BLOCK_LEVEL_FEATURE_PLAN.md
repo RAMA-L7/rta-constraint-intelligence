@@ -238,6 +238,22 @@ the fixed ≥2 reset-pin threshold as approved, and produced **zero noise** on t
 existing `netlist_aware` fixture corpus (NA01 is covered by a targeted
 `set_false_path -from [get_ports rst_n]`; NA10's flops have no reset pins).
 
+**F4 status: SHIPPED** (v1.5.6, `SDC-156..157`, module `derate_methodology.py`).
+Implementation notes — two corpus-driven refinements validated against the
+project's own fixtures:
+1. **SDC-156's keyword signal requires a NAMED condition.** A whole-text
+   POCV/AOCV keyword scan false-positived on section-header comments like
+   `# ── Timing Derate (AOCV) ──` in `full_featured.sdc` and
+   `warning_heavy.sdc` (4 files). Keywords now only count inside a
+   `set_operating_conditions` command (e.g. `CUSTOM_POCV_CORNER`); an
+   explicit `Nnm` mention anywhere remains a signal. Corpus: 0 fires.
+2. **Underscore is a separator, not a word char.** Both boundary regexes
+   treat `_` as a boundary (`SS_0P72V_16C`, `CUSTOM_POCV_CORNER` match;
+   `25C`/`125C`/`0P7V`/`27nm` never do).
+Both rules are **info-level as approved** — flat OCV derate is legitimate
+for many designs, and a warning slot remains gated on the domain engineer's
+explicit sign-off.
+
 **F3 status: SHIPPED** (v1.5.5, `SDC-154..155`, module `dft_scan_check.py`).
 Implementation notes — two data-driven refinements validated against the
 project's own golden corpus (the approved plan's literal test cases were

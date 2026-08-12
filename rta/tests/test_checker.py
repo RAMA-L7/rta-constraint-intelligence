@@ -359,6 +359,141 @@ class TestDftScanCheck:
             assert self._codes(p.read_text(encoding="utf-8")) == [], name
 
 
+class TestDerateMethodology:
+    """Tests for F4 — AOCV/POCV derate methodology (SDC-156/157).
+
+    Methodology-consistency axis on top of the value-sanity derate rules:
+    flat-only derates on flows that signal an advanced (<=16nm) node
+    (SDC-156) and flat+sigma/table mixes (SDC-157). Both info-level by
+    approved decision. Provable-only: temperatures (25C/125C) and voltage
+    fractions (0P7V) never match a node hint.
+    """
+
+    def _codes(self, text: str) -> list:
+        from derate_methodology import derate_methodology_findings
+        return [f.code for f in derate_methodology_findings(text)]
+
+    # ── SDC-156 — flat derate on advanced-node flow ────────────────────────
+
+    def test_flat_derate_on_advanced_node_condition(self):
+        """SS_0P72V_16C (16nm) + flat derate -> SDC-156."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_operating_conditions SS_0P72V_16C\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == ["SDC-156"]
+
+    def test_condition_flag_form_fires(self):
+        """-max <name> form is detected the same way."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_operating_conditions -max SS_0P72V_16C\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == ["SDC-156"]
+
+    def test_pocv_keyword_in_condition_name_fires(self):
+        """A POCV keyword in a NAMED condition signals the methodology."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_operating_conditions CUSTOM_POCV_CORNER\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == ["SDC-156"]
+
+    def test_comment_nm_suffix_fires(self):
+        """An explicit Nnm mention (e.g. a '# 5nm POCV flow' comment) counts."""
+        sdc = "set sdc_version 2.2\n" \
+              "# 5nm POCV flow\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == ["SDC-156"]
+
+    # ── noise guards (corpus-proven) ───────────────────────────────────────
+
+    def test_temperature_condition_clean(self):
+        """SS_0P8V_25C — 25 is a temperature, not a node -> clean."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_operating_conditions SS_0P8V_25C\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == []
+
+    def test_high_temp_and_voltage_clean(self):
+        """SSG_0P7V_125C — 0.7V / 125C are never node hints -> clean."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_operating_conditions SSG_0P7V_125C\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == []
+
+    def test_header_comment_aocv_clean(self):
+        """A section-header comment like '# Timing Derate (AOCV)' is
+        documentation, not a methodology claim -> clean."""
+        sdc = "set sdc_version 2.2\n" \
+              "# ---- Timing Derate (AOCV) ----\n" \
+              "set_operating_conditions WORST\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == []
+
+    def test_normal_corner_clean(self):
+        """TT_1P2V_25C + flat derate -> clean (the common case)."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_operating_conditions TT_1P2V_25C\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        assert self._codes(sdc) == []
+
+    def test_node_hint_without_derate_clean(self):
+        """Node signal with NO derate at all -> clean (SDC-115 territory)."""
+        sdc = "set sdc_version 2.2\nset_operating_conditions SS_0P72V_16C\n"
+        assert self._codes(sdc) == []
+
+    # ── SDC-157 — derate methodology mix ───────────────────────────────────
+
+    def test_flat_and_advanced_mix(self):
+        """Flat + sigma/pocv-based derates in one file -> SDC-157."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_timing_derate -early -cell_delay 1.05\n" \
+              "set_pocv_derate -cell_delay -sigma 0.2 [all_cells]\n"
+        assert self._codes(sdc) == ["SDC-157"]
+
+    def test_advanced_derate_only_clean(self):
+        """Only sigma/table-based derates, no flat -> clean (no mix)."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_pocv_derate -cell_delay -sigma 0.2 [all_cells]\n"
+        assert self._codes(sdc) == []
+
+    def test_object_reference_keyword_is_not_a_mix(self):
+        """A signal NAMED sigma/pocv (e.g. [get_pins sigma_ctrl]) is not a
+        derate methodology — must not classify as an advanced derate."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_timing_derate -early -cell_delay 1.05\n" \
+              "set_false_path -from [get_pins sigma_ctrl] -to [get_pins dout]\n"
+        assert self._codes(sdc) == []
+
+    # ── wiring + registry ─────────────────────────────────────────────────
+
+    def test_wired_into_check_sdc(self):
+        """SDC-156 surfaces as an INFO item through the full checker."""
+        sdc = "set sdc_version 2.2\n" \
+              "set_operating_conditions SS_0P72V_16C\n" \
+              "set_timing_derate -early -cell_delay 1.05\n"
+        result = check_sdc(sdc)
+        codes = [i.code for i in result.info]
+        assert "SDC-156" in codes
+
+    def test_registry_has_sdc156_157(self):
+        from rules_registry import get_rule
+        for code in ("SDC-156", "SDC-157"):
+            rule = get_rule(code)
+            assert rule is not None
+            assert rule.severity == "info"
+            assert "derate" in rule.description.lower()
+
+    def test_golden_corpus_silence(self):
+        """The project's own exemplar fixtures must stay silent (noise gate)."""
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[2] / "rta" / "evidence"
+        for rel in ("valid/full_featured.sdc",
+                    "regression/warning_heavy.sdc",
+                    "readiness/HR02_clean_designaware.sdc"):
+            p = root / rel
+            assert p.exists(), f"missing fixture {p}"
+            assert self._codes(p.read_text(encoding="utf-8")) == [], rel
+
+
 class TestIssue:
     """Tests for the Issue dataclass."""
 

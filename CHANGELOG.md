@@ -2,6 +2,29 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.6] — 2026-08-12
+
+### Added
+
+- **AOCV/POCV-aware derate methodology (Feature F4)** — new module
+  `rta/engine/analysis/derate_methodology.py` with two info-level rules:
+  - `SDC-156` (info) Flat derate on advanced-node flow — the file signals a
+    <=16nm methodology (small-node token in a `set_operating_conditions`
+    name like `SS_0P72V_16C`, an `Nnm` mention, or a POCV/AOCV keyword in a
+    named condition) but only flat `set_timing_derate` values are used.
+  - `SDC-157` (info) Derate methodology mix — flat derates coexist with
+    sigma/table-based derates in one file.
+  - Both advisory by approved decision (info, never warning); provable-only
+    — temperatures (25C/125C) and voltage fractions (0P7V) never match a
+    node hint. Zero noise on the golden/valid/readiness corpus.
+- Root shim + `py-modules` entry for `derate_methodology`.
+- Registry: 119 rules total (SDC-156/157, added_version 1.5.6).
+
+### Fixed
+
+- Registry `added_version` drift: SDC-151/152/153 correctly report 1.5.4
+  (previously clobbered to 1.5.5 by the F3 version-bump sed).
+
 ## [1.5.5] — 2026-08-12
 
 ### Added
