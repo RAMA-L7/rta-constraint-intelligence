@@ -57,6 +57,8 @@ python3 smoke_test.py                # fast engine check, no browser needed
 pytest rta/tests -q                   # full test suite
 ```
 
+> 📖 **New to the CLI?** Read the complete [**Ṛta CLI User Guide — Every Feature**](docs/features/README-11-cli-user-guide.md): installation, all 12 commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
+
 Ṛta ships with **763 pytest tests** across the engine, covering deterministic
 checks, netlist resolution, interactions, and readiness scoring — backed by
 **9 golden runners** and **42 benchmark suites**. All counts are recorded in
@@ -321,7 +323,8 @@ rta-constraint-intelligence/    (clone dir)
 │       ├── README-07-custom-rules.md    # Custom Rules Engine
 │       ├── README-08-rules-registry.md  # Rules Registry
 │       ├── README-09-reports.md         # HTML Signoff Reports
-│       └── README-10-web-ui.md          # Streamlit Web UI
+│       ├── README-10-web-ui.md          # Streamlit Web UI
+│       └── README-11-cli-user-guide.md  # Engineer-facing CLI guide (every feature)
 │
 ├── MIT License                          # Open-source (MIT)
 └── .gitignore                           # Git exclusions

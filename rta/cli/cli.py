@@ -4,16 +4,16 @@ Wrap checker, generator, diff, corners, clock relations, and rules into
 a Unix-style CLI for terminal use, CI/CD, and script automation.
 
 Usage:
-    sdc-tools check sample.sdc
-    sdc-tools check sample.sdc --json
-    sdc-tools check sample.sdc --junit --output report.xml
-    sdc-tools generate --design MY_CHIP --clock clk=5.0:sys_clk > output.sdc
-    sdc-tools diff old.sdc new.sdc
-    sdc-tools corners list
-    sdc-tools corners show "Classic 3-corner (Worst/Typ/Best)"
-    sdc-tools analyze clock-relations input.sdc
-    sdc-tools rules list
-    sdc-tools rules show SDC-060
+    rta check sample.sdc
+    rta check sample.sdc --json
+    rta check sample.sdc --junit --output report.xml
+    rta generate --design MY_CHIP --clock clk=5.0:sys_clk > output.sdc
+    rta diff old.sdc new.sdc
+    rta corners list
+    rta corners show "Classic 3-corner (Worst/Typ/Best)"
+    rta analyze clock-relations input.sdc
+    rta rules list
+    rta rules show SDC-060
 """
 
 import argparse
@@ -1179,26 +1179,26 @@ def cmd_batch(args):
 # ── Main CLI ─────────────────────────────────────────────────────────────────
 
 def build_parser() -> argparse.ArgumentParser:
-    # The `rta` alias is the Ṛta entry point; `sdc-tools` is the backward-
-    # compatible alias. Help text follows the invoked name.
+    # `rta` is the Ṛta entry point (the legacy `sdc-tools` name was dropped in
+    # the rebrand). Help text follows the invoked name when run as `rta`.
     _invoked = os.path.basename(sys.argv[0]).replace(".exe", "")
-    prog = _invoked if _invoked in ("sdc-tools", "rta") else "sdc-tools"
+    prog = _invoked if _invoked == "rta" else "rta"
     parser = argparse.ArgumentParser(
         prog=prog,
         description="Ṛta — deterministic SDC constraint verification toolkit",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             Examples:
-              sdc-tools check sample.sdc
-              sdc-tools check sample.sdc --json
-              sdc-tools check sample.sdc --junit --output results.xml
-              sdc-tools generate --design MY_CHIP --clock clk=10.0:sys_clk > output.sdc
-              sdc-tools diff old.sdc new.sdc
-              sdc-tools corners list
-              sdc-tools corners show "Classic 3-corner"
-              sdc-tools analyze clock-relations input.sdc
-              sdc-tools rules list --module checker
-              sdc-tools rules show SDC-060
+              rta check sample.sdc
+              rta check sample.sdc --json
+              rta check sample.sdc --junit --output results.xml
+              rta generate --design MY_CHIP --clock clk=10.0:sys_clk > output.sdc
+              rta diff old.sdc new.sdc
+              rta corners list
+              rta corners show "Classic 3-corner"
+              rta analyze clock-relations input.sdc
+              rta rules list --module checker
+              rta rules show SDC-060
         """),
     )
     parser.add_argument("--version", action="version", version=f"Ṛta v{APP_VERSION}")
