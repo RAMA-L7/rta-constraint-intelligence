@@ -1,0 +1,29 @@
+# Ṛta — Streamlit configuration
+#
+# Matches the native Streamlit chrome (widgets, sidebar, metrics, buttons) to
+# the app's injected theme in legacy/streamlit/ui/components.py so the cloud
+# deployment and local `streamlit run` look identical.
+#
+# NOTE: the app injects its own CSS theme (light, flat, single-accent) via
+# inject_css(); this file only aligns the *native* Streamlit chrome to that
+# palette. Dark mode remains available via the Streamlit "☰ → Settings"
+# toggle (the injected CSS ships dark-mode overrides).
+#
+# Seamless on Streamlit Community Cloud: config.toml at the repo root is
+# picked up automatically — no changes needed when deploying.
+
+[theme]
+base = "light"
+primaryColor = "#16a34a"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#fafaf9"
+textColor = "#0a0a0a"
+font = "sans serif"
+
+[browser]
+gatherUsageStats = false
+
+[server]
+# Community Cloud manages the port/address itself; this line is harmless
+# locally and prevents accidental port clashes when running multiple apps.
+# (default 8501 — the app has also been run on 8502; leave unset to use default)
