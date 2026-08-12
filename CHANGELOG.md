@@ -17,6 +17,12 @@ All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
 - **Packaging / `pip install`** — raised the `pyproject.toml` build-system floor to `setuptools>=77.0.1`. The PEP 639 SPDX license expression (`license = "MIT"` + `license-files`) cannot be parsed by older setuptools (verified: 68.1.2 fails with a `project.license` configuration error; 77.0.1 builds — 77.0.0 was yanked from PyPI). `release_cleanroom.py` now builds the wheel itself from a fresh venv pinned to the declared floor, so this class of regression is caught by the gate instead of slipping past a pre-built wheel.
 
+### 🚀 First PyPI Release under the Ṛta name
+
+- **`rta-constraint-intelligence` v1.5.0 published to PyPI** — `pip install rta-constraint-intelligence` now installs the package and the `rta` command (wheel + sdist, `License-Expression: MIT`, Python ≥ 3.10). The short name `rta` was already taken on PyPI, so the distribution keeps the full name; the `rta` console script is unaffected.
+- CLI help/usage text now consistently says `rta` (the legacy `sdc-tools` name was dropped in the rebrand and is no longer installed as a command).
+- New [`docs/features/README-11-cli-user-guide.md`](docs/features/README-11-cli-user-guide.md) — engineer-facing guide covering all 12 CLI commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
+
 ### 🔧 Notes
 
 - All 95 pre-existing rule codes retained with identical severity/behavior — verified via direct functional comparison, not just static diff.
