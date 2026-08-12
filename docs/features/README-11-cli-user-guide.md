@@ -60,6 +60,24 @@ Run `rta <command> --help` for the exact flags of any command. (The legacy name 
 
 ---
 
+## 0. ⚠️ Read this first: file paths
+
+In every example below, `my_block.sdc` (and `old.sdc`, `new.sdc`, `my_block.v`, …) is a **placeholder for your real file path** — either a relative path from the directory you're in, or an absolute path:
+
+```bash
+# from the directory that contains the file:
+rta check my_block.sdc
+
+# from anywhere, using a relative or absolute path:
+rta check ../designs/my_block.sdc
+rta check C:/work/designs/my_block.sdc        # Windows
+rta check /home/you/designs/my_block.sdc      # Linux/macOS
+```
+
+If the tool says `can't open '...': No such file or directory`, the path is wrong or the file isn't there — check the filename and the directory you're in (`pwd` / `dir`).
+
+---
+
 ## 3. `rta check` — validate an SDC file (the core feature)
 
 Parses an SDC and runs **40+ semantic checks**, reporting:
