@@ -115,6 +115,23 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; font-weight: 700; }
     margin-top: 14px;
     font-family: 'JetBrains Mono', monospace;
 }
+.sdc-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 16px;
+}
+.sdc-nav a {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--rta-accent);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+}
+.sdc-nav a:hover {
+    text-decoration: underline;
+    color: var(--rta-accent-2);
+}
 
 /* ── Metric Cards — flat, bordered, docs-tile style ──────────── */
 .metric-card {
@@ -409,15 +426,26 @@ def inject_css():
     st.markdown(CSS, unsafe_allow_html=True)
 
 
+BUSINESS_URL = "https://RAMA-L7.github.io/rta-constraint-intelligence/"
+
+
 def render_header():
-    """Render the minimal wordmark banner: eyebrow + title + tagline + version pill."""
+    """Render the wordmark banner: eyebrow + title + tagline + version pill +
+    business-site navigation."""
     st.markdown(f"""
 <div class="sdc-header">
     <div class="rta-eyebrow">Constraint Intelligence</div>
     <h1>Ṛta</h1>
-    <p>Deterministic SDC validation, generation, and multi-corner management —
-    built for signoff-grade synthesis constraints.</p>
+    <p>Ṛta brings order to timing intent, transforming constraints into trusted
+    engineering knowledge through deterministic precision.</p>
     <span class="sdc-version-badge">v{APP_VERSION}</span>
+    <nav class="sdc-nav">
+        <a href="{BUSINESS_URL}index.html#features" target="_blank" rel="noopener">Features</a>
+        <a href="{BUSINESS_URL}index.html#why" target="_blank" rel="noopener">Why Ṛta</a>
+        <a href="{BUSINESS_URL}features/rules.html" target="_blank" rel="noopener">Rules</a>
+        <a href="{BUSINESS_URL}index.html#install" target="_blank" rel="noopener">Install</a>
+        <a href="https://github.com/RAMA-L7/rta-constraint-intelligence" target="_blank" rel="noopener">Docs</a>
+    </nav>
 </div>
 """, unsafe_allow_html=True)
 
@@ -483,7 +511,7 @@ def render_sidebar():
 """)
 
         st.markdown("---")
-        st.markdown("📎 [GitHub](https://github.com/RAMA-L7/sdc-tools) · [Docs](https://github.com/RAMA-L7/sdc-tools/tree/main/docs)")
+        st.markdown("📎 [GitHub](https://github.com/RAMA-L7/rta-constraint-intelligence) · [Docs](https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/docs)")
         st.caption("© Ṛta · MIT License")
 
 

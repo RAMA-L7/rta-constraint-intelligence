@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corners / MMC | Ṛta</title>
+  <meta name="description" content="PVT corner presets and multi-mode multi-corner constraint templates: the same corner, the same meaning, everywhere in your flow.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Corners overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Tool · Corners / MMC</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">PVT corners, managed once</h1>
+      <p class="lede" style="margin-top:20px">Predefined PVT timing corner collections, from SS and FF to TT and more, so the same corner means the same process, voltage and temperature everywhere in your flow, instead of copy-pasted per block.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What are corners">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What are PVT corners?</h2>
+      <p class="lede" style="margin-top:16px">A corner is a combination of Process, Voltage and Temperature, e.g. slow-slow process at 0.72V and 25°C. Timing must be checked at several corners because the same design behaves differently at each. Ṛta manages those definitions as data.</p>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead><tr><th>Preset</th><th>Process</th><th>Voltage</th><th>Temperature</th><th>Typical use</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">SS_0P72V_25C</td><td>slow-slow</td><td>0.72 V</td><td>25 °C</td><td>setup / hold corner</td></tr>
+          <tr><td class="mono">FF_0P88V_0C</td><td>fast-fast</td><td>0.88 V</td><td>0 °C</td><td>hold analysis</td></tr>
+          <tr><td class="mono">TT_0P80V_25C</td><td>typical</td><td>0.80 V</td><td>25 °C</td><td>nominal analysis</td></tr>
+          <tr><td class="mono">SS_0P72V_125C</td><td>slow-slow</td><td>0.72 V</td><td>125 °C</td><td>max temperature</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Why it matters">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">Why it matters</p>
+        <h2 class="display-2 glow">Corners as data, not folklore</h2>
+        <p style="color:var(--text-secondary);margin-top:16px">When corners live only in someone's memory, one block gets 0.72V and another gets 0.75V for the "same" SS corner. When corners are managed, every block and every template references the same definition.</p>
+        <ul class="tick-list" style="margin-top:20px">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Consistency:</b> the same corner means the same PVT everywhere.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Pair with generator:</b> <span class="inline-code">--operating-condition SS_0P72V_16C</span> flows straight into <span class="inline-code">rta generate</span>.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Audit trail:</b> corners are inspectable with one command.</span></li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta corners list</span>
+  SS_0P72V_25C · FF_0P88V_0C · TT_0P80V_25C · SS_0P72V_125C
+
+<span class="c-dim">$ rta corners show ss</span>
+Preset: SS_0P72V_25C
+  process:  slow-slow
+  voltage:  0.72 V
+  temp:     25 °C
+  derate:   early 0.98 · late 1.02
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Inspect your corners</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">List and inspect corners</span>
+        <button class="install-copy" data-copy="rta corners list">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta corners list</span><br>
+        <span class="p">$ </span><span class="c">rta corners show ss</span> <span class="p"># partial match OK</span><br>
+        <span class="p">$ </span><span class="c">rta generate -d my_block -c clk=10.0:sys_clk --operating-condition SS_0P72V_25C</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

@@ -1,9 +1,9 @@
 # Ṛta
 
-> **Constraint Intelligence for Digital Design — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking.**
+> **Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.6-blue" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.5.7-blue" alt="Version">
   <img src="https://img.shields.io/badge/Python-3.10+-yellow" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-gray" alt="Platform">

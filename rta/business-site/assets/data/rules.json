@@ -1,0 +1,1192 @@
+[
+  {
+    "code": "CHG-CK-001",
+    "severity": "warning",
+    "name": "Clock Period Decreased",
+    "description": "A clock period was reduced (frequency increased).",
+    "why_matters": "Higher frequency tightens all timing paths: may cause setup violations.",
+    "fix": "Verify the new frequency is achievable for the design.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-CK-002",
+    "severity": "warning",
+    "name": "Clock Period Increased",
+    "description": "A clock period was increased (frequency decreased).",
+    "why_matters": "Lower frequency relaxes timing: paths previously analyzed at higher frequency may have excess margin.",
+    "fix": "Verify the frequency reduction is intentional.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-CK-003",
+    "severity": "info",
+    "name": "Clock Added",
+    "description": "A new create_clock appeared in V2.",
+    "why_matters": "New clocks add timing domains: may require new CDC constraints.",
+    "fix": "Add corresponding set_clock_groups, I/O delays, and uncertainty for the new clock.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-CK-004",
+    "severity": "info",
+    "name": "Clock Removed",
+    "description": "A create_clock from V1 was removed in V2.",
+    "why_matters": "Removed clocks eliminate a timing domain: associated constraints become orphaned.",
+    "fix": "Remove or update any constraints that reference the deleted clock.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-CK-005",
+    "severity": "fatal",
+    "name": "Clock Port Changed",
+    "description": "A create_clock source port changed between V1 and V2.",
+    "why_matters": "Changing the clock port means the clock is now on a different physical pin: all I/O delays and CDC constraints may be wrong.",
+    "fix": "Verify the new port is correct and update all related constraints.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-DR-001",
+    "severity": "warning",
+    "name": "Derate Value Changed",
+    "description": "A set_timing_derate value changed between V1 and V2.",
+    "why_matters": "Changed derate values alter timing margins across the design: may cause or hide violations.",
+    "fix": "Verify the new derate is appropriate for the target corner.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-DR-002",
+    "severity": "warning",
+    "name": "Derate Direction Changed",
+    "description": "A derate shifted from -early to -late or vice versa.",
+    "why_matters": "Swapping derate direction completely reverses the timing impact: setup becomes hold and vice versa.",
+    "fix": "Verify the direction is correct for the intended analysis.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-FP-001",
+    "severity": "fatal",
+    "name": "False Path Removed",
+    "description": "A set_false_path from V1 was removed in V2.",
+    "why_matters": "Removed false paths cause the tool to analyze previously-excluded paths, often leading to timing violations.",
+    "fix": "Restore the false path or verify the path is truly no longer false.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-FP-002",
+    "severity": "fatal",
+    "name": "False Path Target Changed",
+    "description": "A set_false_path -from/-to/-through changed between V1 and V2.",
+    "why_matters": "Changed false path targets may leave real paths un-excluded while excluding different paths.",
+    "fix": "Verify both the old and new false path targets are correct.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-FP-003",
+    "severity": "info",
+    "name": "False Path Added",
+    "description": "A new set_false_path appeared in V2.",
+    "why_matters": "New false paths reduce timing analysis coverage: verify the path is genuinely false.",
+    "fix": "Review the new false path to ensure it doesn't mask real violations.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-GEN-001",
+    "severity": "info",
+    "name": "New Constraint Added",
+    "description": "A new SDC constraint appeared in V2 that wasn't in V1.",
+    "why_matters": "New constraints add timing restrictions that weren't previously checked.",
+    "fix": "Review the new constraint to ensure it's correct and necessary.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-GEN-002",
+    "severity": "info",
+    "name": "Constraint Removed",
+    "description": "An SDC constraint from V1 was removed in V2.",
+    "why_matters": "Removed constraints relax timing analysis: paths previously constrained may now be unconstrained.",
+    "fix": "Verify the removal is intentional and doesn't leave timing gaps.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-GEN-003",
+    "severity": "info",
+    "name": "Constraint Modified",
+    "description": "An SDC constraint text changed between V1 and V2 (not covered by specific rules above).",
+    "why_matters": "Review the modification to ensure it's correct.",
+    "fix": "Compare V1 and V2 text to understand the change.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-IO-001",
+    "severity": "warning",
+    "name": "I/O Delay Changed",
+    "description": "A set_input_delay or set_output_delay value changed.",
+    "why_matters": "Changed I/O delays alter timing margins at port boundaries.",
+    "fix": "Verify the new delay matches the interface specification.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-MCP-001",
+    "severity": "fatal",
+    "name": "Multicycle Setup Decreased",
+    "description": "A multicycle -setup N was changed to a smaller value.",
+    "why_matters": "Reduced setup cycles tighten timing: paths that previously met timing may now fail.",
+    "fix": "Verify the new multicycle value is correct for the data protocol.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-MCP-002",
+    "severity": "fatal",
+    "name": "Multicycle Hold Decreased",
+    "description": "A multicycle -hold N was changed to a smaller value.",
+    "why_matters": "Reduced hold cycles tighten hold analysis: may cause false hold violations.",
+    "fix": "Verify the hold multicycle matches the setup multicycle (hold = setup - 1).",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-MCP-003",
+    "severity": "warning",
+    "name": "Multicycle Increased",
+    "description": "A multicycle path cycles count was increased.",
+    "why_matters": "More relaxed multicycle: previously analyzed paths may no longer be checked at the correct boundary.",
+    "fix": "Verify the increase is intentional and matches the data protocol.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-MCP-004",
+    "severity": "fatal",
+    "name": "Multicycle Removed",
+    "description": "A set_multicycle_path from V1 was removed in V2.",
+    "why_matters": "Removed multicycle paths revert to single-cycle analysis: paths that needed multi-cycle will now fail.",
+    "fix": "Restore the multicycle path or verify the protocol changed.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-OC-001",
+    "severity": "warning",
+    "name": "Operating Condition Changed",
+    "description": "set_operating_conditions changed between V1 and V2.",
+    "why_matters": "Different operating conditions mean a different PVT corner: all derate and uncertainty values should be reviewed.",
+    "fix": "Ensure the new condition matches the intended corner and all related values are updated.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-WC-001",
+    "severity": "warning",
+    "name": "Wildcard Pattern Changed",
+    "description": "A wildcard object filter (get_cells, get_pins, etc.) changed between V1 and V2.",
+    "why_matters": "Changed wildcards may narrow or broaden the set of affected objects, altering which paths are constrained.",
+    "fix": "Verify the new pattern matches the intended object set.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "CHG-WC-002",
+    "severity": "warning",
+    "name": "Wildcard Narrowed",
+    "description": "A wildcard pattern now matches fewer objects than in V1.",
+    "why_matters": "Narrowed wildcards leave some previously-constrained objects unconstrained.",
+    "fix": "Ensure the narrowed pattern still covers all intended objects.",
+    "module": "constraint_diff",
+    "added_version": "1.1.0"
+  },
+  {
+    "code": "SDC-001",
+    "severity": "error",
+    "name": "Missing Clock Definition",
+    "description": "No create_clock defined in the SDC file.",
+    "why_matters": "Without a clock, the synthesis tool has no timing reference: all paths are unconstrained and QoR is meaningless.",
+    "fix": "Add 'create_clock -name clk -period <ns> [get_ports <port>]' for every clock domain.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-002",
+    "severity": "error",
+    "name": "Duplicate Clock Name",
+    "description": "Two or more create_clock commands share the same -name value.",
+    "why_matters": "Duplicate names cause the tool to silently overwrite the first clock definition, leading to wrong timing.",
+    "fix": "Use unique names for each clock domain, or use -add if multiple clocks on the same port.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-003",
+    "severity": "error",
+    "name": "Generated Clock Missing -source",
+    "description": "A create_generated_clock command is missing the required -source flag.",
+    "why_matters": "Without -source the tool cannot determine the master clock edge, producing random divider behavior.",
+    "fix": "Add '-source [get_ports <port>]' or '-source [get_pins <pin>]' to the create_generated_clock.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-004",
+    "severity": "error",
+    "name": "Conflicting Divide/Multiply",
+    "description": "A create_generated_clock has both -divide_by and -multiply_by set.",
+    "why_matters": "These flags are mutually exclusive: using both produces undefined frequency.",
+    "fix": "Use either -divide_by OR -multiply_by, not both.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-005",
+    "severity": "error",
+    "name": "No Input Delay",
+    "description": "Clocks are defined but no set_input_delay exists.",
+    "why_matters": "All input ports are timing-unconstrained: setup/hold at input boundaries is never checked.",
+    "fix": "Add 'set_input_delay -max <value> [get_ports <port>]' for each input port.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-006",
+    "severity": "error",
+    "name": "No Output Delay",
+    "description": "Clocks are defined but no set_output_delay exists.",
+    "why_matters": "All output ports are timing-unconstrained: the tool cannot verify output timing.",
+    "fix": "Add 'set_output_delay -max <value> [get_ports <port>]' for each output port.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-007",
+    "severity": "error",
+    "name": "Clock on Data Port",
+    "description": "A create_clock is defined on a port whose name suggests it is a data bus (data, addr, bus, wdata, etc.).",
+    "why_matters": "Creating a clock on a data port constrains data as a clock, which breaks timing analysis.",
+    "fix": "Use a dedicated clock port. If this is a data strobe, use set_clock_latency or set_input_delay instead.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-008",
+    "severity": "error",
+    "name": "Input Delay >= Clock Period",
+    "description": "A set_input_delay value is greater than or equal to the clock period.",
+    "why_matters": "This leaves zero or negative time for combinational logic: timing closure is mathematically impossible.",
+    "fix": "Reduce input delay or increase clock period. Check if the delay value is in the correct unit (ns vs ps).",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-009",
+    "severity": "error",
+    "name": "Output Delay >= Clock Period",
+    "description": "A set_output_delay value is greater than or equal to the clock period.",
+    "why_matters": "Zero margin for output logic means the path can never meet timing.",
+    "fix": "Reduce output delay or increase clock period.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-010",
+    "severity": "error",
+    "name": "Propagated Clock on Virtual Clock",
+    "description": "set_propagated_clock is applied to a virtual clock (no source port).",
+    "why_matters": "Virtual clocks have no physical source: there is nothing to propagate through the network.",
+    "fix": "Remove set_propagated_clock for virtual clocks, or convert the virtual clock to a real clock with a source port.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-011",
+    "severity": "error",
+    "name": "Invalid Case Analysis Value",
+    "description": "set_case_analysis has a value other than 0, 1, rising, or falling.",
+    "why_matters": "The tool only recognizes these four values: anything else causes a parse error or silent ignore.",
+    "fix": "Use 'set_case_analysis 0', 'set_case_analysis 1', 'set_case_analysis rising', or 'set_case_analysis falling'.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-020",
+    "severity": "warning",
+    "name": "Suspicious False Path",
+    "description": "A set_false_path -from X -to Y does not contain typical async/scan/test keywords.",
+    "why_matters": "False paths bypass timing analysis: an incorrect false path hides real violations.",
+    "fix": "Verify the path is genuinely false (async CDC, test mode, etc.). Add a comment explaining why.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-021",
+    "severity": "warning",
+    "name": "Multicycle Without Hold Fix",
+    "description": "A multicycle -setup N path is missing the corresponding -hold (N-1) adjustment.",
+    "why_matters": "Without the hold fix, the tool checks hold at the original 1-cycle boundary, causing false hold violations.",
+    "fix": "Add '-hold <N-1>' to match every '-setup N' multicycle path.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-022",
+    "severity": "warning",
+    "name": "Unrealistically Tight Uncertainty",
+    "description": "Clock uncertainty is set below 0.05ns.",
+    "why_matters": "Overly tight uncertainty causes the tool to over-optimize, producing designs that fail in silicon.",
+    "fix": "Use a realistic uncertainty value based on PLL jitter + clock tree skew (typically 0.1-0.3ns).",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-023",
+    "severity": "warning",
+    "name": "Very High Clock Uncertainty",
+    "description": "Clock uncertainty is set above 0.5ns.",
+    "why_matters": "High uncertainty wastes timing margin: the tool adds unnecessary buffer insertion, hurting area and power.",
+    "fix": "Verify the uncertainty value. For most designs, 0.1-0.3ns is appropriate.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-024",
+    "severity": "warning",
+    "name": "Multiple Clocks Without Clock Groups",
+    "description": "Multiple clocks defined but no set_clock_groups command found.",
+    "why_matters": "Without clock group declarations, the tool analyzes all cross-clock paths as synchronous, missing real CDC issues.",
+    "fix": "Add 'set_clock_groups -asynchronous -group [get_clocks X] -group [get_clocks Y]' for unrelated clock domains.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-025",
+    "severity": "warning",
+    "name": "Wildcard dont_touch",
+    "description": "set_dont_touch is applied with a wildcard ([all_cells] or *).",
+    "why_matters": "This blocks ALL optimization, severely degrading QoR (area, timing, power).",
+    "fix": "Apply dont_touch only to specific cells/nets that need it, not globally.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-026",
+    "severity": "warning",
+    "name": "Extremely Tight max_transition",
+    "description": "set_max_transition is below 0.05ns.",
+    "why_matters": "Ultra-tight transition constraints cause excessive buffer insertion and may be physically unachievable.",
+    "fix": "Use a realistic transition target (typically 0.1-0.3ns depending on technology node).",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-027",
+    "severity": "warning",
+    "name": "set_max_delay Without -datapath_only",
+    "description": "A set_max_delay constraint is missing -datapath_only.",
+    "why_matters": "Without this flag, the constraint also affects hold analysis on the same path, potentially causing incorrect results.",
+    "fix": "Add '-datapath_only' unless you intentionally want to constrain both setup and hold.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-028",
+    "severity": "warning",
+    "name": "No Input Delay -min",
+    "description": "set_input_delay exists but no -min variant.",
+    "why_matters": "Hold timing at input ports cannot be checked without -min input delay.",
+    "fix": "Add 'set_input_delay -min <value> [get_ports <port>]' for hold analysis.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-029",
+    "severity": "warning",
+    "name": "No Output Delay -min",
+    "description": "set_output_delay exists but no -min variant.",
+    "why_matters": "Hold timing at output ports is unconstrained.",
+    "fix": "Add 'set_output_delay -min <value> [get_ports <port>]' for hold analysis.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-030",
+    "severity": "warning",
+    "name": "No set_propagated_clock",
+    "description": "Clocks are defined but set_propagated_clock is missing.",
+    "why_matters": "The ideal clock model assumes zero insertion delay and skew: overly optimistic for post-layout correlation.",
+    "fix": "Add 'set_propagated_clock [all_clocks]' after CTS to model real clock tree delay.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-031",
+    "severity": "warning",
+    "name": "Clock Groups Missing Exclusion Type",
+    "description": "A set_clock_groups command is missing -asynchronous, -logically_exclusive, or -physically_exclusive.",
+    "why_matters": "Without an exclusion type, the constraint has no effect: cross-clock paths are still analyzed as synchronous.",
+    "fix": "Add the appropriate flag: -asynchronous (no phase relation), -physically_exclusive (same port), or -logically_exclusive (mux-select).",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-032",
+    "severity": "warning",
+    "name": "Derate Early Without Late",
+    "description": "set_timing_derate has -early but no matching -late.",
+    "why_matters": "Unbalanced derate skews setup vs hold analysis in opposite directions, producing inconsistent results.",
+    "fix": "Add a matching -late derate value.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-033",
+    "severity": "warning",
+    "name": "Derate Late Without Early",
+    "description": "set_timing_derate has -late but no matching -early.",
+    "why_matters": "Same issue as SDC-032: asymmetric derate.",
+    "fix": "Add a matching -early derate value.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-034",
+    "severity": "warning",
+    "name": "Data Check Without -clock",
+    "description": "set_data_check is missing a -clock reference.",
+    "why_matters": "Without -clock, the tool cannot determine which edge to check against.",
+    "fix": "Add '-clock [get_clocks <name>]' to the set_data_check command.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-035",
+    "severity": "warning",
+    "name": "Excessive Disable Timing",
+    "description": "More than 5 set_disable_timing commands found.",
+    "why_matters": "Large numbers of disable_timing arcs can hide real timing violations by disabling critical paths.",
+    "fix": "Review each disable_timing: ensure they are necessary and not masking real issues.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-036",
+    "severity": "warning",
+    "name": "Disable Timing Without From/To",
+    "description": "A set_disable_timing command is missing both -from and -to.",
+    "why_matters": "This disables ALL timing arcs on the specified cell: almost always wrong and hides real violations.",
+    "fix": "Add explicit -from and -to pin specifiers to disable only the intended arc.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-037",
+    "severity": "warning",
+    "name": "Half-Cycle Without Hold Fix",
+    "description": "Half-cycle multicycle paths (-rise_to/-fall_to on -setup) found without matching -hold 0.",
+    "why_matters": "Hold analysis will be wrong at the half-cycle boundary.",
+    "fix": "Add '-hold 0' with matching -rise_to/-fall_to for each half-cycle setup path.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-040",
+    "severity": "warning",
+    "name": "cell_early Derate < 1.0",
+    "description": "set_timing_derate -early -cell_delay is below 1.0.",
+    "why_matters": "Early derate < 1.0 makes cells faster, reducing hold margin: opposite of intended conservative analysis.",
+    "fix": "Use cell_early > 1.0 (e.g., 1.05) for conservative hold analysis.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-041",
+    "severity": "warning",
+    "name": "cell_late Derate > 1.0",
+    "description": "set_timing_derate -late -cell_delay is above 1.0.",
+    "why_matters": "Late derate > 1.0 makes cells faster, reducing setup margin; it should be < 1.0 for conservative analysis.",
+    "fix": "Use cell_late < 1.0 (e.g., 0.95) for conservative setup analysis.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-042",
+    "severity": "warning",
+    "name": "net_early Derate < 1.0",
+    "description": "set_timing_derate -early -net_delay is below 1.0.",
+    "why_matters": "Early net derate < 1.0 reduces hold margin on interconnect delays.",
+    "fix": "Use net_early > 1.0 for conservative hold analysis.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-043",
+    "severity": "warning",
+    "name": "net_late Derate > 1.0",
+    "description": "set_timing_derate -late -net_delay is above 1.0.",
+    "why_matters": "Late net derate > 1.0 reduces setup margin on interconnect delays.",
+    "fix": "Use net_late < 1.0 for conservative setup analysis.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-044",
+    "severity": "warning",
+    "name": "Unrecognized Operating Condition",
+    "description": "set_operating_conditions name doesn't match common patterns (WORST, BEST, TYP, SSG, TT, FFG, etc.).",
+    "why_matters": "Non-standard names may indicate a typo or missing library setup.",
+    "fix": "Verify the condition name matches your library's operating condition definitions.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-045",
+    "severity": "warning",
+    "name": "Hold/Setup Uncertainty Ratio",
+    "description": "Clock uncertainty -hold is not approximately 0.5x of -setup.",
+    "why_matters": "Hold uncertainty should typically be ~half of setup uncertainty (skew dominates hold). Unusual ratios may indicate a typo.",
+    "fix": "Review the values: typically -hold ≈ 0.5 * -setup.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-046",
+    "severity": "error",
+    "name": "Undefined Clock in I/O Delay",
+    "description": "A set_input_delay / set_output_delay -clock names a clock that no create_clock or create_generated_clock defines.",
+    "why_matters": "Real tools fail or warn on this because the port-to-clock association is broken: the delay would be applied to nothing, and static analysis must NOT silently substitute a different clock.",
+    "fix": "Fix the -clock name, or add the missing create_clock / create_generated_clock definition.",
+    "module": "checker",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-047",
+    "severity": "warning",
+    "name": "Undefined Master Clock",
+    "description": "A create_generated_clock -master_clock names a clock that is not defined in this SDC.",
+    "why_matters": "Without a resolvable master clock the generated clock's period and phase are undefined, making downstream timing meaningless.",
+    "fix": "Add the create_clock/create_generated_clock that defines the master, or fix the -master_clock name.",
+    "module": "checker",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-048",
+    "severity": "warning",
+    "name": "Undefined Clock in Clock Groups",
+    "description": "A set_clock_groups -group names a clock that is not defined by any create_clock/create_generated_clock.",
+    "why_matters": "Grouping a nonexistent clock silently excludes nothing: CDC paths involving it remain unhandled.",
+    "fix": "Fix the clock name, or define the missing clock first.",
+    "module": "checker",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-049",
+    "severity": "warning",
+    "name": "Contradictory Case Analysis",
+    "description": "The same pin/port is assigned two different set_case_analysis values in one file (e.g. 0 then 1).",
+    "why_matters": "A pin cannot be both 0 and 1 in the same mode: the later value silently overrides the earlier, hiding a real conflict.",
+    "fix": "Use one value per object per mode, or split the modes into separate SDC files.",
+    "module": "checker",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-050",
+    "severity": "warning",
+    "name": "Clock Mismatch Across Corners",
+    "description": "Clock names or definitions differ between PVT corners.",
+    "why_matters": "Inconsistent clock definitions cause wrong timing analysis in some corners.",
+    "fix": "Ensure all corners have matching clock definitions.",
+    "module": "mmc",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-051",
+    "severity": "info",
+    "name": "Clock Period Differs Between Corners",
+    "description": "Clock periods differ across corners (may be intentional for multi-mode).",
+    "why_matters": "This is often intentional (e.g., different modes at different frequencies) but should be verified.",
+    "fix": "Confirm the period differences are intentional multi-mode design.",
+    "module": "mmc",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-053",
+    "severity": "warning",
+    "name": "Missing Timing Exceptions in Some Corners",
+    "description": "A timing exception (false path, multicycle, etc.) exists in some corners but is missing in others.",
+    "why_matters": "Missing exceptions cause the tool to analyze paths that should be excluded, producing false violations.",
+    "fix": "Add the missing timing exceptions to all relevant corners.",
+    "module": "mmc",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-054",
+    "severity": "warning",
+    "name": "Derate Not Monotonically Ordered",
+    "description": "Derate values are not monotonically ordered across PVT corners (e.g., worst has lower derate than typical).",
+    "why_matters": "Non-monotonic derate violates the corner ordering assumption: results from different corners cannot be compared.",
+    "fix": "Verify derate ordering: worst-case should be most conservative (highest cell_early, lowest cell_late).",
+    "module": "mmc",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-055",
+    "severity": "error",
+    "name": "Design Object Not Found",
+    "description": "A get_ports/get_pins/get_cells/get_nets reference names an explicit object that does not exist in the supplied design context.",
+    "why_matters": "Referencing a nonexistent object makes the constraint silently apply to nothing: real timing paths stay unconstrained while the SDC looks correct.",
+    "fix": "Fix the object name, or add the missing port/pin/cell/net to the design.",
+    "module": "design_context",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-056",
+    "severity": "warning",
+    "name": "Empty Collection",
+    "description": "A wildcard collection (e.g. [get_ports debug_*]) matched nothing in the supplied design context.",
+    "why_matters": "An empty collection means the constraint applies to zero objects: a typo'd or stale pattern quietly leaves real objects unconstrained.",
+    "fix": "Verify the wildcard pattern matches at least one design object.",
+    "module": "design_context",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-057",
+    "severity": "error",
+    "name": "Invalid Hierarchy Reference",
+    "description": "A get_pins/get_cells path references an instance parent that does not exist in the design hierarchy (e.g. u_core/u_nope/D where u_core/u_nope is absent).",
+    "why_matters": "Invalid hierarchy paths resolve to nothing in the tool: the intended pins/cells are never constrained.",
+    "fix": "Fix the hierarchical path to match a real instance in the netlist.",
+    "module": "design_context",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-058",
+    "severity": "error",
+    "name": "Top Module Ambiguity",
+    "description": "The supplied netlist has multiple candidate top modules (or the requested top does not exist): design context could not be built.",
+    "why_matters": "Without a resolved top module, port-level and hierarchy validation cannot run; ambiguous selection would silently pick the wrong design boundary.",
+    "fix": "Specify the top module explicitly (--top / UI selector), or add a unique top module.",
+    "module": "design_context",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-059",
+    "severity": "warning",
+    "name": "Unconstrained Port",
+    "description": "A data-pattern input/output port of the supplied design has no set_input_delay/set_output_delay (and is not a clock port).",
+    "why_matters": "Unconstrained boundary ports leave real interface timing unverified: the design can pass synthesis timing while failing at the chip boundary.",
+    "fix": "Add set_input_delay/set_output_delay for the port, or explicitly document why it is exempt (clock/reset/control).",
+    "module": "design_context",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-060",
+    "severity": "warning",
+    "name": "Async Instead of Physically Exclusive",
+    "description": "Clock pair marked -asynchronous but should be -physically_exclusive (same source port, different periods).",
+    "why_matters": "-asynchronous causes unnecessary Crosstalk/SI analysis on paths that can never physically exist simultaneously.",
+    "fix": "Change to 'set_clock_groups -physically_exclusive' for clocks sharing the same source port.",
+    "module": "clock_relations",
+    "added_version": "1.2.0"
+  },
+  {
+    "code": "SDC-061",
+    "severity": "warning",
+    "name": "Exclusive But Clocks Are Synchronous",
+    "description": "Clock pair marked -logically_exclusive or -physically_exclusive but clocks have a real timing relationship (parent-child/synchronous).",
+    "why_matters": "This masks real setup/hold timing paths, leaving them un-optimized, which can cause silicon failure.",
+    "fix": "Remove the set_clock_groups for synchronous clocks (parent-child or same-master relationships don't need exclusion).",
+    "module": "clock_relations",
+    "added_version": "1.2.0"
+  },
+  {
+    "code": "SDC-062",
+    "severity": "info",
+    "name": "Missing Clock Relationship",
+    "description": "An asynchronous or physically exclusive clock pair has no set_clock_groups entry.",
+    "why_matters": "Without explicit grouping, the tool may analyze cross-domain paths as synchronous (over-constraining).",
+    "fix": "Add 'set_clock_groups -asynchronous -group [get_clocks X] -group [get_clocks Y]'.",
+    "module": "clock_relations",
+    "added_version": "1.2.0"
+  },
+  {
+    "code": "SDC-063",
+    "severity": "info",
+    "name": "Wrong Exclusion Type",
+    "description": "Clock pair marked with an exclusion type (-logically_exclusive or -physically_exclusive) but appears to be asynchronous.",
+    "why_matters": "Using exclusion instead of -asynchronous may be overly restrictive or indicate a design intent mismatch.",
+    "fix": "Verify the exclusion type is intentional. Use -asynchronous for unrelated clock domains.",
+    "module": "clock_relations",
+    "added_version": "1.2.0"
+  },
+  {
+    "code": "SDC-064",
+    "severity": "warning",
+    "name": "Unconstrained Data Input (structural)",
+    "description": "An input port whose net structurally drives instance data pins (D/DIN/DATA) has no set_input_delay.",
+    "why_matters": "The port is structurally a data boundary, so its external setup/hold is genuinely unconstrained: this is stronger evidence than a name-based guess.",
+    "fix": "Add set_input_delay (-max/-min) for the port, or verify the port is intentionally exempt.",
+    "module": "design_coverage",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-065",
+    "severity": "warning",
+    "name": "Unconstrained Data Output (structural)",
+    "description": "An output port whose net is structurally driven by instance data pins (Q/DOUT) has no set_output_delay.",
+    "why_matters": "The port is structurally a data output boundary, so its external setup/hold is genuinely unconstrained.",
+    "fix": "Add set_output_delay (-max/-min) for the port, or verify the port is intentionally exempt.",
+    "module": "design_coverage",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-066",
+    "severity": "warning",
+    "name": "Partially Constrained Bus",
+    "description": "A bus port has I/O delay on only some of its bits (provable from the SDC collections), leaving the other bits unconstrained.",
+    "why_matters": "Partial bus coverage means some bits of the interface have no external timing constraint: a subtle gap that full-interface constraint reviews exist to catch.",
+    "fix": "Constrain the whole bus (e.g. [get_ports data_in]) or explicitly constrain every bit.",
+    "module": "design_coverage",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-067",
+    "severity": "info",
+    "name": "Exact Duplicate Constraint",
+    "description": "The same normalized constraint (same command, objects, options, value) is issued more than once.",
+    "why_matters": "The second command is a no-op: the constraint already exists. Harmless but redundant; often a copy-paste artifact.",
+    "fix": "Remove the duplicate, or keep it only if a comment explains why it is intentional.",
+    "module": "constraint_interactions",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-068",
+    "severity": "info",
+    "name": "Overridden Constraint",
+    "description": "A later constraint with the same objects/clock/edge but a different value silently replaces an earlier one (no -add_delay).",
+    "why_matters": "The earlier constraint is dead: if the override is unintentional, the intended timing value is silently lost.",
+    "fix": "Verify the override is intentional, or use -add_delay if both values should accumulate.",
+    "module": "constraint_interactions",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-069",
+    "severity": "warning",
+    "name": "Contradictory Max/Min Delay",
+    "description": "set_max_delay value is smaller than set_min_delay on provably identical endpoints.",
+    "why_matters": "A timing window where max < min is impossible: no path can satisfy both required_max < required_min. This is provable without STA.",
+    "fix": "Fix the values so set_max_delay >= set_min_delay on the same endpoints.",
+    "module": "constraint_interactions",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-070",
+    "severity": "info",
+    "name": "Timing Exception Interaction",
+    "description": "A set_false_path and a set_multicycle_path/set_max_delay/set_min_delay reference overlapping endpoint objects.",
+    "why_matters": "Object overlap is NOT proof that the same timing path is affected: the exact interaction requires STA/path analysis. A false path may legally coexist with an exception on different edge/phase combinations.",
+    "fix": "Review the exceptions with STA to confirm whether the same path is both false and constrained.",
+    "module": "constraint_interactions",
+    "added_version": "1.4.0"
+  },
+  {
+    "code": "SDC-100",
+    "severity": "info",
+    "name": "Missing sdc_version",
+    "description": "No 'set sdc_version' declaration found.",
+    "why_matters": "Tool version compatibility may be affected without an explicit version declaration.",
+    "fix": "Add 'set sdc_version 2.2' at the top of the SDC file.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-101",
+    "severity": "info",
+    "name": "Missing set_units",
+    "description": "No set_units declaration found.",
+    "why_matters": "Without explicit units, different tools may interpret numeric values differently (ns vs ps).",
+    "fix": "Add 'set_units -time ns -capacitance pF'.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-102",
+    "severity": "info",
+    "name": "Missing set_max_fanout",
+    "description": "No set_max_fanout constraint.",
+    "why_matters": "Unconstrained fanout can create high-capacity nets that slow down transitions.",
+    "fix": "Add 'set_max_fanout 20 [all_inputs]' (adjust for your technology).",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-103",
+    "severity": "info",
+    "name": "Missing set_max_transition",
+    "description": "No set_max_transition constraint.",
+    "why_matters": "Unconstrained slew can cause signal integrity issues and increased dynamic power.",
+    "fix": "Add 'set_max_transition 0.2 [all_nets]' (adjust for your technology).",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-104",
+    "severity": "info",
+    "name": "Missing set_max_capacitance",
+    "description": "No set_max_capacitance constraint.",
+    "why_matters": "Unconstrained capacitance affects signal integrity and power.",
+    "fix": "Add 'set_max_capacitance 0.5 [all_nets]' (adjust for your technology).",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-105",
+    "severity": "info",
+    "name": "Missing set_load",
+    "description": "No set_load on output ports.",
+    "why_matters": "Without output load, the tool optimizes for zero fanout: unrealistic for real interconnect.",
+    "fix": "Add 'set_load 0.05 [get_ports <output>]' based on expected board trace capacitance.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-106",
+    "severity": "info",
+    "name": "Missing Driving Cell / Input Transition",
+    "description": "No set_driving_cell, set_input_transition, or set_drive on input ports.",
+    "why_matters": "Ideal input slew is overly optimistic: real drivers have finite output impedance.",
+    "fix": "Add 'set_driving_cell -cell <cell> [all_inputs]' or 'set_input_transition 0.1 [all_inputs]'.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-107",
+    "severity": "info",
+    "name": "Missing Clock Latency",
+    "description": "No set_clock_latency defined.",
+    "why_matters": "Without source latency, the tool assumes the clock arrives at the chip boundary with zero delay.",
+    "fix": "Add 'set_clock_latency -source <value> [all_clocks]' for off-chip clock insertion delay.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-108",
+    "severity": "info",
+    "name": "Missing Clock Transition",
+    "description": "No set_clock_transition defined.",
+    "why_matters": "Ideal clock transition (zero slew) is unrealistic and affects clock gating check accuracy.",
+    "fix": "Add 'set_clock_transition 0.1 [all_clocks]' based on PLL output characteristics.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-109",
+    "severity": "info",
+    "name": "Missing set_case_analysis",
+    "description": "No set_case_analysis for DFT/test signals.",
+    "why_matters": "Without case_analysis, DFT paths (scan_en, test_mode) dominate timing analysis.",
+    "fix": "Add 'set_case_analysis 0 [get_ports scan_en]' (or 1) to fix DFT signal values.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-110",
+    "severity": "info",
+    "name": "Missing set_ideal_network",
+    "description": "No set_ideal_network to mark reset/scan as ideal.",
+    "why_matters": "Reset and scan signals modeled as real nets waste optimization effort on non-functional paths.",
+    "fix": "Add 'set_ideal_network [get_nets rst_n scan_en]' for pre-CTS reset/scan networks.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-111",
+    "severity": "info",
+    "name": "Excessive False Paths",
+    "description": "More than 10 set_false_path commands found.",
+    "why_matters": "Large numbers of false paths may indicate overly broad exclusions that hide real violations.",
+    "fix": "Audit each false path to ensure it is genuinely false. Consider using set_clock_groups instead.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-112",
+    "severity": "info",
+    "name": "Excessive Multicycle Paths",
+    "description": "More than 8 set_multicycle_path commands found.",
+    "why_matters": "Many multicycle paths suggest complex timing protocols: each one needs documentation.",
+    "fix": "Document each multicycle path with a comment explaining the data protocol.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-113",
+    "severity": "info",
+    "name": "Missing set_dont_use",
+    "description": "No set_dont_use constraint.",
+    "why_matters": "Without dont_use, the tool may use weak or problematic cells (e.g., low-Vt, clock buffers on data paths).",
+    "fix": "Add 'set_dont_use [get_lib_cells <lib>/dont_use_cell]' to exclude problematic cells.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-114",
+    "severity": "info",
+    "name": "Missing Operating Conditions",
+    "description": "No set_operating_conditions defined.",
+    "why_matters": "Without explicit PVT corner, the tool uses library defaults, which may not match the target corner.",
+    "fix": "Add 'set_operating_conditions -max <corner_name>' for the target PVT.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-115",
+    "severity": "info",
+    "name": "Missing set_timing_derate",
+    "description": "No set_timing_derate defined.",
+    "why_matters": "Without derate, the tool uses nominal delays: insufficient for AOCV/POCVM advanced signoff.",
+    "fix": "Add set_timing_derate values for cell and net early/late delays.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-116",
+    "severity": "info",
+    "name": "Missing set_clock_jitter",
+    "description": "No set_clock_jitter defined.",
+    "why_matters": "Random jitter is not modeled separately from uncertainty, so timing may be over or under-constrained.",
+    "fix": "Add 'set_clock_jitter <value> [get_clocks <name>]' based on PLL specifications.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-117",
+    "severity": "info",
+    "name": "Missing group_path",
+    "description": "No group_path defined.",
+    "why_matters": "Without path grouping, synthesis optimizes all paths equally: critical interfaces may not get priority.",
+    "fix": "Add 'group_path -name <name> -from <start> -to <end> -weight <N>' for critical paths.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-118",
+    "severity": "info",
+    "name": "Missing set_clock_gating_check",
+    "description": "No set_clock_gating_check defined.",
+    "why_matters": "If the design uses clock gating cells, the tool won't check setup/hold on gating pin without this.",
+    "fix": "Add 'set_clock_gating_check -setup 0.0 -hold 0.0 [all_clocks]' or target specific gating cells.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-119",
+    "severity": "info",
+    "name": "Disable Timing Present",
+    "description": "set_disable_timing commands found in the SDC.",
+    "why_matters": "Disable_timing arcs hide timing paths: verify each is intentional and not masking real violations.",
+    "fix": "Review each set_disable_timing with -from/-to pin specificity.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-120",
+    "severity": "info",
+    "name": "set_min_delay Present",
+    "description": "set_min_delay constraints found.",
+    "why_matters": "min_delay can conflict with hold constraints: verify no overlap.",
+    "fix": "Check that set_min_delay and set_multicycle_path -hold don't target the same paths.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-121",
+    "severity": "info",
+    "name": "Missing Wire Load Constraints",
+    "description": "No set_wire_load_mode or set_wire_load_model defined.",
+    "why_matters": "Without wire load, interconnect delay is estimated with default models, which may not match the physical layout.",
+    "fix": "Add wire load constraints for pre-layout synthesis, or remove if using wireload-free flow.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-122",
+    "severity": "info",
+    "name": "Missing set_max_area",
+    "description": "No set_max_area constraint.",
+    "why_matters": "Without area target, synthesis optimizes only timing, potentially producing oversized designs.",
+    "fix": "Add 'set_max_area <value>' to constrain total cell area.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-123",
+    "severity": "info",
+    "name": "Missing Power Constraints",
+    "description": "No set_max_dynamic_power or set_max_leakage_power defined.",
+    "why_matters": "Without power constraints, synthesis ignores power optimization.",
+    "fix": "Add 'set_max_dynamic_power <value>' and/or 'set_max_leakage_power <value>' for power-aware synthesis.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-124",
+    "severity": "info",
+    "name": "Clock Gating Without Min Pulse Width",
+    "description": "set_clock_gating_check is present but no set_min_pulse_width.",
+    "why_matters": "Narrow pulses may trigger clock gating cells incorrectly: min_pulse_width prevents glitches.",
+    "fix": "Add 'set_min_pulse_width <value> [get_clocks <name>]' to prevent narrow-pulse triggering.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-125",
+    "severity": "info",
+    "name": "Voltage Without Voltage Area",
+    "description": "set_voltage found but no create_voltage_area.",
+    "why_matters": "set_voltage without a voltage area has no effect: the voltage domain is undefined.",
+    "fix": "Add 'create_voltage_area -region <name> [get_ports <port>]' to define the voltage domain.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-126",
+    "severity": "info",
+    "name": "Virtual Clocks Detected",
+    "description": "Virtual clocks (no source port) are defined.",
+    "why_matters": "Virtual clocks model off-chip interfaces: ensure I/O delay constraints reference them correctly.",
+    "fix": "Verify set_input_delay/set_output_delay uses -clock [get_clocks <virtual_clk>].",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-130",
+    "severity": "info",
+    "name": "Operating Conditions Without Corner Context",
+    "description": "set_operating_conditions found but no corner/mode comments in the file.",
+    "why_matters": "Without comments, it's unclear which PVT corner this SDC targets.",
+    "fix": "Add comments like '# Corner: WORST, SS/0.9V/125C' near the set_operating_conditions.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-131",
+    "severity": "info",
+    "name": "Multiple Operating Conditions",
+    "description": "Multiple set_operating_conditions commands found in one file.",
+    "why_matters": "Multiple conditions in one file may indicate a copy-paste error or incorrect multi-corner setup.",
+    "fix": "Each SDC file should typically have one set_operating_conditions for its target corner.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-132",
+    "severity": "info",
+    "name": "Derate Without Operating Conditions",
+    "description": "set_timing_derate found but no set_operating_conditions.",
+    "why_matters": "Derate values are corner-specific: without operating conditions, the corner context is unclear.",
+    "fix": "Add set_operating_conditions or a comment identifying the target corner.",
+    "module": "checker",
+    "added_version": "1.0.0"
+  },
+  {
+    "code": "SDC-140",
+    "severity": "info",
+    "name": "Clock Relation Analysis Skipped",
+    "description": "The clock relation analyzer failed to run (likely an import or parse error).",
+    "why_matters": "Clock relation checks (SDC-060..063) were not performed: potential issues may be missed.",
+    "fix": "Check that clock_relations.py is importable and the SDC text is valid.",
+    "module": "checker",
+    "added_version": "1.2.0"
+  },
+  {
+    "code": "SDC-150",
+    "severity": "warning",
+    "name": "Timing Exception Without Rationale Comment",
+    "description": "A set_false_path / set_multicycle_path / set_case_analysis line has no substantive explanatory comment within the 3 lines above or inline.",
+    "why_matters": "An undocumented timing exception can hide a real violation: a later engineer cannot tell whether the path is genuinely false (async CDC, test mode) or was silently exempted.",
+    "fix": "Add a comment above the line or inline (e.g. '# async CDC: two-flop synchronizer, no timing path') explaining why the exception is correct.",
+    "module": "checker",
+    "added_version": "1.5.2"
+  },
+  {
+    "code": "SDC-151",
+    "severity": "warning",
+    "name": "Unconstrained Reset Tree",
+    "description": "A net structurally driving >= 2 flip-flop reset pins (RESET-class instance pins) has no timing exception touching it.",
+    "why_matters": "An async reset tree with no exception leaves the deassertion path and CDC paths unconstrained: silent false hold violations or missed CDC analysis.",
+    "fix": "Add a targeted exception, e.g. set_false_path -from [get_ports <reset>] -to [all_registers], or set_ideal_network on the reset net, and verify the reset synchronizer input.",
+    "module": "checker",
+    "added_version": "1.5.4"
+  },
+  {
+    "code": "SDC-152",
+    "severity": "warning",
+    "name": "Suspect Blanket False Path",
+    "description": "A wildcard set_false_path (all_inputs / * / all_ports) provably covers a reset tree while no targeted exception exists.",
+    "why_matters": "A blanket false path hides the sync-input vs deassertion distinction that an async-reset synchronizer requires: the mechanism is never actually verified.",
+    "fix": "Replace the blanket cut with a targeted set_false_path on the reset net (or -through its synchronizer), and consider whether set_clock_groups -asynchronous is masking CDC paths.",
+    "module": "checker",
+    "added_version": "1.5.4"
+  },
+  {
+    "code": "SDC-153",
+    "severity": "warning",
+    "name": "Reset Synchronizer Input Unconstrained",
+    "description": "A reset tree whose net also drives data input(s), the structural shape of an async-reset synchronizer sync stage, has no exception.",
+    "why_matters": "The synchronizer's sync input and the deassertion path need distinct handling, not one blanket false path; a blanket exception silently ignores the difference.",
+    "fix": "Constrain the synchronizer input and the deassertion path separately (e.g. a targeted false path on the sync flops' D pins, and a separate one on the reset deassertion).",
+    "module": "checker",
+    "added_version": "1.5.4"
+  },
+  {
+    "code": "SDC-154",
+    "severity": "warning",
+    "name": "Scan Enable Without Mode Coverage",
+    "description": "A scan_en / scan_enable / test_mode-style signal is referenced in the SDC (proving the design is DFT) but has NO set_case_analysis mode assignment, or only a non-mode value (rising/falling).",
+    "why_matters": "Without case analysis for every mode, STA blends shift-timing and capture-timing paths into one report: a silent, specific DFT failure. A single-value assignment (0 or 1) is legitimate per-mode practice.",
+    "fix": "Add set_case_analysis 0 [get_ports <sig>] (function/capture) and set_case_analysis 1 [get_ports <sig>] (scan shift): or verify each mode is constrained in its own corner file.",
+    "module": "checker",
+    "added_version": "1.5.5"
+  },
+  {
+    "code": "SDC-155",
+    "severity": "warning",
+    "name": "Scan False Path Too Broad",
+    "description": "A fully-blanket set_false_path (both -from and -to sides all_*/wildcard) in a DFT design, and when a netlist is present, a cut matching all flops while the design shows a scan-chain shape.",
+    "why_matters": "A blanket cut cannot distinguish scan-chain-present flops from genuinely non-scan flops, silently exempting scan paths (lock-up latch trap). Targeted cuts (e.g. -through [get_pins *scan*]) are the recommended pattern and never fire.",
+    "fix": "Restrict the exception to genuinely non-scan flops (e.g. -to [get_cells non_scan_*]) or use mode-specific set_case_analysis. Never false-path flops present in the scan chain, even though they appear in non-scan reports.",
+    "module": "checker",
+    "added_version": "1.5.5"
+  },
+  {
+    "code": "SDC-156",
+    "severity": "info",
+    "name": "Flat Derate on Advanced-Node Flow",
+    "description": "The file signals an advanced (<=16nm) methodology: a small-node token in a set_operating_conditions command (e.g. SS_0P72V_16C), an explicit Nnm mention, or a POCV/AOCV/sigma keyword, yet all derates are flat single-number set_timing_derate values.",
+    "why_matters": "A derate strategy correct for an older node silently persists after migration: reintroducing excess pessimism (wasted area/power on phantom violations) or insufficient margin (real risk missed). Flat OCV derate is legitimate for many blocks, hence advisory only.",
+    "fix": "Consider table-based AOCV or sigma-based POCV derates for the advanced node; if flat values are intentional, add a comment explaining why the methodology was kept.",
+    "module": "checker",
+    "added_version": "1.5.6"
+  },
+  {
+    "code": "SDC-157",
+    "severity": "info",
+    "name": "Derate Methodology Mix",
+    "description": "Flat set_timing_derate values coexist with sigma/table-based derates (a command carrying sigma / pocv / derate_table) in one file.",
+    "why_matters": "Flat and statistical/table derates are not meant to be mixed: the two methodologies answer the same question with different pessimism models, and mixing them makes results inconsistent across the design.",
+    "fix": "Pick one derate methodology for the corner: either keep flat derates throughout or move to a single table/sigma-based scheme.",
+    "module": "checker",
+    "added_version": "1.5.6"
+  }
+]

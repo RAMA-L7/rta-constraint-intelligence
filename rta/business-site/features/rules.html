@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rules Reference | Ṛta</title>
+  <meta name="description" content="Every Ṛta rule documented and searchable: 119 SDC and diff rules with severity, why it matters, and how to fix. Filter by code, keyword, severity or module.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+  <style>
+    .rules-toolbar {
+      position: sticky; top: 72px; z-index: 50;
+      background: var(--glass-strong);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+      border: 1px solid var(--border); border-radius: var(--radius-l);
+      padding: var(--sp-4); margin-bottom: var(--sp-5);
+      display: grid; gap: var(--sp-3);
+      box-shadow: 0 16px 50px -24px rgba(0,0,0,0.8);
+    }
+    .rules-search { display: flex; gap: 10px; align-items: center; }
+    .rules-search input {
+      flex: 1; background: var(--bg-deep); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-m); color: var(--text-primary);
+      font-family: var(--font-body); font-size: 0.95rem; padding: 12px 16px;
+      outline: none; transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
+    }
+    .rules-search input:focus { border-color: var(--border-glow); box-shadow: 0 0 0 4px rgba(56,189,248,0.12); }
+    .rules-search input::placeholder { color: var(--text-muted); }
+    .rules-count { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; }
+    .rules-filters { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .filter-chip {
+      font-family: var(--font-mono); font-size: 0.76rem; padding: 7px 14px;
+      border-radius: 999px; border: 1px solid var(--border-strong);
+      background: rgba(148,163,184,0.06); color: var(--text-secondary);
+      cursor: pointer; transition: all var(--t-fast) var(--ease-out); user-select: none;
+    }
+    .filter-chip:hover { border-color: var(--border-glow); color: var(--text-primary); }
+    .filter-chip.active { background: var(--grad-cta); color: #04121F; border-color: transparent; font-weight: 600; }
+    .filter-chip.active[data-sev="fatal"], .filter-chip.active[data-sev="error"] { background: var(--error); }
+    .filter-chip.active[data-sev="warning"] { background: var(--warning); color: #1a1203; }
+    .filter-chip.active[data-sev="info"] { background: var(--info); color: #04121F; }
+    .filter-chip.active[data-mod] { background: rgba(56,189,248,0.14); color: var(--accent); border-color: rgba(56,189,248,0.4); }
+
+    .rule-card {
+      border: 1px solid var(--border); border-radius: var(--radius-m);
+      background: linear-gradient(180deg, var(--surface-2), var(--surface-1));
+      padding: var(--sp-5); margin-bottom: var(--sp-3);
+      transition: border-color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
+    }
+    .rule-card:hover { border-color: var(--border-strong); transform: translateX(3px); }
+    .rule-card.hidden { display: none; }
+    .rule-head { display: flex; align-items: flex-start; gap: var(--sp-4); flex-wrap: wrap; }
+    .rule-code {
+      font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem;
+      padding: 6px 12px; border-radius: var(--radius-s); flex: none;
+      background: rgba(148,163,184,0.08); border: 1px solid var(--border);
+      color: var(--text-primary); letter-spacing: 0.02em;
+    }
+    .rule-code.sev-fatal, .rule-code.sev-error { color: var(--error); border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.07); }
+    .rule-code.sev-warning { color: var(--warning); border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+    .rule-code.sev-info { color: var(--info); border-color: rgba(96,165,250,0.35); background: rgba(96,165,250,0.07); }
+    .rule-name { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; color: var(--text-primary); flex: 1; min-width: 220px; }
+    .rule-meta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); }
+    .rule-meta .sev-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+    .rule-desc { margin-top: 12px; color: var(--text-secondary); font-size: 0.93rem; line-height: 1.7; }
+    .rule-detail {
+      display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); margin-top: 14px;
+      max-height: 0; overflow: hidden; opacity: 0;
+      transition: max-height 0.4s var(--ease-out), opacity 0.3s var(--ease-out), margin-top 0.3s var(--ease-out), padding 0.3s var(--ease-out);
+    }
+    .rule-card.open .rule-detail { max-height: 600px; opacity: 1; margin-top: 16px; }
+    .rule-detail-box { border: 1px solid var(--border); border-radius: var(--radius-s); padding: 14px 16px; background: var(--bg-deep); }
+    .rule-detail-box h5 { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 8px; }
+    .rule-detail-box p { margin: 0; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.65; }
+    .rule-toggle {
+      margin-top: 12px; font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent);
+      background: none; border: none; cursor: pointer; padding: 4px 0; letter-spacing: 0.04em;
+    }
+    .rule-toggle:hover { text-shadow: 0 0 12px rgba(56,189,248,0.6); }
+    @media (max-width: 700px) { .rule-detail { grid-template-columns: 1fr; } }
+    .rules-empty { text-align: center; padding: var(--sp-8) 0; color: var(--text-muted); display: none; }
+    .rules-empty.show { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-6)" aria-label="Rules Reference overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-5)">
+      <p class="eyebrow">Tool · Rules Reference</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Every rule, documented and searchable</h1>
+      <p class="lede" style="margin-top:20px">In plain words: every finding Ṛta can report is a rule. This is the complete catalog: <span id="rule-total" class="mono" style="color:var(--accent)">119 rules</span> across validation, clock analysis, coverage, interactions, readiness and diff. Search by code or keyword, filter by severity or module, and open any rule for the full story: what it checks, why it matters, and how to fix it.</p>
+    </div>
+    <div class="rules-toolbar">
+      <div class="rules-search">
+        <input id="rules-query" type="search" placeholder="Search by code, name or keyword (e.g. clock, reset, derate, SDC-008, false path)...">
+        <span class="rules-count" id="rules-count"></span>
+      </div>
+      <div class="rules-filters">
+        <span style="font-family:var(--font-mono);font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">Severity</span>
+        <button class="filter-chip active" data-sev="all">All</button>
+        <button class="filter-chip" data-sev="fatal">fatal (6)</button>
+        <button class="filter-chip" data-sev="error">error (15)</button>
+        <button class="filter-chip" data-sev="warning">warning (53)</button>
+        <button class="filter-chip" data-sev="info">info (45)</button>
+      </div>
+      <div class="rules-filters" data-mod-group>
+        <span style="font-family:var(--font-mono);font-size:0.74rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted)">Module</span>
+        <button class="filter-chip active" data-mod="all">All</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section--tight" style="padding-top:0" aria-label="Rule catalog">
+  <div class="container">
+    <div id="rules-list"></div>
+    <div id="rules-empty" class="rules-empty">
+      <p style="font-size:1.1rem;color:var(--text-secondary)">No rules match your search.</p>
+      <p style="margin-top:6px">Try a different keyword, or clear the filters.</p>
+      <button class="btn btn--outline" id="rules-clear" style="margin-top:18px">Clear filters</button>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+<script>
+(function () {
+  "use strict";
+  var rules = [];
+  var sevLabels = { fatal: "fatal", error: "error", warning: "warning", info: "info" };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  // keep display text free of AI-typical em-dashes even if data is regenerated
+  function clean(s) { return String(s == null ? "" : s).replace(/ \u2014 /g, ", ").replace(/\u2014/g, "-"); }
+
+  function renderCard(r) {
+    var sev = r.severity || "info";
+    return '<div class="rule-card" data-code="' + esc(r.code) + '" data-sev="' + esc(sev) + '" data-mod="' + esc(r.module) + '">'
+      + '<div class="rule-head">'
+      +   '<span class="rule-code sev-' + esc(sev) + '">' + esc(r.code) + '</span>'
+      +   '<span class="rule-name">' + esc(r.name) + '</span>'
+      + '</div>'
+      + '<div class="rule-meta">'
+      +   '<span><span class="sev-dot" style="background:var(--' + (sev === "fatal" ? "error" : sev) + ')"></span>' + esc(sevLabels[sev] || sev) + '</span>'
+      +   '<span>' + esc(r.module) + '</span>'
+      +   '<span>since v' + esc(r.added_version) + '</span>'
+      + '</div>'
+      + '<p class="rule-desc">' + clean(esc(r.description)) + '</p>'
+      + '<div class="rule-detail">'
+      +   '<div class="rule-detail-box"><h5>Why it matters</h5><p>' + clean(esc(r.why_matters)) + '</p></div>'
+      +   '<div class="rule-detail-box"><h5>How to fix</h5><p>' + clean(esc(r.fix)) + '</p></div>'
+      + '</div>'
+      + '<button class="rule-toggle" aria-expanded="false">Show details</button>'
+      + '</div>';
+  }
+
+  function applyFilters() {
+    var q = (document.getElementById("rules-query").value || "").toLowerCase().trim();
+    var sevEl = document.querySelector(".filter-chip.active[data-sev]");
+    var modEl = document.querySelector(".filter-chip.active[data-mod]");
+    var sev = sevEl ? sevEl.dataset.sev : "all";
+    var mod = modEl ? modEl.dataset.mod : "all";
+    var shown = 0;
+    document.querySelectorAll(".rule-card").forEach(function (card) {
+      var hay = (card.textContent || "").toLowerCase();
+      var ok = true;
+      if (q && hay.indexOf(q) === -1) ok = false;
+      if (ok && sev !== "all" && card.dataset.sev !== sev) ok = false;
+      if (ok && mod !== "all" && card.dataset.mod !== mod) ok = false;
+      card.classList.toggle("hidden", !ok);
+      if (ok) shown++;
+    });
+    document.getElementById("rules-count").textContent = shown + " / " + rules.length + " rules";
+    document.getElementById("rules-empty").classList.toggle("show", shown === 0);
+  }
+
+  function initFilters() {
+    document.querySelectorAll(".filter-chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var group = chip.dataset.sev ? "[data-sev]" : "[data-mod]";
+        document.querySelectorAll(".filter-chip" + group).forEach(function (c) { c.classList.remove("active"); });
+        chip.classList.add("active");
+        applyFilters();
+      });
+    });
+    document.getElementById("rules-query").addEventListener("input", applyFilters);
+    document.getElementById("rules-clear").addEventListener("click", function () {
+      document.getElementById("rules-query").value = "";
+      document.querySelectorAll(".filter-chip.active").forEach(function (c) { c.classList.remove("active"); });
+      document.querySelector('[data-sev="all"]').classList.add("active");
+      document.querySelector('[data-mod="all"]').classList.add("active");
+      applyFilters();
+    });
+  }
+
+  function initToggle() {
+    document.getElementById("rules-list").addEventListener("click", function (e) {
+      var btn = e.target.closest(".rule-toggle");
+      if (!btn) return;
+      var card = btn.closest(".rule-card");
+      var open = card.classList.toggle("open");
+      btn.textContent = open ? "Hide details" : "Show details";
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+
+  fetch("../assets/data/rules.json")
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      rules = data;
+      document.getElementById("rules-list").innerHTML = rules.map(renderCard).join("");
+      document.getElementById("rule-total").textContent = rules.length + " rules";
+      // populate module chips dynamically
+      var mods = {};
+      rules.forEach(function (r) { mods[r.module] = (mods[r.module] || 0) + 1; });
+      var wrap = document.querySelector(".rules-filters[data-mod-group]");
+      var chips = Object.keys(mods).sort().map(function (m) {
+        return '<button class="filter-chip" data-mod="' + esc(m) + '">' + esc(m) + ' (' + mods[m] + ')</button>';
+      }).join("");
+      wrap.insertAdjacentHTML("beforeend", chips);
+      initFilters();
+      initToggle();
+      applyFilters();
+    })
+    .catch(function (err) {
+      document.getElementById("rules-list").innerHTML = '<div class="panel"><p style="color:var(--text-secondary)">Could not load the rule registry (' + esc(err) + ').</p></div>';
+    });
+})();
+</script>
+</body>
+</html>

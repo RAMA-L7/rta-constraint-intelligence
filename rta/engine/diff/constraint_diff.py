@@ -183,6 +183,11 @@ def _parse_input_delay(raw: str) -> Dict[str, Any]:
     if m: fields['value'] = float(m.group(1))
     m = re.search(r'-clock\s+(\S+)', raw)
     if m: fields['clock'] = m.group(1)
+    m = re.search(r'\[(?:get_ports|get_pins|get_cells|get_nets)\s+([^\]]+)\]', raw)
+    if m: fields['ports'] = m.group(1).strip()
+    fields['rise'] = '-rise' in raw
+    fields['fall'] = '-fall' in raw
+    fields['add'] = '-add' in raw
     return fields
 
 
@@ -193,6 +198,11 @@ def _parse_output_delay(raw: str) -> Dict[str, Any]:
     if m: fields['value'] = float(m.group(1))
     m = re.search(r'-clock\s+(\S+)', raw)
     if m: fields['clock'] = m.group(1)
+    m = re.search(r'\[(?:get_ports|get_pins|get_cells|get_nets)\s+([^\]]+)\]', raw)
+    if m: fields['ports'] = m.group(1).strip()
+    fields['rise'] = '-rise' in raw
+    fields['fall'] = '-fall' in raw
+    fields['add'] = '-add' in raw
     return fields
 
 
@@ -304,6 +314,14 @@ def _get_comparison_key(constraint: Constraint) -> str:
         return f"unc:{fields.get('clocks', '')}"
     if constraint.command_type == 'set_timing_derate':
         return f"derate:{fields.get('timing_type', '')}:{fields.get('delay_type', '')}"
+    if constraint.command_type in ('set_input_delay', 'set_output_delay'):
+        # Match on the endpoint + mode, NOT the numeric value: a value-only
+        # change must pair up so CHG-IO-001 reports it as a modification
+        # instead of a misleading remove+add pair.
+        return (f"iod:{constraint.command_type}:{fields.get('clock', '')}:"
+                f"{fields.get('dir', '')}:{fields.get('ports', '')}:"
+                f"{fields.get('rise', False)}:{fields.get('fall', False)}:"
+                f"{fields.get('add', False)}")
     return f"{constraint.command_type}:{constraint.raw_text[:60]}"
 
 
@@ -366,6 +384,8 @@ _RULES = {
         "Clock topology changed — clock added or removed."),
     "CHG-CK-005": ChangeRule("CHG-CK-005", "fatal",
         "Generated clock divide_by/multiply_by changed — output frequency changed, affects all downstream timing."),
+    "CHG-CK-006": ChangeRule("CHG-CK-006", "info",
+        "Clock period increased (lower frequency) — relaxed timing; verify the relaxation is intentional."),
     "CHG-DR-001": ChangeRule("CHG-DR-001", "warning",
         "Cell early derate reduced — less hold margin, may cause hold violations."),
     "CHG-DR-002": ChangeRule("CHG-DR-002", "warning",
@@ -587,6 +607,15 @@ def classify_changes(
                             v1_fields=c1.fields, v2_fields=c2.fields,
                             category=c1.category,
                             explanation=f"Clock '{c1.fields.get('name', '')}' period decreased from {old_p}ns to {new_p}ns — {(1/new_p - 1/old_p)*1000:.1f}MHz frequency increase.",
+                        ))
+                    else:
+                        changes.append(ConstraintChange(
+                            rule=_RULES["CHG-CK-006"],
+                            constraint_type=cmd,
+                            v1_text=c1.raw_text, v2_text=c2.raw_text,
+                            v1_fields=c1.fields, v2_fields=c2.fields,
+                            category=c1.category,
+                            explanation=f"Clock '{c1.fields.get('name', '')}' period increased from {old_p}ns to {new_p}ns — {(1/old_p - 1/new_p)*1000:.1f}MHz frequency decrease; verify intentional.",
                         ))
             name_change = _check_field_change(c1.fields, c2.fields, 'name')
             if name_change:

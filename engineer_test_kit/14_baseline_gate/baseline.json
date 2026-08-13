@@ -1,0 +1,221 @@
+{
+  "schema_version": 2,
+  "identity_version": 1,
+  "tool_version": "1.5.6",
+  "source_name": "engineer_test_kit/14_baseline_gate/apb_uart.sdc",
+  "created": "",
+  "capabilities": {
+    "structured_identity": true,
+    "identity_version": 1,
+    "fingerprint_version": 2,
+    "design_aware": true,
+    "interactions": true,
+    "coverage": true,
+    "readiness": true,
+    "readiness_diff": true,
+    "custom_policies": true
+  },
+  "analysis": {
+    "mode": "DESIGN_AWARE",
+    "top_module": "apb_uart_top",
+    "design_fingerprint": "881fa66e5bf463a3",
+    "fingerprint_version": 2,
+    "design_counts": {
+      "modules": 3,
+      "ports": 13,
+      "instances": 2,
+      "nets": 14,
+      "pins": 18
+    },
+    "commands_found": 14,
+    "engine_failed": false
+  },
+  "readiness": {
+    "overall": "REVIEW_REQUIRED",
+    "mode": "DESIGN_AWARE",
+    "dimensions": {
+      "COVERAGE": "REVIEW_REQUIRED",
+      "DESIGN_CONTEXT": "READY",
+      "CLOCKS": "READY",
+      "I/O": "READY",
+      "EXCEPTIONS": "REVIEW_REQUIRED",
+      "CONSISTENCY": "READY",
+      "ANALYSIS_TRUST": "READY"
+    }
+  },
+  "findings": [
+    {
+      "code": "SDC-020",
+      "severity": "warning",
+      "msg": "set_false_path from [get_ports rst_n] to [all_registers] \u2014 confirm this is a genuine false path.",
+      "line": 0,
+      "line2": 0,
+      "full_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "",
+        "set_false_path from [get_ports rst_n] to [all_registers] \u2014 confirm this is a genuine false path.",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "warning"
+      ],
+      "base_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "",
+        "set_false_path from [get_ports rst_n] to [all_registers] \u2014 confirm this is a genuine false path.",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "legacy_full_id": [
+        "SDC-020",
+        "warning",
+        "set_false_path from [get_ports rst_n] to [all_registers] \u2014 confirm this is a genuine false path."
+      ],
+      "legacy_base_id": [
+        "SDC-020",
+        "set_false_path from [get_ports rst_n] to [all_registers] \u2014 confirm this is a genuine false path."
+      ],
+      "identity": {
+        "identity_version": 1,
+        "rule_id": "SDC-020",
+        "finding_type": "EXCEPTION",
+        "command": "",
+        "primary_object": "set_false_path from [get_ports rst_n] to [all_registers] \u2014 confirm this is a genuine false path.",
+        "secondary_object": "",
+        "clock": "",
+        "value": "",
+        "mode": "",
+        "edge": "",
+        "setup_hold": "",
+        "interaction_type": "",
+        "endpoint_signature": "",
+        "strength": "LEGACY_NORMALIZED",
+        "context": "DESIGN_AWARE"
+      },
+      "identity_strength": "LEGACY_NORMALIZED",
+      "tier": "REVIEW_REQUIRED"
+    },
+    {
+      "code": "SDC-020",
+      "severity": "warning",
+      "msg": "set_false_path from [get_ports rxd] to [get_ports txd] \u2014 confirm this is a genuine false path.",
+      "line": 0,
+      "line2": 0,
+      "full_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "",
+        "set_false_path from [get_ports rxd] to [get_ports txd] \u2014 confirm this is a genuine false path.",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "warning"
+      ],
+      "base_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "",
+        "set_false_path from [get_ports rxd] to [get_ports txd] \u2014 confirm this is a genuine false path.",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "legacy_full_id": [
+        "SDC-020",
+        "warning",
+        "set_false_path from [get_ports rxd] to [get_ports txd] \u2014 confirm this is a genuine false path."
+      ],
+      "legacy_base_id": [
+        "SDC-020",
+        "set_false_path from [get_ports rxd] to [get_ports txd] \u2014 confirm this is a genuine false path."
+      ],
+      "identity": {
+        "identity_version": 1,
+        "rule_id": "SDC-020",
+        "finding_type": "EXCEPTION",
+        "command": "",
+        "primary_object": "set_false_path from [get_ports rxd] to [get_ports txd] \u2014 confirm this is a genuine false path.",
+        "secondary_object": "",
+        "clock": "",
+        "value": "",
+        "mode": "",
+        "edge": "",
+        "setup_hold": "",
+        "interaction_type": "",
+        "endpoint_signature": "",
+        "strength": "LEGACY_NORMALIZED",
+        "context": "DESIGN_AWARE"
+      },
+      "identity_strength": "LEGACY_NORMALIZED",
+      "tier": "REVIEW_REQUIRED"
+    }
+  ],
+  "coverage": {
+    "inputs": {
+      "clk": "EXEMPT",
+      "rst_n": "EXEMPT",
+      "apb_psel": "CONSTRAINED",
+      "apb_penable": "CONSTRAINED",
+      "apb_pwrite": "CONSTRAINED",
+      "apb_paddr": "CONSTRAINED",
+      "apb_pwdata": "CONSTRAINED",
+      "rxd": "UNKNOWN",
+      "scan_en": "EXEMPT",
+      "test_mode": "EXEMPT"
+    },
+    "outputs": {
+      "apb_prdata": "CONSTRAINED",
+      "apb_pready": "CONSTRAINED",
+      "txd": "CONSTRAINED"
+    }
+  },
+  "scope": {
+    "status": "NOT_VALIDATED",
+    "constructs": {
+      "create_clock": "FULL",
+      "create_generated_clock": "FULL",
+      "set_case_analysis": "FULL",
+      "set_clock_transition": "FULL",
+      "set_clock_uncertainty": "FULL",
+      "set_false_path": "FULL",
+      "set_input_delay": "FULL",
+      "set_output_delay": "FULL",
+      "set_propagated_clock": "FULL",
+      "set_sdc_version": "FULL",
+      "set_units": "FULL"
+    }
+  },
+  "interactions": [],
+  "migration": {
+    "original_schema_version": 2,
+    "current_schema_version": 2,
+    "migration_status": "NATIVE"
+  }
+}

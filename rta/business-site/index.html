@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ṛta | Constraint Intelligence for Digital Design Teams</title>
+  <meta name="description" content="Ṛta deterministically validates, analyzes, and protects SDC timing constraints before STA: 119 rules, netlist-aware design context, CI quality gates. Install in one command.">
+  <meta property="og:title" content="Ṛta | Constraint Intelligence for Digital Design Teams">
+  <meta property="og:description" content="Deterministic SDC validation before STA: 119 rules, netlist-aware context, coverage, interactions, readiness and CI gates.">
+  <link rel="icon" href="assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="container-wide hero-inner">
+    <div>
+      <p class="eyebrow">Constraint Intelligence for Digital Design</p>
+      <h1 id="hero-h" class="display-hero glow-hero">Ship timing constraints you can defend.</h1>
+      <p class="brand-statement">Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.</p>
+      <p class="lede">Ṛta deterministically validates your SDC before signoff tooling ever sees it: 119 documented rules, netlist-aware object resolution, constraint coverage, interactions, readiness and CI quality gates. Offline, reproducible, and honest about exactly what it checked.</p>
+      <div class="hero-ctas">
+        <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Launch the App <span class="mono">↗</span></a>
+        <a class="btn btn--outline btn--lg" href="#features">Explore the features</a>
+        <a class="btn btn--ghost btn--lg" href="#install">Install <span class="mono">pip install</span></a>
+      </div>
+      <div class="hero-trust">
+        <span class="badge badge--success"><span class="sq"></span>Deterministic</span>
+        <span class="badge badge--accent"><span class="sq"></span>Offline-capable</span>
+        <span class="badge badge--info"><span class="sq"></span>No LLM required</span>
+        <span class="trust-line">Every finding carries a rule, severity, evidence and source line.</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="terminal">
+        <div class="term-bar">
+          <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+          <span class="term-title">rta check - deterministic analysis</span>
+        </div>
+        <div id="hero-terminal-body" class="term-body" aria-label="Animated Ṛta validation output"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ STATS ═══════════ -->
+<section class="section--tight" aria-label="Product statistics">
+  <div class="container">
+    <div class="stats-band">
+      <div class="reveal">
+        <div class="stat-num"><span data-count="119">0</span></div>
+        <div class="stat-label">Documented rules</div>
+        <div class="stat-note">errors · warnings · advisories, SDC-001 → 157</div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="stat-num"><span data-count="824">0</span></div>
+        <div class="stat-label">Automated tests</div>
+        <div class="stat-note">deterministic, adversarial, metamorphic</div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="stat-num"><span data-count="42">0</span></div>
+        <div class="stat-label">Benchmark suites</div>
+        <div class="stat-note">golden, readiness, netlist-aware, CI</div>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="stat-num">v1.5<span class="suffix">.6</span></div>
+        <div class="stat-label">Current release</div>
+        <div class="stat-note">MIT · Python ≥ 3.10 · PyPI</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHY ═══════════ -->
+<section class="section" id="why" aria-label="Why Ṛta">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <p class="eyebrow">The problem</p>
+        <h2 class="display-2 glow">SDC errors are silent. STA finds them late.</h2>
+        <p class="lede" style="margin-top:16px">Constraint files grow complex fast: generated clocks, cross-domain pairs, wildcard drift, duplicate exceptions, delays that silently exceed their clock period. By the time STA runs, small defects burn hours of signoff iteration.</p>
+        <p style="color:var(--text-secondary);margin-top:16px">Ṛta sits between constraint authoring and STA, catching structural and semantic problems with a deterministic engine, so the constraint set that reaches timing analysis is one you can defend in review.</p>
+        <div class="chip-row" style="margin-top:24px">
+          <span class="badge"><span class="sq" style="background:var(--accent)"></span>Block-level today</span>
+          <span class="badge"><span class="sq" style="background:var(--accent-2)"></span>Full-chip next</span>
+          <span class="badge badge--warning"><span class="sq"></span>Not an STA engine</span>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="steps">
+          <div class="step">
+            <div class="step-idx">1</div>
+            <div><h4>Author</h4><p>SDC + optional structural Verilog netlist, multi-corner templates, TCL variables.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-idx">2</div>
+            <div><h4>Validate with Ṛta</h4><p>Rules, clock relations, design context, coverage, interactions, readiness: one deterministic pipeline.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-idx">3</div>
+            <div><h4>Protect in CI</h4><p>Baselines, semantic diffs and quality gates: regressions fail the build, not the tapeout.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-idx">4</div>
+            <div><h4>Signoff</h4><p>PrimeTime, Tempus and friends receive a constraint set that was checked before they saw it.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section class="section section--alt" id="features" aria-label="Features">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Features</p>
+      <h2 class="display-2 glow">One deterministic engine, sixteen capabilities</h2>
+      <p class="lede">Every feature produces evidence: rule codes, object resolution, coverage and provenance. Click any card for the full story, then jump straight into the tool.</p>
+    </div>
+
+    <div class="section-head" style="margin-bottom:var(--sp-5)">
+      <h3 class="display-3" style="font-size:1.1rem;color:var(--text-secondary)">Analysis capabilities</h3>
+    </div>
+    <div class="grid-4">
+      <a class="card reveal" href="features/validation.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 19 5v6c0 4.7-3 8-7 9-4-1-7-4.3-7-9V5Z"/><path d="m9 11.5 2 2 4-4"/></svg></div>
+        <h3>SDC Validation</h3>
+        <p>119 documented rules with severity, evidence and source provenance on every finding.</p>
+        <div class="card-meta">SDC-001 → 157 · trust scope</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-1" href="features/clocks.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+        <h3>Clock Intelligence</h3>
+        <p>Primary, generated and virtual clocks with hierarchy, ancestry and relationship matrix.</p>
+        <div class="card-meta">inventory · relations · mismatches</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-2" href="features/context.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <h3>Design Context</h3>
+        <p>Structural Verilog context resolves ports, pins, cells and hierarchy, or honestly reports netlist-required.</p>
+        <div class="card-meta">netlist-aware · top selection</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-3" href="features/coverage.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 8h18M3 12h18M3 16h18"/><rect x="3" y="5" width="7" height="14" rx="1"/><rect x="13" y="5" width="8" height="6" rx="1"/></svg></div>
+        <h3>Constraint Coverage</h3>
+        <p>Object-level, bus-aware coverage evidence. Coverage ≠ correctness, and it always says so.</p>
+        <div class="card-meta">buses · partial · exempt</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal" href="features/interactions.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5h10M7 12h10M7 19h10"/><circle cx="5" cy="5" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/><circle cx="5" cy="19" r="1.6" fill="currentColor"/></svg></div>
+        <h3>Constraint Interactions</h3>
+        <p>Duplicates, overrides, contradictions and STA-review overlaps with dual-line provenance.</p>
+        <div class="card-meta">provable vs review</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-1" href="features/readiness.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20h16M6 20v-6M10 20V8M14 20v-9M18 20V5"/></svg></div>
+        <h3>Readiness</h3>
+        <p>Seven-dimension readiness review with blockers, review items and recommended actions.</p>
+        <div class="card-meta">READY ≠ signoff</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-2" href="features/regression.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 9 12l-5-5M4 17h11a5 5 0 0 0 0-10H7"/></svg></div>
+        <h3>Regression Intelligence</h3>
+        <p>Snapshot baselines and semantic diff: NEW, RESOLVED, CHANGED, UNCHANGED.</p>
+        <div class="card-meta">structured identity</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-3" href="features/ci.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></div>
+        <h3>CI Quality Gates</h3>
+        <p>Deterministic gate policies with strict exit codes. Engine failures never pass.</p>
+        <div class="card-meta">vendor-neutral</div>
+        <span class="go">→</span>
+      </a>
+    </div>
+
+    <div class="section-head" style="margin-bottom:var(--sp-5);margin-top:var(--sp-8)">
+      <h3 class="display-3" style="font-size:1.1rem;color:var(--text-secondary)">Engineering tools</h3>
+    </div>
+    <div class="grid-4">
+      <a class="card reveal" href="features/generator.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+        <h3>Generator</h3>
+        <p>Bootstrap synthesis-ready SDC from CLI parameters: clocks, ports, constraints.</p>
+        <div class="card-meta">rta generate</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-1" href="features/linter.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2.4"/></svg></div>
+        <h3>Linter</h3>
+        <p>Consistent formatting and sanity checks across every SDC in your flow.</p>
+        <div class="card-meta">rta lint</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-2" href="features/converter.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/></svg></div>
+        <h3>Converter</h3>
+        <p>SDC ↔ JSON / YAML with lossless round-trip and diff-friendly output.</p>
+        <div class="card-meta">rta convert</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-3" href="features/diff.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V8m0 0L4 11m3-3 3 3M17 8v8m0 0 3-3m-3 3-3-3"/></svg></div>
+        <h3>Diff</h3>
+        <p>Semantic constraint comparison: see what changed, not just which lines moved.</p>
+        <div class="card-meta">rta diff</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal" href="features/batch.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <h3>Batch</h3>
+        <p>Sweep directories of SDC files for check, lint and report in one command.</p>
+        <div class="card-meta">rta batch</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-1" href="features/corners.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M6 20v-4M10 20V10M14 20V6M18 20v-8"/></svg></div>
+        <h3>Corners / MMC</h3>
+        <p>PVT corner presets and multi-mode multi-corner constraint templates.</p>
+        <div class="card-meta">rta corners</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-2" href="features/rules.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4h6M10 4v6l-5 8a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-8V4"/><path d="M7 14h10"/></svg></div>
+        <h3>Rules Reference</h3>
+        <p>Every SDC code documented: search, inspect, and cite in review.</p>
+        <div class="card-meta">rta rules</div>
+        <span class="go">→</span>
+      </a>
+      <a class="card reveal reveal-delay-3" href="features/advanced-rules.html">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 2.9 8.4 7 10 4.1-1.6 7-5.4 7-10V6Z"/><path d="M8.5 9.5h2l-1 3h2"/></svg></div>
+        <h3>Advanced Rules</h3>
+        <p>Reset trees, CDC, DFT scan, derate methodology: SDC-150 through 157.</p>
+        <div class="card-meta">v1.5.x · signoff-grade</div>
+        <span class="go">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PLATFORM ═══════════ -->
+<section class="section" id="platform" aria-label="Platform">
+  <div class="container">
+    <div class="split split--flip">
+      <div class="reveal">
+        <p class="eyebrow">The platform</p>
+        <h2 class="display-2 glow">Deterministic by design, honest by contract</h2>
+        <p class="lede" style="margin-top:16px">A fixed pipeline of parsers, checkers and analyzers. Same input, same output, every time: no model inference, no external API, no network dependency in the runtime.</p>
+        <ul class="tick-list" style="margin-top:24px">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">No LLM in the analysis path.</b> Validation never calls a model, so results are reproducible and auditable.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Offline-capable.</b> The wheel runs locally; clean-room checks verify no network imports.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Provable findings only.</b> Everything the resolver doesn't understand stays NETLIST_REQUIRED, never silently assumed correct.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Machine-readable everywhere.</b> JSON, JUnit, CSV, Markdown and HTML: wired for CI.</span></li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim"># one command, from checkout or installed wheel</span>
+<span class="c-cmd">rta check</span> design.sdc \
+  <span class="c-dim">--netlist soc_top.v --top soc_top</span> \
+  <span class="c-dim">--baseline base.json --gate STRICT</span>
+
+<span class="c-dim"># machine-readable everywhere</span>
+<span class="c-cmd">rta check</span> design.sdc --json &gt; result.json
+<span class="c-cmd">rta report</span> check design.sdc -o report.html
+
+<span class="c-dim"># exit codes: 0 pass · 1 findings · 2 invalid · 3 engine</span>
+<span class="c-cmd">echo</span> $?  <span class="c-dim"># → 1 (findings found)</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TRUST ═══════════ -->
+<section class="section section--alt" aria-label="Trust boundary">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Trust boundary</p>
+      <h2 class="display-2 glow">Precise about what it validates</h2>
+    </div>
+    <div class="grid-3">
+      <div class="panel reveal">
+        <div class="chip-row" style="margin-bottom:12px"><span class="badge badge--success"><span class="sq"></span>Validates</span></div>
+        <p style="color:var(--text-secondary);margin:0">SDC syntax and semantics, clock structure, semantic references, coverage, interactions, readiness and regression, within a documented support boundary.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <div class="chip-row" style="margin-bottom:12px"><span class="badge badge--warning"><span class="sq"></span>Does not validate</span></div>
+        <p style="color:var(--text-secondary);margin:0">Timing propagation, slack, delay calculation, .lib analysis, physical timing or signoff STA. Those remain with dedicated STA engines.</p>
+      </div>
+      <div class="panel reveal reveal-delay-2">
+        <div class="chip-row" style="margin-bottom:12px"><span class="badge badge--info"><span class="sq"></span>Reports honestly</span></div>
+        <p style="color:var(--text-secondary);margin:0">NETLIST_REQUIRED, TCL_EXECUTION_REQUIRED, UNSUPPORTED and NOT_VALIDATED constructs are surfaced, never silently assumed correct.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ INSTALL ═══════════ -->
+<section class="section" id="install" aria-label="Install">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Get started</p>
+      <h2 class="display-2 glow">Install in one command</h2>
+      <p class="lede">Ṛta is on PyPI as <span class="inline-code">rta-constraint-intelligence</span>. One install, zero cloud dependency, works offline.</p>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">pip: install from PyPI</span>
+        <button class="install-copy" data-copy="pip install rta-constraint-intelligence">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">pip install rta-constraint-intelligence</span><br>
+        <span class="p"># then verify your install</span><br>
+        <span class="p">$ </span><span class="c">rta --version</span> &nbsp;<span class="p">→ Ṛta v1.5.7</span><br>
+        <span class="p">$ </span><span class="c">rta check your_block.sdc</span> &nbsp;<span class="p"># deterministic analysis</span>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:var(--sp-5)">
+      <div class="install-strip reveal-scale reveal-delay-1">
+        <div class="install-head">
+          <span class="label">Web UI: browser workspace</span>
+          <button class="install-copy" data-copy="rta web">Copy</button>
+        </div>
+        <div class="install-body">
+          <span class="p">$ </span><span class="c">rta web</span><br>
+          <span class="p"># opens the full workspace - Checker, Generator, Linter,</span><br>
+          <span class="p"># Converter, Diff, Coverage, Clock Relations, Rules, MMC</span>
+        </div>
+      </div>
+      <div class="install-strip reveal-scale reveal-delay-2">
+        <div class="install-head">
+          <span class="label">Or use the hosted app</span>
+          <button class="install-copy" data-copy="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/">Copy</button>
+        </div>
+        <div class="install-body">
+          <span class="c">→ <a href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Open the live Ṛta workspace ↗</a></span><br>
+          <span class="p"># the deployed app - same engine, no local setup</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="section" aria-label="Call to action">
+  <div class="container">
+    <div class="cta-band reveal-scale">
+      <p class="eyebrow" style="justify-content:center">Ready when you are</p>
+      <h2 class="display-2 glow-pulse" style="max-width:24ch;margin:0 auto">Run your first constraint check in minutes</h2>
+      <p class="lede" style="max-width:52ch;margin:16px auto 28px">Install from PyPI, drop in an SDC, and see findings with rule, severity, evidence and source line, or open the hosted workspace and try it in the browser.</p>
+      <div class="hero-ctas" style="justify-content:center">
+        <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Launch the App <span class="mono">↗</span></a>
+        <a class="btn btn--outline btn--lg" href="#features">Browse features</a>
+        <a class="btn btn--ghost btn--lg" href="#install">View install options</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="assets/js/business.js"></script>
+</body>
+</html>

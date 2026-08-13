@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clock Intelligence | Ṛta</title>
+  <meta name="description" content="Ṛta builds a map of every clock in your design, from primary to generated to virtual, and checks that clock groups match physical reality before STA.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Clock Intelligence overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · Clock Intelligence</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Understand your clocks before STA runs</h1>
+      <p class="lede" style="margin-top:20px">Ṛta builds a complete map of every clock in your design, from primary to generated to virtual, and checks that the clock groups in your SDC match physical reality.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is clock intelligence">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "clock intelligence" mean?</h2>
+      <p class="lede" style="margin-top:16px">Timing analysis works clock by clock. For STA to be correct, every clock must be defined, every generated clock must trace back to its master, and every pair of clocks must be declared in the right kind of clock group. Ṛta checks all of that automatically.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">Clocks fall into three kinds, and Ṛta tracks all of them:</p>
+        <ul class="tick-list" style="margin-top:16px">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Primary clocks:</b> the base clocks entering your block (e.g. from a PLL).</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Generated clocks:</b> clocks divided or multiplied from a master (e.g. a /2 divider).</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Virtual clocks:</b> reference clocks for I/O timing that do not exist in the design.</span></li>
+        </ul>
+        <div class="callout callout--info" style="margin-top:16px"><span class="co-icon">✓</span><span><b>Every pair gets a verdict.</b> Each clock pair is checked against its declared group: synchronous, asynchronous, or physically exclusive.</span></div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta analyze clock-relations top.sdc</span>
+Clocks:       4 (2 primary, 2 generated)
+Pairs:        6 · Sync: 3 · Async: 2 · Exclusive: 1
+
+<span class="c-warn">▲ SDC-060</span> clk_1x vs clk_2x - marked -asynchronous
+<span class="c-dim">  both primary on port clk_dual, 5.0 / 2.5 ns</span>
+<span class="c-dim">  → use -physically_exclusive instead</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">The dual-clock port mistake</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">A port <span class="inline-code">clk_dual</span> can carry either a 5.0ns or a 2.5ns clock; only one is active at a time. The engineer declares them <span class="inline-code">-asynchronous</span>. That is wrong: asynchronous tells STA to analyze crosstalk and SI on paths that can never exist together. It should be <span class="inline-code">-physically_exclusive</span>.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>With Ṛta:</b> the mismatch is flagged with the exact reason and the fix, so the mistake never reaches signoff.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Completeness too:</b> any clock pair not covered by a clock group is reported, never assumed fine.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="table-wrap">
+          <table class="spec">
+            <thead><tr><th>Pair</th><th>Declared</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">clk_core → clk_axi</td><td>-asynchronous</td><td style="color:var(--success)">OK</td></tr>
+              <tr><td class="mono">clk_1x → clk_2x</td><td>-asynchronous</td><td style="color:var(--warning)">MISMATCH</td></tr>
+              <tr><td class="mono">clk_fast → div2</td><td>synchronous</td><td style="color:var(--success)">OK</td></tr>
+              <tr><td class="mono">clk_scan → clk_core</td><td><i>ungrouped</i></td><td style="color:var(--error)">MISSING</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Why it matters">
+  <div class="container">
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 19 4M4 4h15v15"/></svg></div>
+        <h3>Wrong groups, wrong analysis</h3>
+        <p>An incorrect clock group makes STA spend effort on impossible paths or skip real ones.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20h16M6 20v-6M10 20V8M14 20v-9M18 20V5"/></svg></div>
+        <h3>Generated clock math checked</h3>
+        <p>Periods derived from -divide_by / -multiply_by / -edges are computed and sanity-checked.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+        <h3>Boundary is honest</h3>
+        <p>Ṛta maps clock structure; it never claims to do timing propagation. That stays with STA.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Analyze your clocks</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Clock relations analysis</span>
+        <button class="install-copy" data-copy="rta analyze clock-relations your_block.sdc">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta analyze clock-relations your_block.sdc</span><br>
+        <span class="p">$ </span><span class="c">rta analyze clock-relations your_block.sdc --netlist top.v --top top</span><br>
+        <span class="p">$ </span><span class="c">rta report clock-relations your_block.sdc -o clocks.html</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

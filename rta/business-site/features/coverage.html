@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constraint Coverage | Ṛta</title>
+  <meta name="description" content="Ṛta shows which inputs, outputs, clocks and exceptions are constrained, and which are silently missing. Object-level, bus-aware, honest.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Coverage overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · Constraint Coverage</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Know exactly what is constrained, and what is not</h1>
+      <p class="lede" style="margin-top:20px">Ṛta shows which inputs, outputs, clocks and exceptions have constraints, down to individual bus bits. The unconstrained ones are the silent risks, and now they are visible.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is coverage">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "coverage" mean?</h2>
+      <p class="lede" style="margin-top:16px">Coverage answers one question: "is this object mentioned in any constraint?" Every input port, output port, clock, and exception gets a state: covered, partial, or exempt. What has no constraint is a path with no timing requirement, which STA treats arbitrarily (usually too optimistically).</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <ul class="tick-list">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Per-object, not a score.</b> No single misleading percentage. Each input and output is listed with its state.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Bus-aware.</b> A partially constrained <span class="inline-code">data_in[7:0]</span> is shown bit-by-bit, not hidden in an average.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Gap analysis.</b> <span class="inline-code">--missing-only</span> lists exactly the unconstrained objects.</span></li>
+        </ul>
+        <div class="callout callout--warning" style="margin-top:16px"><span class="co-icon">!</span><span><b>Coverage is not correctness.</b> A covered port can still have a wrong value. Ṛta says this every time.</span></div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta coverage top.sdc --netlist top.v --top top</span>
+Coverage:
+  inputs:  8 ports - 6 constrained, 2 partial
+  outputs: 4 ports - 3 constrained, 1 missing
+  clocks:  3 defined, 3 structurally resolved
+
+<span class="c-warn">▲ SDC-066</span> data_in[7:0] partially constrained
+<span class="c-dim">  bits [7:4] have no set_input_delay</span>
+<span class="c-err">✗ SDC-064</span> output data_valid - no set_output_delay
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">The forgotten bus bits</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">An engineer constrains <span class="inline-code">data_in[3:0]</span> but the bus is 8 bits. The upper four bits have no input delay, so their paths have no timing requirement. STA quietly treats them as unconstrained; the violation appears only in signoff.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>With Ṛta:</b> coverage is computed per bit. The two missing bits are flagged immediately, with the exact bit range.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Same for clocks:</b> a clock defined in SDC but with no structural fanout is reported as a dead clock that constrains nothing.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">data_in[7:0]</span>
+  <span class="c-ok">  bits [3:0]  set_input_delay -clock clk_core</span>
+  <span class="c-err">  bits [7:4]  NO CONSTRAINT - flagged</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Why it matters">
+  <div class="container">
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 8v8M8 12h8"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h3>Unconstrained = arbitrary</h3>
+        <p>A path with no timing requirement gets whatever the tool decides. Coverage finds the gap first.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 8h18M3 12h18M3 16h18"/><rect x="3" y="5" width="7" height="14" rx="1"/></svg></div>
+        <h3>Bus-aware detail</h3>
+        <p>Per-bit granularity makes partial constraints visible instead of averaged away.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></div>
+        <h3>CI-friendly</h3>
+        <p>Coverage output feeds the readiness gate, so missing constraints fail the build.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Measure your coverage</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Coverage analysis</span>
+        <button class="install-copy" data-copy="rta coverage your_block.sdc --missing-only">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta coverage your_block.sdc</span><br>
+        <span class="p">$ </span><span class="c">rta coverage your_block.sdc --missing-only --netlist top.v --top top</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

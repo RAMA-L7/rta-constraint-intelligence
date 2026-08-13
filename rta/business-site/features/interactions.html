@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constraint Interactions | Ṛta</title>
+  <meta name="description" content="Ṛta finds constraints that fight each other: duplicates, overrides, contradictions and overlaps, each with the exact two lines involved.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Interactions overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · Constraint Interactions</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Catch constraints that fight each other</h1>
+      <p class="lede" style="margin-top:20px">When two constraints overlap on the same objects, one of them silently wins. Ṛta finds duplicates, overrides, contradictions and overlaps, then shows you the exact two lines involved.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What are interactions">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "constraint interactions" mean?</h2>
+      <p class="lede" style="margin-top:16px">SDC files grow by merging: branches, engineers, IP. Two constraints can end up targeting the same path with different intentions. STA resolves these quietly (usually "last one wins"), which may not be what you meant.</p>
+    </div>
+    <div class="grid-2">
+      <div class="panel reveal">
+        <h3 class="display-3" style="margin-bottom:8px">Duplicate</h3>
+        <p style="color:var(--text-secondary);margin:0">The same exception applied twice on identical endpoints. Redundant, usually copy-paste from merged branches.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <h3 class="display-3" style="margin-bottom:8px">Override</h3>
+        <p style="color:var(--text-secondary);margin:0">A later exception silently replaces an earlier one. The value that wins may not be the one you intended.</p>
+      </div>
+      <div class="panel reveal">
+        <h3 class="display-3" style="margin-bottom:8px">Contradiction</h3>
+        <p style="color:var(--text-secondary);margin:0">Two exceptions that cannot both hold, e.g. a false path and a multicycle on identical endpoints. Provable without running STA.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <h3 class="display-3" style="margin-bottom:8px">Overlap (review)</h3>
+        <p style="color:var(--text-secondary);margin:0">Object sets partially overlap. Not provably wrong, but it needs a human STA decision. Reported as review, never falsely called a contradiction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">The false path that was also a multicycle</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">Line 12 sets a false path from <span class="inline-code">a</span> to <span class="inline-code">b</span>. Line 38 sets a multicycle of 2 on the same path. A path cannot be both fully false and timed with 2 cycles. One of these is a mistake, probably a stale line from an old branch.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>With Ṛta:</b> the contradiction is flagged with both line numbers and the exact conflict, so the review takes seconds, not archaeology.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Dual-line provenance:</b> every conflict points to both constraints and both source lines.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">L12 · set_false_path -from [get_ports a] -to [get_ports b]</span>
+<span class="c-dim">L38 · set_multicycle_path 2 -from [get_ports a] -to [get_ports b]</span>
+
+<span class="c-err">✗ SDC-069</span> false path vs multicycle
+<span class="c-dim">  identical endpoints - cannot both hold</span>
+<span class="c-warn">▲ SDC-070</span> partial overlap L20/L44
+<span class="c-dim">  object sets intersect - STA review needed</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Why it matters">
+  <div class="container">
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 2.9 8.4 7 10 4.1-1.6 7-5.4 7-10V6Z"/></svg></div>
+        <h3>Silent resolution ends</h3>
+        <p>STA's "last one wins" is now visible before it bites you at signoff.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 17 9 12l-5-5M4 17h11a5 5 0 0 0 0-10H7"/></svg></div>
+        <h3>Stable finding identity</h3>
+        <p>Findings diff cleanly across baselines, so you can track a conflict being resolved.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2.4"/></svg></div>
+        <h3>Severity is honest</h3>
+        <p>Provable contradictions are errors; partial overlaps are review items. Never overclaimed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Find your constraint conflicts</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Interaction analysis</span>
+        <button class="install-copy" data-copy="rta check your_block.sdc --verbose">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --verbose</span><br>
+        <span class="p"># interaction findings are part of every check run</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# CUSTOM gate policy - team review flow: only NEW deterministic blockers and
+# engine failure fail the gate; new review items and coverage regressions
+# are allowed (they land in the review queue instead).
+policy: CUSTOM
+policy_version: 1
+name: team-review-flow
+fail_on:
+  current_blocked: true
+  new_blockers: true
+  new_review_items: false
+  trust_regression: false
+  coverage_regression: false
+  engine_failure: true
+allow:
+  new_advisories: true

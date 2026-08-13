@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CI Quality Gates | Ṛta</title>
+  <meta name="description" content="Ṛta automatically stops a bad SDC change from being merged. Lint, validate, and gate every constraint change in CI: the same standard for everyone.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="CI Quality Gates overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · CI Quality Gates</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Stop a bad SDC change before it merges</h1>
+      <p class="lede" style="margin-top:20px">Every time someone changes a constraint, Ṛta automatically checks it in CI. If the change violates your quality rules, the merge is blocked. Same rules, same standard, for every engineer.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is CI enforcement">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "gate merges on lint-clean constraints" mean?</h2>
+      <p class="lede" style="margin-top:16px">It means Ṛta can automatically stop a bad or invalid SDC change from being merged into the main codebase.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p><b style="color:var(--text-primary)">What is CI?</b> CI = Continuous Integration. Whenever someone submits a code change to GitHub, CI automatically runs checks before that change can be accepted. For Ṛta, those checks include validation, lint, and constraint quality rules.</p>
+        <p style="margin-top:14px;color:var(--text-secondary)"><b style="color:var(--text-primary)">What does "lint-clean" mean?</b> A linter examines an SDC for constraint-quality problems: malformed syntax, inconsistent style, unsupported constructs, missing patterns, duplicate or conflicting constraints, bad naming, and project-specific policy violations.</p>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">  Developer changes SDC rule/code</span>
+<span class="c-dim">               ↓</span>
+<span class="c-dim">             GitHub</span>
+<span class="c-dim">               ↓</span>
+<span class="c-dim">            CI starts</span>
+<span class="c-dim">               ↓</span>
+<span class="c-dim">      Run Ṛta validation</span>
+<span class="c-dim">               ↓</span>
+<span class="c-dim">        ┌───────┴───────┐</span>
+<span class="c-ok">       PASS            FAIL</span>
+<span class="c-dim">         ↓                ↓</span>
+<span class="c-dim">  Merge allowed    Merge blocked</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">A 20-engineer STA/PD team</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">Imagine 20 engineers on the same project. Engineer A writes a clock constraint. Engineer B adds another. Engineer C modifies a generated SDC. Engineer D changes a clock. Without CI, one bad constraint can slip in and nobody notices until much later.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>With CI:</b> every change runs through the same checks. A violation blocks the merge on the spot, with the exact rule codes (SDC-023, SDC-041, SDC-067...) shown to the engineer.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>The repo becomes the quality gate.</b> The standard isn't a document anymore; it's enforced automatically.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">PR #142 - Update DDR timing constraints</span>
+<span class="c-ok">  ✓ SDC syntax</span>
+<span class="c-ok">  ✓ Constraint lint</span>
+<span class="c-ok">  ✓ Clock validation</span>
+<span class="c-ok">  ✓ Coverage</span>
+<span class="c-ok">  ✓ Conflict detection</span>
+<span class="c-ok">  ✓ Readiness</span>
+<span class="c-ok">  ✓ Regression comparison</span>
+<span class="c-ok">  Result: PASS - merge allowed</span>
+
+<span class="c-dim">PR #143 - Modify clock constraints</span>
+<span class="c-ok">  ✓ Syntax</span>
+<span class="c-ok">  ✓ Lint</span>
+<span class="c-err">  ✗ Clock validation - 3 new violations</span>
+<span class="c-err">     SDC-023 · SDC-041 · SDC-067</span>
+<span class="c-err">  Result: FAIL - merge blocked</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Why it matters">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">The important part</p>
+      <h2 class="display-2 glow">"The same standard for everyone"</h2>
+    </div>
+    <div class="grid-2">
+      <div class="panel reveal">
+        <h3 class="display-3" style="margin-bottom:10px">Before CI, rules are just documentation</h3>
+        <p style="color:var(--text-secondary);margin:0">"Every generated SDC must satisfy these 50 quality rules" is a sentence in a doc. One engineer follows it, another doesn't. Quality depends on memory and mood.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <h3 class="display-3" style="margin-bottom:10px">With Ṛta CI, rules are enforced</h3>
+        <p style="color:var(--text-secondary);margin:0">Every engineer is evaluated by the same deterministic rules, every time. Trust through deterministic verification, not human assumption.</p>
+      </div>
+    </div>
+    <div class="panel reveal" style="margin-top:var(--sp-4)">
+      <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>An important distinction</span></div>
+      <p style="color:var(--text-secondary);margin:0">CI should have different levels of gates, not one "pass everything" wall:</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px">
+        <div class="f-hero-card"><div class="kv"><span class="k">Gate 1 · Lint</span><span class="v">fast, structural</span></div><p style="font-size:0.85rem;color:var(--text-secondary);margin:8px 0 0">Is the SDC structurally and stylistically acceptable?</p></div>
+        <div class="f-hero-card"><div class="kv"><span class="k">Gate 2 · Validation</span><span class="v">semantic</span></div><p style="font-size:0.85rem;color:var(--text-secondary);margin:8px 0 0">Are the constraints semantically valid?</p></div>
+        <div class="f-hero-card"><div class="kv"><span class="k">Gate 3 · Policy</span><span class="v">project-specific</span></div><p style="font-size:0.85rem;color:var(--text-secondary);margin:8px 0 0">Does this comply with your team's policies?</p></div>
+        <div class="f-hero-card"><div class="kv"><span class="k">Gate 4 · Regression</span><span class="v">change impact</span></div><p style="font-size:0.85rem;color:var(--text-secondary);margin:8px 0 0">New violations? Coverage worse? Readiness regressed?</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Where it runs">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Where it runs</p>
+      <h2 class="display-2 glow">First-class CI, no AI required</h2>
+    </div>
+    <ul class="tick-list" style="max-width:720px">
+      <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">GitHub, GitLab, Jenkins:</b> run in any pipeline via the CLI.</span></li>
+      <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Baselines &amp; regression:</b> compares against your last good snapshot.</span></li>
+      <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Machine-readable:</b> JSON and JUnit output for dashboards.</span></li>
+      <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Deterministic:</b> same input, same verdict. No AI in the decision.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Gate your constraints</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">CI-ready command</span>
+        <button class="install-copy" data-copy="rta check your_block.sdc --json --output results.json --gate STRICT">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --json --output results.json</span><br>
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --baseline base.json --gate STRICT</span> <span class="p"># regression gate</span><br>
+        <span class="p">$ </span><span class="c">rta lint --check your_block.sdc</span> <span class="p"># fast formatting gate</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Readiness | Ṛta</title>
+  <meta name="description" content="Ṛta scores your constraint set across seven dimensions and answers one question: is this ready for review? Blockers, review items, and recommended actions.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Readiness overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · Readiness</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">One clear answer: is this constraint set ready for review?</h1>
+      <p class="lede" style="margin-top:20px">Ṛta scores your constraints across seven dimensions and gives one honest verdict: blocked, needs review, or ready, with the specific actions to take next.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is readiness">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "readiness" mean?</h2>
+      <p class="lede" style="margin-top:16px">A constraint file can have 2 errors or 50, but what does that mean for your review? Readiness turns the raw findings into one actionable status across seven dimensions, each with a verdict and recommended actions.</p>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="spec">
+        <thead><tr><th>Dimension</th><th>What it measures</th><th>Verdict example</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Analysis trust</td><td>How completely the input was analyzed</td><td style="color:var(--warning)">REVIEW_REQUIRED: 2 findings</td></tr>
+          <tr><td class="mono">Clocks</td><td>Clock definitions, duplicates, period sanity</td><td style="color:var(--success)">READY</td></tr>
+          <tr><td class="mono">Consistency</td><td>Interactions: duplicates, overrides, contradictions</td><td style="color:var(--success)">READY</td></tr>
+          <tr><td class="mono">Coverage</td><td>Object-level constraint coverage</td><td style="color:var(--success)">READY: all ports covered</td></tr>
+          <tr><td class="mono">Design context</td><td>Object resolution against the netlist</td><td style="color:var(--info)">VALIDATED: design-aware</td></tr>
+          <tr><td class="mono">Exceptions</td><td>False paths, multicycles, rationale</td><td style="color:var(--warning)">REVIEW_REQUIRED: 1 finding</td></tr>
+          <tr><td class="mono">I/O</td><td>Input/output delay completeness</td><td style="color:var(--success)">READY</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">From "which file was worse?" to "start here"</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">A review used to mean reading a long findings list and deciding what mattered. With readiness, the same review starts at the P0 blockers and works down, because Ṛta has already prioritized the findings into actions.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>P0 / P1 / P2 priorities:</b> blockers outrank review items outrank advisories.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Gate-ready:</b> the verdict maps directly to CI gate policies.</span></div>
+          <div class="callout callout--muted"><span class="co-icon">◈</span><span><b>Never overclaims:</b> the output repeats that this is readiness review, not STA signoff.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta check top.sdc --netlist top.v --top top</span>
+Constraint readiness: REVIEW_REQUIRED
+  CLOCKS      READY
+  CONSISTENCY READY
+  COVERAGE    READY
+  EXCEPTIONS  REVIEW_REQUIRED - 1 finding
+  ANALYSIS    REVIEW_REQUIRED - 2 findings
+
+actions: P2 REVIEW_CLOCK_MODEL,
+         P2 REVIEW_EXCEPTION
+<span class="c-dim">NOTE: readiness review, not STA signoff.</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Why it matters">
+  <div class="grid-3">
+    <div class="card reveal">
+      <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20h16M6 20v-6M10 20V8M14 20v-9M18 20V5"/></svg></div>
+      <h3>One status, not a wall of text</h3>
+      <p>Seven dimensions collapsed into a verdict a reviewer can act on immediately.</p>
+    </div>
+    <div class="card reveal reveal-delay-1">
+      <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 16 12M20 6 4 18"/></svg></div>
+      <h3>Actions, not just status</h3>
+      <p>Every non-ready dimension carries prioritized next steps.</p>
+    </div>
+    <div class="card reveal reveal-delay-2">
+      <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 2.9 8.4 7 10 4.1-1.6 7-5.4 7-10V6Z"/></svg></div>
+      <h3>Honest boundary</h3>
+      <p>READY means ready for review, never a timing signoff claim.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Score your constraint set</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Readiness review</span>
+        <button class="install-copy" data-copy="rta check your_block.sdc --verbose --netlist top.v --top top">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --verbose</span><br>
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --gate STRICT</span> <span class="p"># fail CI on any finding</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

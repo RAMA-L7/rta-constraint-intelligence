@@ -48,7 +48,7 @@ from constraint_interactions import analyze_interactions
 from constraint_readiness import analyze_readiness
 
 st.set_page_config(
-    page_title="Ṛta — Constraint Intelligence",
+    page_title="Ṛta | Constraint Intelligence",
     page_icon="◆",
     layout="wide",
     initial_sidebar_state="expanded",

@@ -1,0 +1,107 @@
+{
+  "filename": "engineer_test_kit/12_convert/apb_uart.sdc",
+  "sdc_version": "2.2",
+  "units": {
+    "time": "ns",
+    "capacitance": "pF",
+    "resistance": "kohm",
+    "voltage": "V"
+  },
+  "clocks": [
+    {
+      "name": "clk",
+      "period": 10.0,
+      "port": "clk",
+      "is_generated": false,
+      "is_virtual": false,
+      "master_source": "",
+      "divide_by": null,
+      "multiply_by": null,
+      "waveform": [],
+      "raw": "create_clock -name clk -period 10.0 -waveform {0 5.0} [get_ports clk]"
+    },
+    {
+      "name": "clk_div2",
+      "period": 20.0,
+      "port": "",
+      "is_generated": true,
+      "is_virtual": false,
+      "master_source": "clk",
+      "divide_by": 2,
+      "multiply_by": null,
+      "waveform": [],
+      "raw": "create_generated_clock -name clk_div2 -source [get_ports clk] -divide_by 2 [get_pins u_div2/out]"
+    }
+  ],
+  "input_delays": [
+    {
+      "command": "set_input_delay",
+      "value": 1.5,
+      "clock": "clk",
+      "ports": [
+        "{apb_psel apb_penable apb_pwrite apb_paddr[*"
+      ],
+      "delay_type": "max",
+      "raw": "set_input_delay -max 1.5 -min 0.2 -clock clk [get_ports {apb_psel apb_penable apb_pwrite apb_paddr[*] apb_pwdata[*]}]"
+    }
+  ],
+  "output_delays": [
+    {
+      "command": "set_output_delay",
+      "value": 2.0,
+      "clock": "clk",
+      "ports": [
+        "{apb_prdata[*"
+      ],
+      "delay_type": "max",
+      "raw": "set_output_delay -max 2.0 -min 0.5 -clock clk [get_ports {apb_prdata[*] apb_pready}]"
+    },
+    {
+      "command": "set_output_delay",
+      "value": 3.0,
+      "clock": "clk_div2",
+      "ports": [
+        "txd"
+      ],
+      "delay_type": "max",
+      "raw": "set_output_delay -max 3.0 -min 0.5 -clock clk_div2 [get_ports txd]"
+    }
+  ],
+  "false_paths": [
+    {
+      "command": "set_false_path",
+      "from_": "[get_ports",
+      "to": "[all_registers]",
+      "through": [],
+      "setup": null,
+      "hold": null,
+      "value": 0.0,
+      "raw": "set_false_path -from [get_ports rst_n] -to [all_registers]"
+    },
+    {
+      "command": "set_false_path",
+      "from_": "[get_ports",
+      "to": "[get_ports",
+      "through": [],
+      "setup": null,
+      "hold": null,
+      "value": 0.0,
+      "raw": "set_false_path -from [get_ports rxd] -to [get_ports txd]"
+    }
+  ],
+  "multicycle_paths": [],
+  "clock_groups": [],
+  "timing_derate": [],
+  "case_analysis": [
+    {
+      "value": "0",
+      "target": "[get_ports"
+    },
+    {
+      "value": "0",
+      "target": "[get_ports"
+    }
+  ],
+  "constraints_count": 7,
+  "clocks_count": 2
+}

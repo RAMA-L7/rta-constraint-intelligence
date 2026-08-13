@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDC Validation | Ṛta</title>
+  <meta name="description" content="Ṛta checks your SDC file against 119 documented rules and tells you exactly what is wrong, why it matters, and how to fix it, before STA.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="SDC Validation overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · SDC Validation</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Find constraint problems before STA does</h1>
+      <p class="lede" style="margin-top:20px">Ṛta reads your SDC file and checks it against 119 documented rules. Every problem is reported with a rule code, severity, and the exact line, so you know what is wrong and how to fix it.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is validation">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "validating an SDC" mean?</h2>
+      <p class="lede" style="margin-top:16px">An SDC file tells the timing tool how your design should be constrained. A small mistake can silently unconstrain a path. Validation is the automatic check that finds those mistakes while they are still cheap to fix.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">Think of it like a spell-checker for timing constraints. You write the SDC, Ṛta reads it, and reports:</p>
+        <ul class="tick-list" style="margin-top:16px">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Errors:</b> things that are definitely wrong (e.g. an input delay larger than the clock period).</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Warnings:</b> things that are probably wrong and need a look (e.g. a clock without a source).</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Info:</b> best-practice suggestions (e.g. add a propagated clock).</span></li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta check top.sdc</span>
+<span class="c-err">✗ SDC-008  input delay 9.0ns ≥ clock period</span>
+<span class="c-dim">           no timing margin - line 7</span>
+<span class="c-warn">▲ SDC-030  missing input delay on data_in[7:0]</span>
+<span class="c-dim">           line 9</span>
+<span class="c-acc">◈ SDC-054  get_ports needs netlist context</span>
+<span class="c-dim">           line 12</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">The typo that silently did nothing</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">An engineer types <span class="inline-code">[get_ports datat_in]</span> instead of <span class="inline-code">data_in</span>. The STA tool accepts it silently; the port doesn't exist, so the constraint applies to nothing, and the real port stays unconstrained. The problem is discovered weeks later in signoff.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>With Ṛta:</b> the typo is caught instantly. Every reference is checked against the netlist, and anything that cannot be verified is reported honestly instead of assumed.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Every finding carries evidence:</b> rule, severity, affected object and source line, so review is fast and trustworthy.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta check top.sdc --netlist top.v --top top</span>
+Design context: top (4 ports, 2 instances)
+<span class="c-ok">  ✓ references: 61/61 resolved</span>
+<span class="c-err">  ✗ SDC-055 [get_ports datat_in] - no such port</span>
+<span class="c-dim">      closest match: data_in (L14)</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Why it matters">
+  <div class="container">
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></div>
+        <h3>Caught early, fixed cheap</h3>
+        <p>A constraint bug found at validation costs minutes. The same bug found at signoff costs days of iteration.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 19 5v6c0 4.7-3 8-7 9-4-1-7-4.3-7-9V5Z"/></svg></div>
+        <h3>Honest by design</h3>
+        <p>If Ṛta cannot verify something, it says so. Nothing is silently assumed correct.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 9 12l-5-5M4 17h11a5 5 0 0 0 0-10H7"/></svg></div>
+        <h3>Same answer every time</h3>
+        <p>Deterministic engine: no AI, no randomness. The same file gives the same findings on every machine.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Run it on your SDC</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Validate a constraint file</span>
+        <button class="install-copy" data-copy="rta check your_block.sdc --json">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta check your_block.sdc</span><br>
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --netlist top.v --top top</span> <span class="p"># design-aware</span><br>
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --json --output result.json</span> <span class="p"># for CI</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

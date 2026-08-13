@@ -2,6 +2,37 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.7] — 2026-08-13
+
+### Added
+
+- **Business site** (`rta/business-site/`) — premium marketing pages for the
+  product, published to GitHub Pages. Includes the Brand North Star
+  ("Ṛta brings order to timing intent…"), per-feature detail pages with
+  install commands, a searchable Rules catalog page (all rules with
+  filters), and the lockup logo as the brand mark.
+- **Engineer test kit** (`engineer_test_kit/`) — self-contained per-feature
+  fixture sets (SDC + netlist pairs) with README + machine-readable
+  manifest, so a real engineer can validate every promised feature.
+- **Workspace navigation** — the tool header now links to the business
+  site (Features / Why Ṛta / Rules / Install); sidebar links point at the
+  `rta-constraint-intelligence` repo instead of the legacy `sdc-tools`.
+
+### Fixed
+
+- **`rst_n` reset trees were invisible to SDC-151/152/153.** The pin
+  classifier recognized `rst`/`reset`/`rstn` but not `rst_n` (the most
+  common reset naming in real designs), so the reset-tree checks silently
+  never fired for most blocks — even though the rule messages cite
+  `rst_n`. `_pin_role` in `design_context.py` + `async_reset_check.py` now
+  also match `rst_n` / `reset_n` / `arst_n`.
+- **Semantic diff missed the highest-signal changes.** A clock period
+  *increase* (e.g. 10 → 12 ns) produced no finding (only decreases fired,
+  CHG-CK-001); IO delay value changes were misreported as remove+add
+  pairs instead of a matched CHG-IO-001. Diff now emits CHG-CK-006 for
+  period increases and matches IO delays on endpoint+mode so value
+  changes report as a modification.
+
 ## [1.5.6] — 2026-08-12
 
 ### Added

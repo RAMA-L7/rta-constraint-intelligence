@@ -26,7 +26,7 @@ MANIFEST_PATH = EVIDENCE_DIR / "manifest" / "RELEASE_EVIDENCE.json"
 
 # Static product facts (brand surface; technical identifiers stay ASCII).
 PRODUCT = "Ṛta"
-TAGLINE = "Constraint Intelligence for Digital Design"
+TAGLINE = "Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision."
 LICENSE = "MIT"
 RELEASE_STATUS = "RC_READY_WITH_KNOWN_LIMITATIONS"
 PHASE_COUNT = 15  # 15 phase report files in benchmarks/: PHASE3..PHASE17

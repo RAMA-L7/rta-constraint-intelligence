@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Context | Ṛta</title>
+  <meta name="description" content="Give Ṛta your netlist and it can verify every port, pin, and cell your SDC refers to actually exists, catching typos that silently unconstrain paths.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Design Context overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · Design Context</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Every reference checked against the real design</h1>
+      <p class="lede" style="margin-top:20px">Give Ṛta your structural Verilog netlist and it verifies that every port, pin, cell and net your SDC refers to actually exists. No netlist? It says so honestly instead of guessing.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is design context">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "design context" mean?</h2>
+      <p class="lede" style="margin-top:16px">Your SDC references objects: ports like <span class="inline-code">data_in</span>, pins like <span class="inline-code">u_reg/clk</span>, nets and cells. Design context is the netlist that proves those objects exist. Without it, a typo is invisible. With it, every reference is verified.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">Ṛta uses the netlist in three ways:</p>
+        <ul class="tick-list" style="margin-top:16px">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Object existence:</b> SDC-055/056 checks whether the referenced port or pin exists.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Hierarchy:</b> instances resolve to full paths like <span class="inline-code">u_core/u_reg</span>.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Pin classification:</b> clock, reset, scan and test pins are identified, which powers the advanced rules.</span></li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta check top.sdc --netlist top.v --top top</span>
+Design context: top (4 ports, 2 instances)
+<span class="c-ok">  ✓ references: 61/61 resolved</span>
+<span class="c-err">  ✗ SDC-055 [get_ports datat_in] - no such port</span>
+<span class="c-dim">      closest match: data_in (L14)</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">Two modes, two very different answers</h2>
+    </div>
+    <div class="grid-2">
+      <div class="panel reveal">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>SDC-only mode</span></div>
+        <p style="color:var(--text-secondary);margin:0">Ṛta checks syntax and structure, but object references cannot be verified. It says so explicitly: object existence and coverage are unverifiable without a netlist.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--success"><span class="sq"></span>Design-aware mode</span></div>
+        <p style="color:var(--text-secondary);margin:0">Every reference is resolved against the netlist. Typos are caught, coverage is per-object, reset trees and scan pins are classified, exceptions are proven.</p>
+      </div>
+    </div>
+    <div class="callout callout--info reveal" style="margin-top:var(--sp-4)">
+      <span class="co-icon">✓</span>
+      <span><b>The honest middle ground.</b> Even in SDC-only mode, Ṛta never pretends references are valid. It reports NETLIST_REQUIRED and moves on, which is far more useful than a false "all good".</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Validate against your netlist</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Design-aware check</span>
+        <button class="install-copy" data-copy="rta check your_block.sdc --netlist top.v --top top">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --netlist top.v --top top</span><br>
+        <span class="p"># --top names the top module when the netlist is ambiguous</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

@@ -10,7 +10,7 @@ this module is the single documentation source for the UI reference table.
 from dataclasses import dataclass
 from typing import List, Dict, Optional
 
-APP_VERSION = "1.5.6"
+APP_VERSION = "1.5.7"
 
 
 @dataclass

@@ -1,0 +1,58 @@
+Preset: Full 8-corner signoff
+Corners: 8
+
+  WORST_SSG_0P72V_M40C
+    Process: SSG  V=0.72V  T=-40°C
+    Op Cond: SSG_0P72V_M40C
+    Derate:  cell_early=1.080  cell_late=0.920
+             net_early=1.020   net_late=0.980
+    Uncertainty scale: 1.20
+
+  TYPICAL_TT_0P80V_25C
+    Process: TT  V=0.80V  T=25°C
+    Op Cond: TT_0P80V_25C
+    Derate:  cell_early=1.040  cell_late=0.960
+             net_early=1.010   net_late=0.990
+    Uncertainty scale: 1.00
+
+  BEST_FFG_0P88V_125C
+    Process: FFG  V=0.88V  T=125°C
+    Op Cond: FFG_0P88V_125C
+    Derate:  cell_early=1.020  cell_late=0.980
+             net_early=1.000   net_late=1.000
+    Uncertainty scale: 0.80
+
+  SSG_0P65V_M40C
+    Process: SSG  V=0.65V  T=-40°C
+    Op Cond: SSG_0P65V_M40C
+    Derate:  cell_early=1.100  cell_late=0.900
+             net_early=1.030   net_late=0.970
+    Uncertainty scale: 1.30
+
+  FFG_0P95V_125C
+    Process: FFG  V=0.95V  T=125°C
+    Op Cond: FFG_0P95V_125C
+    Derate:  cell_early=1.010  cell_late=0.990
+             net_early=1.000   net_late=1.000
+    Uncertainty scale: 0.70
+
+  SS_0P72V_125C
+    Process: SS  V=0.72V  T=125°C
+    Op Cond: SS_0P72V_125C
+    Derate:  cell_early=1.060  cell_late=0.940
+             net_early=1.020   net_late=0.980
+    Uncertainty scale: 1.10
+
+  FF_0P88V_M40C
+    Process: FF  V=0.88V  T=-40°C
+    Op Cond: FF_0P88V_M40C
+    Derate:  cell_early=1.030  cell_late=0.970
+             net_early=1.000   net_late=1.000
+    Uncertainty scale: 0.90
+
+  TT_0P80V_0C
+    Process: TT  V=0.80V  T=0°C
+    Op Cond: TT_0P80V_0C
+    Derate:  cell_early=1.040  cell_late=0.960
+             net_early=1.010   net_late=0.990
+    Uncertainty scale: 1.00

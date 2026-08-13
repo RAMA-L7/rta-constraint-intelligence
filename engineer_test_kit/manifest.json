@@ -1,0 +1,180 @@
+{
+  "kit": "engineer-test-kit",
+  "version": "1.0",
+  "tool_version": "1.5.6",
+  "canonical_design": {
+    "top": "apb_uart_top",
+    "netlist": "shared/apb_uart_netlist.v",
+    "clocks": ["clk (primary, 10.0ns)", "clk_div2 (generated, /2 from u_div2/out)"],
+    "reset": "rst_n async reset, fans out to every flop",
+    "dft": ["scan_en", "test_mode"],
+    "buses": ["apb_paddr[11:0]", "apb_pwdata[31:0]", "apb_prdata[31:0]"]
+  },
+  "sets": [
+    {
+      "id": "01_block_full",
+      "feature": "check reference block",
+      "files": ["apb_uart.sdc", "apb_uart_netlist.v"],
+      "command": "rta check 01_block_full/apb_uart.sdc --netlist 01_block_full/apb_uart_netlist.v --top apb_uart_top",
+      "expected": {"errors": 0, "warnings": 2, "warnings_codes": ["SDC-020"], "no_findings": ["SDC-151", "SDC-152", "SDC-153", "SDC-154", "SDC-155", "SDC-156", "SDC-157"], "readiness": "REVIEW_REQUIRED"}
+    },
+    {
+      "id": "02_check_variants",
+      "feature": "checker edge cases",
+      "files": ["no_io_delays.sdc", "io_exceeds_period.sdc", "missing_generated_source.sdc", "duplicate_clocks.sdc", "empty.sdc"],
+      "commands": ["rta check 02_check_variants/<file>"],
+      "expected": {
+        "no_io_delays.sdc": {"errors": 2, "codes": ["SDC-005", "SDC-006"]},
+        "io_exceeds_period.sdc": {"errors": 1, "codes": ["SDC-008"]},
+        "missing_generated_source.sdc": {"errors": 3, "codes": ["SDC-003"]},
+        "duplicate_clocks.sdc": {"errors": 3, "codes": ["SDC-002"]},
+        "empty.sdc": {"errors": 1, "codes": ["SDC-001"]}
+      }
+    },
+    {
+      "id": "03_clock_relations",
+      "feature": "clock relation analysis",
+      "files": ["dual_port_async.sdc", "async_no_groups.sdc", "gen_chain.sdc"],
+      "command": "rta analyze clock-relations 03_clock_relations/<file>",
+      "expected": {
+        "dual_port_async.sdc": {"mismatches": 1, "codes": ["SDC-060"]},
+        "async_no_groups.sdc": {"mismatches": 0, "codes": ["SDC-062"]},
+        "gen_chain.sdc": {"mismatches": 0, "pairs": 3, "clean": true}
+      }
+    },
+    {
+      "id": "04_coverage",
+      "feature": "design-aware coverage (partial bus)",
+      "files": ["partial_bus.sdc", "apb_uart_netlist.v"],
+      "command": "rta coverage 04_coverage/partial_bus.sdc --netlist 04_coverage/apb_uart_netlist.v --top apb_uart_top",
+      "expected": {"partial_bus": "apb_paddr", "unconstrained": ["apb_psel", "apb_penable", "apb_pwrite", "apb_pwdata"], "codes": ["SDC-064", "SDC-065"]}
+    },
+    {
+      "id": "05_design_context",
+      "feature": "object resolution against netlist",
+      "files": ["typo_port.sdc", "wildcard_nomatch.sdc", "bad_hierarchy.sdc", "apb_uart_netlist.v"],
+      "command": "rta check 05_design_context/<file> --netlist 05_design_context/apb_uart_netlist.v --top apb_uart_top",
+      "expected": {
+        "typo_port.sdc": {"codes": ["SDC-055"]},
+        "wildcard_nomatch.sdc": {"codes": ["SDC-056"]},
+        "bad_hierarchy.sdc": {"codes": ["SDC-055", "SDC-057"]}
+      }
+    },
+    {
+      "id": "06_scan_dft",
+      "feature": "DFT / scan mode coverage",
+      "files": ["scan_unconstrained.sdc", "scan_blanket.sdc", "apb_uart_netlist.v"],
+      "command": "rta check 06_scan_dft/<file> --netlist 06_scan_dft/apb_uart_netlist.v --top apb_uart_top",
+      "expected": {
+        "scan_unconstrained.sdc": {"codes": ["SDC-154"]},
+        "scan_blanket.sdc": {"codes": ["SDC-152", "SDC-155"]}
+      }
+    },
+    {
+      "id": "07_reset_cdc",
+      "feature": "async reset / CDC structural checks",
+      "files": ["reset_unconstrained.sdc", "reset_blanket.sdc", "reset_covered.sdc", "apb_uart_netlist.v", "sync_stage/top.sdc", "sync_stage/sync.v"],
+      "command": "rta check 07_reset_cdc/<file> --netlist 07_reset_cdc/apb_uart_netlist.v --top apb_uart_top",
+      "expected": {
+        "reset_unconstrained.sdc": {"codes": ["SDC-151"]},
+        "reset_blanket.sdc": {"codes": ["SDC-152"]},
+        "reset_covered.sdc": {"codes": [], "no_findings": ["SDC-151", "SDC-152", "SDC-153"]},
+        "sync_stage": {"command": "rta check 07_reset_cdc/sync_stage/top.sdc --netlist 07_reset_cdc/sync_stage/sync.v --top top", "codes": ["SDC-153"]}
+      }
+    },
+    {
+      "id": "08_derate_ocv",
+      "feature": "AOCV/POCV derate methodology",
+      "files": ["flat_on_16nm.sdc", "mixed_methodology.sdc"],
+      "command": "rta check --verbose 08_derate_ocv/<file>",
+      "expected": {
+        "flat_on_16nm.sdc": {"codes": ["SDC-156"], "severity": "info"},
+        "mixed_methodology.sdc": {"codes": ["SDC-157"], "severity": "info"}
+      }
+    },
+    {
+      "id": "09_rationale",
+      "feature": "timing exception rationale comments",
+      "files": ["no_comment.sdc", "commented.sdc"],
+      "command": "rta check 09_rationale/<file>",
+      "expected": {
+        "no_comment.sdc": {"codes": ["SDC-150"]},
+        "commented.sdc": {"no_findings": ["SDC-150"]}
+      }
+    },
+    {
+      "id": "10_generate",
+      "feature": "SDC generator",
+      "files": ["generated.sdc"],
+      "command": "rta generate -d apb_uart -c clk=10.0:clk -c clk_div2=5.0 -u 0.15 --operating-condition SS_0P72V_16C --derate --ideal-reset --reset-port rst_n --propagated --scan --scan-port scan_en -o 10_generate/generated.sdc",
+      "expected": {"output": "generated.sdc", "contains": ["create_clock", "set_case_analysis", "set_clock_uncertainty"]}
+    },
+    {
+      "id": "11_lint",
+      "feature": "linter / formatter",
+      "files": ["messy.sdc", "linted.sdc"],
+      "command": "rta lint --check 11_lint/messy.sdc (exit 1); rta lint 11_lint/messy.sdc -o 11_lint/linted.sdc",
+      "expected": {"messy_not_clean": true, "linted_clean": true}
+    },
+    {
+      "id": "12_convert",
+      "feature": "SDC to JSON/YAML converter",
+      "files": ["apb_uart.sdc", "apb_uart.json", "apb_uart.yaml"],
+      "command": "rta convert 12_convert/apb_uart.sdc -f json -o 12_convert/apb_uart.json; rta convert 12_convert/apb_uart.sdc -f yaml -o 12_convert/apb_uart.yaml",
+      "expected": {"json_keys": ["clocks", "false_paths", "case_analysis", "clock_groups"]}
+    },
+    {
+      "id": "13_diff",
+      "feature": "semantic constraint diff with TCL variables",
+      "files": ["v1.sdc", "v2.sdc", "defs_v1.tcl", "defs_v2.tcl"],
+      "command": "rta diff 13_diff/v1.sdc 13_diff/v2.sdc --linked-v1 13_diff/defs_v1.tcl --linked-v2 13_diff/defs_v2.tcl",
+      "expected": {"codes": ["CHG-CK-006", "CHG-IO-001", "CHG-FP-003", "CHG-GEN-001", "CHG-GEN-002"]}
+    },
+    {
+      "id": "14_baseline_gate",
+      "feature": "baseline snapshots + CI readiness gates",
+      "files": ["apb_uart.sdc", "apb_uart_netlist.v", "baseline.json", "changed.sdc", "changed_review_only.sdc", "gate_policy.yaml"],
+      "commands": [
+        "rta check 14_baseline_gate/apb_uart.sdc --netlist 14_baseline_gate/apb_uart_netlist.v --top apb_uart_top --save-baseline 14_baseline_gate/baseline.json",
+        "rta check 14_baseline_gate/changed.sdc --netlist 14_baseline_gate/apb_uart_netlist.v --top apb_uart_top --baseline 14_baseline_gate/baseline.json --gate STRICT",
+        "rta check 14_baseline_gate/changed_review_only.sdc --netlist 14_baseline_gate/apb_uart_netlist.v --top apb_uart_top --baseline 14_baseline_gate/baseline.json --gate CUSTOM --gate-policy 14_baseline_gate/gate_policy.yaml"
+      ],
+      "expected": {
+        "strict_on_changed": "FAIL (new blocker SDC-006)",
+        "strict_on_review_only": "FAIL (new review item)",
+        "custom_on_review_only": "PASS"
+      }
+    },
+    {
+      "id": "15_corners",
+      "feature": "PVT corner presets",
+      "files": ["corners_list.txt", "corner_full_8corner.txt"],
+      "command": "rta corners list; rta corners show \"Full 8-corner\"",
+      "expected": {"presets": 4, "show": "WORST_SSG_0P72V_M40C"}
+    },
+    {
+      "id": "16_batch",
+      "feature": "directory batch processing",
+      "files": ["batch_in/valid.sdc", "batch_in/warning.sdc", "batch_in/invalid.sdc", "batch_in/empty.sdc", "reports/", "reports_cov/"],
+      "commands": [
+        "rta batch check 16_batch/batch_in",
+        "rta batch lint 16_batch/batch_in",
+        "rta batch report check 16_batch/batch_in --output-dir 16_batch/reports",
+        "rta batch report coverage 16_batch/batch_in --output-dir 16_batch/reports_cov"
+      ],
+      "expected": {"total": 4, "ok": 2, "errors": 2, "error_files": ["empty.sdc", "invalid.sdc"], "reports": 4}
+    },
+    {
+      "id": "17_report",
+      "feature": "HTML signoff reports",
+      "files": ["report_check.html", "report_diff.html", "report_clock_relations.html", "report_coverage.html"],
+      "commands": [
+        "rta report check 01_block_full/apb_uart.sdc --netlist 01_block_full/apb_uart_netlist.v --top apb_uart_top -o 17_report/report_check.html",
+        "rta report diff 13_diff/v1.sdc 13_diff/v2.sdc --linked-v1 13_diff/defs_v1.tcl --linked-v2 13_diff/defs_v2.tcl -o 17_report/report_diff.html",
+        "rta report clock-relations 03_clock_relations/dual_port_async.sdc -o 17_report/report_clock_relations.html",
+        "rta report coverage 04_coverage/partial_bus.sdc -o 17_report/report_coverage.html"
+      ],
+      "expected": {"html_reports": 4}
+    }
+  ]
+}

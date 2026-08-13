@@ -1,7 +1,7 @@
 {
   "product": "Ṛta",
-  "tagline": "Constraint Intelligence for Digital Design",
-  "version": "1.5.6",
+  "tagline": "Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.",
+  "version": "1.5.7",
   "release_status": "RC_READY_WITH_KNOWN_LIMITATIONS",
   "license": "MIT",
   "python_requirement": ">=3.10",

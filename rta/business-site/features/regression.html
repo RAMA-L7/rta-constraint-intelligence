@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regression Intelligence | Ṛta</title>
+  <meta name="description" content="Ṛta compares your constraint set against a saved baseline and tells you what improved, what regressed, and what changed, in meaning rather than by line number.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Regression overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · Regression Intelligence</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Did the constraint set get better or worse?</h1>
+      <p class="lede" style="margin-top:20px">Ṛta compares your current constraints against a saved baseline and tells you exactly what changed: what is new, what got resolved, what changed meaning, and what stayed the same.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is regression">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does "regression" mean?</h2>
+      <p class="lede" style="margin-top:16px">A regression is a change that makes things worse. Ṛta saves a snapshot of your constraint quality (a baseline), then on every later change it compares the new results to that snapshot. New problems are regressions; fixed problems are resolutions.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">Four states, each meaningful:</p>
+        <ul class="tick-list" style="margin-top:16px">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">NEW:</b> a finding that did not exist in the baseline.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">RESOLVED:</b> a baseline finding that is gone.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">CHANGED:</b> severity, evidence or value moved.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">UNCHANGED:</b> same finding, same identity.</span></li>
+        </ul>
+        <div class="callout callout--info" style="margin-top:16px"><span class="co-icon">✓</span><span><b>Semantic, not line-based.</b> Two engineers formatting the same file produce different line numbers but the same findings. Ṛta diffs meaning, so a pure reformat shows zero regressions.</span></div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta check v2.sdc --baseline base.json</span>
+Readiness diff vs baseline:
+  <span class="c-ok">RESOLVED</span>  SDC-008 input delay ≥ clock period
+  <span class="c-err">NEW</span>       SDC-151 reset tree unconstrained
+  <span class="c-dim">UNCHANGED</span>  SDC-030 missing output delay
+
+readiness: REVIEW_REQUIRED (was READY)
+           <span class="c-err">- 1 regression</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">The merge that silently broke coverage</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">A merge brings in a "cleanup" that removes an old input delay line. The SDC still validates, but an input port is now unconstrained, coverage dropped and nobody noticed because the file "looked fine".</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>With Ṛta:</b> the baseline comparison flags the new finding immediately and blocks the merge in CI.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Same command, two jobs:</b> <span class="inline-code">--save-baseline</span> today, <span class="inline-code">--baseline</span> in CI.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim"># today - establish the baseline</span>
+<span class="c-cmd">rta check</span> your_block.sdc --save-baseline base.json
+
+<span class="c-dim"># in CI - compare every change</span>
+<span class="c-cmd">rta check</span> your_block.sdc --baseline base.json \
+  --gate STRICT
+<span class="c-dim"># exit 1 if any NEW finding appears</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Why it matters">
+  <div class="grid-3">
+    <div class="card reveal">
+      <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 9 12l-5-5M4 17h11a5 5 0 0 0 0-10H7"/></svg></div>
+      <h3>Quality trend, visible</h3>
+      <p>Watch findings resolve over time instead of re-reading the same list each week.</p>
+    </div>
+    <div class="card reveal reveal-delay-1">
+      <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v18M3 12h18"/></svg></div>
+      <h3>Merge protection</h3>
+      <p>Regressions fail the pipeline, so quality can only go up.</p>
+    </div>
+    <div class="card reveal reveal-delay-2">
+      <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2.4"/></svg></div>
+      <h3>Structured identity</h3>
+      <p>Findings are keyed by meaning, so diffs stay stable across refactors.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Guard your next change</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Baseline workflow</span>
+        <button class="install-copy" data-copy="rta check your_block.sdc --save-baseline base.json">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --save-baseline base.json</span> <span class="p"># today</span><br>
+        <span class="p">$ </span><span class="c">rta check your_block.sdc --baseline base.json --gate STRICT</span> <span class="p"># in CI</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

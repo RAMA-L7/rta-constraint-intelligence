@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Rules (SDC-150-157) | Ṛta</title>
+  <meta name="description" content="The signoff-grade rule set: exception rationale, reset trees, suspect blanket false paths, reset synchronizers, scan enable, scan false paths, and derate methodology.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Advanced rules overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Feature · Advanced Rules (v1.5.x)</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">The rules that close the gap between "valid" and "defensible"</h1>
+      <p class="lede" style="margin-top:20px">SDC-150 through SDC-157: documented exceptions, reset trees, CDC, DFT scan and derate methodology. These are the checks that turn an SDC into constraints a signoff engineer can defend.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What are the advanced rules">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What makes these rules "advanced"?</h2>
+      <p class="lede" style="margin-top:16px">Basic rules catch syntax and missing constraints. These eight catch the silent failure modes that STA tools accept without complaint: exceptions without a reason, unconstrained reset trees, blanket cuts that hide real paths, scan modes that blend into one misleading report, and derate strategies that don't match the process node.</p>
+    </div>
+    <div class="grid-2">
+      <div class="panel reveal">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>SDC-150</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Exception without rationale</h3>
+        <p style="color:var(--text-secondary);margin:0">A false path / multicycle / case analysis with no explanatory comment: an undocumented exception can hide a real violation.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>SDC-151</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Unconstrained reset tree</h3>
+        <p style="color:var(--text-secondary);margin:0">A reset net driving flip-flop reset pins with no timing exception: async deassertion and CDC paths left unconstrained.</p>
+      </div>
+      <div class="panel reveal">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>SDC-152</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Suspect blanket false path</h3>
+        <p style="color:var(--text-secondary);margin:0">A wildcard false path covering a reset tree: a blanket cut hides the sync-input vs deassertion distinction.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>SDC-153</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Reset synchronizer input</h3>
+        <p style="color:var(--text-secondary);margin:0">A reset tree that also drives data inputs: the sync stage and deassertion path need distinct exceptions.</p>
+      </div>
+      <div class="panel reveal">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>SDC-154</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Scan enable, no mode coverage</h3>
+        <p style="color:var(--text-secondary);margin:0">A scan enable with no set_case_analysis: STA blends shift and capture paths into one misleading report.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--warning"><span class="sq"></span>SDC-155</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Scan false path too broad</h3>
+        <p style="color:var(--text-secondary);margin:0">A fully-blanket cut in a DFT design cannot distinguish scan-present flops from non-scan flops.</p>
+      </div>
+      <div class="panel reveal">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--info"><span class="sq"></span>SDC-156</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Flat derate on advanced node</h3>
+        <p style="color:var(--text-secondary);margin:0">Small-node operating conditions with only flat derates: consider AOCV/POCV. Advisory, never blocking.</p>
+      </div>
+      <div class="panel reveal reveal-delay-1">
+        <div class="chip-row" style="margin-bottom:10px"><span class="badge badge--info"><span class="sq"></span>SDC-157</span></div>
+        <h3 class="display-3" style="margin-bottom:8px">Derate methodology mix</h3>
+        <p style="color:var(--text-secondary);margin:0">Flat derates alongside sigma/table-based derates in one file: pick one methodology per corner.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Real-world example">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Real-world example</p>
+      <h2 class="display-2 glow">The blanket false path that hid a reset tree</h2>
+    </div>
+    <div class="split split--flip">
+      <div class="reveal">
+        <p style="color:var(--text-secondary)">An engineer adds <span class="inline-code">set_false_path -from [all_inputs] -to [all_registers]</span> as a shortcut. The wildcard silently covers the reset tree too, which has 2 reset pins with no targeted exception. The sync-input vs deassertion distinction is gone, and the reset paths are now unchecked.</p>
+        <div style="display:grid;gap:10px;margin-top:20px">
+          <div class="callout callout--success"><span class="co-icon">✓</span><span><b>With Ṛta:</b> the blanket cut is flagged against the provable reset-tree coverage, with the fix: a targeted false path on the reset net instead.</span></div>
+          <div class="callout callout--info"><span class="co-icon">✓</span><span><b>Advisory where appropriate:</b> flat derates at small nodes are flagged as info, not blocking, because they can be legitimate.</span></div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta check top.sdc --netlist top.v --top top</span>
+<span class="c-warn">▲ SDC-152</span> :6 Wildcard false path covers
+<span class="c-dim">  reset tree 'rst_n' (2 reset pin(s)) with</span>
+<span class="c-dim">  no targeted exception - replace with a</span>
+<span class="c-dim">  targeted set_false_path on the reset net</span>
+<span class="c-warn">▲ SDC-150</span> :6 no explanatory comment - add one
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">See the advanced rules fire</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Design-aware check</span>
+        <button class="install-copy" data-copy="rta check top.sdc --netlist top.v --top top">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta check top.sdc --netlist top.v --top top</span><br>
+        <span class="p"># SDC-151/152/153 fire on reset trees; 154/155 on scan;</span><br>
+        <span class="p"># 150 always; 156/157 on derate methodology</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="rules.html">Browse all 119 rules</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

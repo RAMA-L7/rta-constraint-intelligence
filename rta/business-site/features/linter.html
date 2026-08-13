@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linter | Ṛta</title>
+  <meta name="description" content="One SDC style, enforced everywhere. Ṛta lints formatting and structure so review diffs show real changes, not formatting noise.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Linter overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Tool · Linter</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">One SDC style, enforced everywhere</h1>
+      <p class="lede" style="margin-top:20px">Constraint files accumulate formatting chaos. Ṛta normalizes section ordering, spacing and layout without touching semantics, so every review diff shows a real change, not reflow noise.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is the linter">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does the linter do?</h2>
+      <p class="lede" style="margin-top:16px">The linter reorganizes and cleans up SDC files: consistent section ordering, spacing, and formatting. It never changes what a constraint means, only how it looks.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <ul class="tick-list">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Section ordering:</b> clocks, generated clocks, I/O, exceptions and groups, in one canonical order.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Spacing &amp; alignment:</b> consistent formatting across authors and branches.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Zero semantic change:</b> lint never rewrites what a constraint means.</span></li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta lint --check messy.sdc</span>
+<span class="c-err">✗ not lint-clean - 4 formatting issues (exit 1)</span>
+
+<span class="c-dim">$ rta lint --fix messy.sdc</span>
+<span class="c-ok">✓ cleaned messy.sdc</span>
+
+<span class="c-dim">$ rta lint --check messy.sdc</span>
+<span class="c-ok">✓ SDC file is lint-clean</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Why it matters">
+  <div class="container">
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M7 3v18M17 3v18M7 12h10M5 7h2M5 17h2M17 7h2M17 17h2"/></svg></div>
+        <h3>Review speed</h3>
+        <p>Reviewers see constraint changes, not reflowed whitespace.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.6 2.9 8.4 7 10 4.1-1.6 7-5.4 7-10V6Z"/></svg></div>
+        <h3>Less merge pain</h3>
+        <p>Canonical formatting minimizes merge conflicts across branches.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></div>
+        <h3>CI enforcement</h3>
+        <p>Gate merges on lint-clean constraints: the same standard for everyone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Lint your files</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Lint a file</span>
+        <button class="install-copy" data-copy="rta lint --check your_block.sdc">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta lint --check your_block.sdc</span><br>
+        <span class="p">$ </span><span class="c">rta lint --fix your_block.sdc</span> <span class="p"># clean in place</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

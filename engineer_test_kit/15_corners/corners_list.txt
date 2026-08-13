@@ -1,0 +1,6 @@
+Available corner presets (4):
+
+  Classic 3-corner (Worst/Typ/Best)  (3 corners)
+  Industrial 5-corner  (5 corners)
+  Full 8-corner signoff  (8 corners)
+  Custom (empty)

@@ -94,7 +94,8 @@ def _pin_role(pin_name: str) -> str:
     a reset pin and 'rst_n' is.
     """
     low = pin_name.lower()
-    for name in ("arstn", "resetn", "reset", "rstn", "arst", "rn", "rst"):
+    for name in ("arstn", "resetn", "reset", "rstn", "arst", "rn", "rst",
+                 "rst_n", "reset_n", "arst_n"):
         if low.endswith(name) and (
                 len(low) == len(name) or not low[-len(name) - 1].isalnum()):
             return "RESET"

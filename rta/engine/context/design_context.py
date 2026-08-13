@@ -1119,6 +1119,7 @@ _PIN_ROLE = {
     # reset pins
     "rst": "RESET", "rstn": "RESET", "reset": "RESET", "resetn": "RESET",
     "rn": "RESET", "arstn": "RESET", "arst": "RESET",
+    "rst_n": "RESET", "reset_n": "RESET", "arst_n": "RESET",
     # scan / test pins
     "se": "SCAN", "si": "SCAN", "so": "SCAN", "scan_in": "SCAN",
     "scan_out": "SCAN", "scanen": "SCAN", "te": "TEST", "test": "TEST",
@@ -1144,6 +1145,7 @@ def _pin_role(pin_name: str) -> str:
     if low in _PIN_ROLE:
         return _PIN_ROLE[low]
     for suffix, role in (("clk", "CLOCK"), ("rstn", "RESET"), ("rst", "RESET"),
+                         ("rst_n", "RESET"), ("reset_n", "RESET"), ("arst_n", "RESET"),
                          ("scan", "SCAN"), ("test", "TEST"), ("din", "DATA"),
                          ("dout", "DATA"), ("data", "DATA"), ("enable", "CONTROL"),
                          ("mode", "CONTROL"), ("sel", "CONTROL"), ("tie", "CONSTANT"),

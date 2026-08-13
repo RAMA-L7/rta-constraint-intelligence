@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batch | Ṛta</title>
+  <meta name="description" content="Check, lint and report across entire directories of SDC files in one command, the regression sweep that catches a bad change anywhere.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Batch overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Tool · Batch</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">Sweep every SDC in the tree, one command</h1>
+      <p class="lede" style="margin-top:20px">Check, lint and report across an entire directory of constraint files. The regression sweep that catches a bad change anywhere in the design, not just in the file under your cursor.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is batch">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does batch do?</h2>
+      <p class="lede" style="margin-top:16px">Point Ṛta at a directory and it processes every SDC file inside: a summary up top, per-file detail below, and a deterministic exit code: any error means nonzero, so pipelines fail correctly.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <ul class="tick-list">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Summary first:</b> total files, OK, errors and skipped, all in one line of truth.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Detail on demand:</b> each failing file lists its findings and counts.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Deterministic exit:</b> any error → nonzero → pipeline fails.</span></li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta batch check constraints/</span>
+Batch Summary:
+  Total:   12
+  OK:      9
+  Errors:  3
+  Skipped: 0
+  <span class="c-err">✗ constraints/uart.sdc: 1 errors, 1 warnings</span>
+  <span class="c-err">✗ constraints/dma.sdc: 2 errors, 0 warnings</span>
+  <span class="c-warn">▲ constraints/soc.sdc: 1 errors, 1 warnings</span>
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Use cases">
+  <div class="container">
+    <div class="grid-3">
+      <div class="card reveal">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17 9 12l-5-5M4 17h11a5 5 0 0 0 0-10H7"/></svg></div>
+        <h3>Pre-tapeout sweep</h3>
+        <p>Every block's constraints validated before integration reviews.</p>
+      </div>
+      <div class="card reveal reveal-delay-1">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3 5 6v5c0 4.6 2.9 8.4 7 10 4.1-1.6 7-5.4 7-10V6Z"/></svg></div>
+        <h3>Library audits</h3>
+        <p>IP and library constraint sets checked for consistency at release.</p>
+      </div>
+      <div class="card reveal reveal-delay-2">
+        <div class="card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg></div>
+        <h3>Merge gates</h3>
+        <p>CI that fails if any changed constraint file regresses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Sweep your constraints</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Batch check a directory</span>
+        <button class="install-copy" data-copy="rta batch check constraints/">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta batch check constraints/</span><br>
+        <span class="p">$ </span><span class="c">rta batch lint constraints/</span> <span class="p"># formatting sweep</span><br>
+        <span class="p">$ </span><span class="c">rta batch report constraints/ -o reports/</span> <span class="p"># HTML per file</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

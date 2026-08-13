@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SDC Constraint Coverage Report — Ṛta</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+       max-width: 1000px; margin: 0 auto; padding: 30px 24px; color: #1f2937;
+       background: #ffffff; line-height: 1.5; }
+h1 { font-size: 26px; font-weight: 700; margin-bottom: 2px; }
+h2 { font-size: 16px; font-weight: 400; color: #6b7280; margin-bottom: 20px; }
+h3 { font-size: 15px; font-weight: 600; margin: 20px 0 8px 0; }
+.metrics { display: flex; gap: 12px; margin: 16px 0 20px 0; flex-wrap: wrap; }
+.metric { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
+           padding: 14px 22px; min-width: 110px; text-align: center; }
+.metric .num { font-size: 30px; font-weight: 700; line-height: 1.1; }
+.metric .label { font-size: 11px; color: #6b7280; text-transform: uppercase;
+                  letter-spacing: 0.06em; margin-top: 2px; }
+.metric.green .num { color: #059669; }
+.metric.red .num { color: #dc2626; }
+.metric.yellow .num { color: #b8860b; }
+.metric.blue .num { color: #2563eb; }
+.badge-row { margin: 12px 0 16px 0; }
+.badge { display: inline-block; padding: 4px 14px; border-radius: 20px;
+          font-size: 13px; font-weight: 600; margin-right: 8px; margin-bottom: 4px; }
+.badge-red { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.badge-yellow { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.badge-blue { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 16px 0;
+         font-size: 13px; }
+th { text-align: left; padding: 8px 12px; background: #f3f4f6;
+      border-bottom: 2px solid #d1d5db; font-weight: 600; white-space: nowrap; }
+td { padding: 7px 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+tr:hover td { background: #fafafa; }
+code { font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+       font-size: 12px; background: #f3f4f6; padding: 1px 6px; border-radius: 4px;
+       word-break: break-all; }
+tr.error-row td { background: #fff5f5; }
+tr.warn-row td { background: #fffdf0; }
+.section { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px;
+            margin: 16px 0; }
+.section-title { font-size: 14px; font-weight: 600; margin-bottom: 8px;
+                  text-transform: uppercase; letter-spacing: 0.04em; color: #374151; }
+.empty-state { color: #9ca3af; font-style: italic; padding: 12px 0; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+               gap: 8px; margin: 8px 0; }
+.stat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px;
+              padding: 8px 12px; display: flex; justify-content: space-between; }
+.stat-key { color: #6b7280; font-size: 12px; }
+.stat-val { font-weight: 600; font-size: 13px; }
+.footer { font-size: 11px; color: #9ca3af; text-align: center; margin-top: 30px;
+           border-top: 1px solid #e5e7eb; padding-top: 14px; }
+.diff-side { display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+             border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+.diff-col { padding: 12px; font-family: 'Fira Code', 'Consolas', monospace;
+             font-size: 12px; line-height: 1.6; }
+.diff-col-a { background: #fff5f5; }
+.diff-col-b { background: #f5fffa; border-left: 1px solid #e5e7eb; }
+.diff-added { color: #065f46; background: #d1fae5; padding: 1px 4px; border-radius: 3px; }
+.diff-removed { color: #991b1b; background: #fee2e2; padding: 1px 4px; border-radius: 3px; }
+.diff-empty { color: #9ca3af; font-style: italic; }
+.change-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px;
+                margin: 8px 0; }
+.change-card.fatal { border-left: 4px solid #dc2626; }
+.change-card.warning { border-left: 4px solid #b8860b; }
+.change-card.info { border-left: 4px solid #2563eb; }
+.change-sev { font-weight: 600; font-size: 11px; text-transform: uppercase;
+               letter-spacing: 0.06em; }
+.change-sev.fatal { color: #dc2626; }
+.change-sev.warning { color: #b8860b; }
+.change-sev.info { color: #2563eb; }
+.change-rule { font-weight: 600; font-size: 12px; font-family: monospace; }
+.change-text { font-family: monospace; font-size: 11px; background: #f3f4f6;
+                padding: 4px 8px; border-radius: 4px; margin: 4px 0; display: block;
+                white-space: pre-wrap; word-break: break-all; }
+.clock-matrix { overflow-x: auto; }
+.clock-matrix table { font-size: 12px; }
+.clock-matrix td, .clock-matrix th { padding: 6px 10px; text-align: center; white-space: nowrap; }
+.matrix-correct { background: #d1fae5; color: #065f46; }
+.matrix-mismatch { background: #fee2e2; color: #991b1b; }
+.matrix-missing { background: #fef3c7; color: #92400e; }
+.matrix-sync-missing { background: #dbeafe; color: #1e40af; }
+.legend { display: flex; gap: 16px; margin: 8px 0 16px 0; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 4px; font-size: 12px;
+               padding: 2px 8px; border-radius: 4px; }
+
+.cov-bar-bg { background: #e5e7eb; border-radius: 6px; height: 14px; width: 100%; position: relative; }
+.cov-bar-fill { height: 14px; border-radius: 6px; transition: width 0.3s; }
+.cov-bar-fill.good { background: #059669; }
+.cov-bar-fill.warn { background: #d97706; }
+.cov-bar-fill.bad { background: #dc2626; }
+.cov-item-present { color: #059669; font-weight: 600; }
+.cov-item-missing { color: #dc2626; font-weight: 600; }
+.cov-item-missing.crit { color: #b91c1c; font-weight: 700; }
+.cov-cat-header { display: flex; align-items: center; gap: 8px; margin: 16px 0 6px 0; }
+.cov-cat-icon { font-size: 18px; }
+.cov-cat-title { font-size: 14px; font-weight: 600; }
+.cov-cat-score { font-size: 13px; color: #6b7280; }
+.cov-score-big { font-size: 48px; font-weight: 800; text-align: center; margin: 10px 0; }
+.cov-score-big.good { color: #059669; }
+.cov-score-big.warn { color: #d97706; }
+.cov-score-big.bad { color: #dc2626; }
+.cov-score-label { font-size: 13px; color: #6b7280; text-align: center; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<h1>SDC Constraint Coverage Report</h1>
+<h2>warning.sdc</h2>
+<div class="metrics"><div class="metric bad"><div class="num">13%</div><div class="label">Overall Coverage</div></div><div class="metric green"><div class="num">5</div><div class="label">Items Present</div></div><div class="metric red"><div class="num">34</div><div class="label">Items Missing</div></div><div class="metric blue"><div class="num">6</div><div class="label">Categories</div></div></div>
+<div class="cov-score-big bad">12.8%</div>
+<div class="cov-score-label">Constraint Coverage — 5 of 39 items present</div>
+<div class="section">
+<div class="cov-cat-header">
+  <span class="cov-cat-icon">🕐</span>
+  <span class="cov-cat-title">Clocks</span>
+  <span class="cov-cat-score">11% (1/9)</span>
+</div>
+<div class="cov-bar-bg"><div class="cov-bar-fill bad" style="width:11%"></div></div>
+<table><thead><tr><th></th><th>Constraint</th><th>Detail</th></tr></thead><tbody><tr><td><span class="cov-item-present">&#10003;</span></td><td>Primary clock (create_clock)</td><td style="color:#6b7280;font-size:12px">1 defined</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Generated clock</td><td style="color:#6b7280;font-size:12px">No generated clocks (OK if not needed)</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Clock latency</td><td style="color:#6b7280;font-size:12px">Missing — model insertion delay for pre-CTS</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Clock transition</td><td style="color:#6b7280;font-size:12px">Missing — constrain clock slew</td></tr>
+<tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Clock uncertainty <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — no jitter/margin modeled</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Clock jitter</td><td style="color:#6b7280;font-size:12px">Missing — separate random jitter from uncertainty</td></tr>
+<tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Propagated clock <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — ideal clock is over-optimistic</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Clock groups</td><td style="color:#6b7280;font-size:12px">Missing — CDC paths may be analyzed as synchronous</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Clock gating check</td><td style="color:#6b7280;font-size:12px">Missing — needed if design uses clock gating</td></tr>
+</tbody></table>
+</div>
+<div class="section">
+<div class="cov-cat-header">
+  <span class="cov-cat-icon">🔌</span>
+  <span class="cov-cat-title">I/O Constraints</span>
+  <span class="cov-cat-score">33% (2/6)</span>
+</div>
+<div class="cov-bar-bg"><div class="cov-bar-fill bad" style="width:33%"></div></div>
+<table><thead><tr><th></th><th>Constraint</th><th>Detail</th></tr></thead><tbody><tr><td><span class="cov-item-present">&#10003;</span></td><td>Input delay (max)</td><td style="color:#6b7280;font-size:12px">1 set</td></tr>
+<tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Input delay (min / hold) <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing -min — hold timing unchecked</td></tr>
+<tr><td><span class="cov-item-present">&#10003;</span></td><td>Output delay (max)</td><td style="color:#6b7280;font-size:12px">1 set</td></tr>
+<tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Output delay (min / hold) <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing -min — output hold unchecked</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Driving cell / input transition</td><td style="color:#6b7280;font-size:12px">Missing — input slew is ideal</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Output load</td><td style="color:#6b7280;font-size:12px">Missing — output capacitance unconstrained</td></tr>
+</tbody></table>
+</div>
+<div class="section">
+<div class="cov-cat-header">
+  <span class="cov-cat-icon">⚠️</span>
+  <span class="cov-cat-title">Timing Exceptions</span>
+  <span class="cov-cat-score">14% (1/7)</span>
+</div>
+<div class="cov-bar-bg"><div class="cov-bar-fill bad" style="width:14%"></div></div>
+<table><thead><tr><th></th><th>Constraint</th><th>Detail</th></tr></thead><tbody><tr><td><span class="cov-item-missing ">&#10007;</span></td><td>False paths</td><td style="color:#6b7280;font-size:12px">None defined — all paths timing-analyzed</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Multicycle paths</td><td style="color:#6b7280;font-size:12px">None defined — all paths single-cycle</td></tr>
+<tr><td><span class="cov-item-present">&#10003;</span></td><td>Multicycle hold fix</td><td style="color:#6b7280;font-size:12px">Hold counterparts present</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Max delay</td><td style="color:#6b7280;font-size:12px">None — use for path-specific max constraints</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Min delay</td><td style="color:#6b7280;font-size:12px">None — use for path-specific min constraints</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Group paths</td><td style="color:#6b7280;font-size:12px">Missing — improves synthesis optimization focus</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Disable timing arcs</td><td style="color:#6b7280;font-size:12px">None — all cell timing arcs active</td></tr>
+</tbody></table>
+</div>
+<div class="section">
+<div class="cov-cat-header">
+  <span class="cov-cat-icon">📏</span>
+  <span class="cov-cat-title">Design Rules</span>
+  <span class="cov-cat-score">17% (1/6)</span>
+</div>
+<div class="cov-bar-bg"><div class="cov-bar-fill bad" style="width:17%"></div></div>
+<table><thead><tr><th></th><th>Constraint</th><th>Detail</th></tr></thead><tbody><tr><td><span class="cov-item-present">&#10003;</span></td><td>SDC version</td><td style="color:#6b7280;font-size:12px">Declared</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Units</td><td style="color:#6b7280;font-size:12px">Missing — add set_units to avoid unit mismatches</td></tr>
+<tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Max fanout <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — no fanout limit</td></tr>
+<tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Max transition <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — no slew limit</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Max capacitance</td><td style="color:#6b7280;font-size:12px">Missing — no capacitance limit</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Max area</td><td style="color:#6b7280;font-size:12px">Missing — no area target for synthesis</td></tr>
+</tbody></table>
+</div>
+<div class="section">
+<div class="cov-cat-header">
+  <span class="cov-cat-icon">📊</span>
+  <span class="cov-cat-title">AOCV / Derate</span>
+  <span class="cov-cat-score">0% (0/5)</span>
+</div>
+<div class="cov-bar-bg"><div class="cov-bar-fill bad" style="width:0%"></div></div>
+<table><thead><tr><th></th><th>Constraint</th><th>Detail</th></tr></thead><tbody><tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Timing derate <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — needed for AOCV/POCVM signoff</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Derate early + late</td><td style="color:#6b7280;font-size:12px">No derate</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Derate cell + net</td><td style="color:#6b7280;font-size:12px">No derate</td></tr>
+<tr><td><span class="cov-item-missing crit">&#10007;</span></td><td>Operating conditions <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — PVT corner not specified</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Wire load mode</td><td style="color:#6b7280;font-size:12px">Missing — legacy wire load model</td></tr>
+</tbody></table>
+</div>
+<div class="section">
+<div class="cov-cat-header">
+  <span class="cov-cat-icon">⚡</span>
+  <span class="cov-cat-title">Power / DFT</span>
+  <span class="cov-cat-score">0% (0/6)</span>
+</div>
+<div class="cov-bar-bg"><div class="cov-bar-fill bad" style="width:0%"></div></div>
+<table><thead><tr><th></th><th>Constraint</th><th>Detail</th></tr></thead><tbody><tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Max dynamic power</td><td style="color:#6b7280;font-size:12px">Missing — no power budget</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Max leakage power</td><td style="color:#6b7280;font-size:12px">Missing — no leakage budget</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Case analysis (DFT)</td><td style="color:#6b7280;font-size:12px">Missing — DFT paths not isolated</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Dont-use cells</td><td style="color:#6b7280;font-size:12px">Missing — no cell exclusion</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Ideal network</td><td style="color:#6b7280;font-size:12px">Missing — reset/scan_en not marked ideal</td></tr>
+<tr><td><span class="cov-item-missing ">&#10007;</span></td><td>Min pulse width</td><td style="color:#6b7280;font-size:12px">Missing — narrow pulses may cause metastability</td></tr>
+</tbody></table>
+</div>
+
+<div class="section">
+<div class="section-title">Missing Items (34)</div>
+<table><thead><tr><th>Category</th><th>Constraint</th><th>Detail</th></tr></thead><tbody><tr><td><span class="change-sev warning">Clocks</span></td><td>Generated clock</td><td style="color:#6b7280;font-size:12px">No generated clocks (OK if not needed)</td></tr>
+<tr><td><span class="change-sev warning">Clocks</span></td><td>Clock latency</td><td style="color:#6b7280;font-size:12px">Missing — model insertion delay for pre-CTS</td></tr>
+<tr><td><span class="change-sev warning">Clocks</span></td><td>Clock transition</td><td style="color:#6b7280;font-size:12px">Missing — constrain clock slew</td></tr>
+<tr><td><span class="change-sev warning">Clocks</span></td><td>Clock uncertainty <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — no jitter/margin modeled</td></tr>
+<tr><td><span class="change-sev warning">Clocks</span></td><td>Clock jitter</td><td style="color:#6b7280;font-size:12px">Missing — separate random jitter from uncertainty</td></tr>
+<tr><td><span class="change-sev warning">Clocks</span></td><td>Propagated clock <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — ideal clock is over-optimistic</td></tr>
+<tr><td><span class="change-sev warning">Clocks</span></td><td>Clock groups</td><td style="color:#6b7280;font-size:12px">Missing — CDC paths may be analyzed as synchronous</td></tr>
+<tr><td><span class="change-sev warning">Clocks</span></td><td>Clock gating check</td><td style="color:#6b7280;font-size:12px">Missing — needed if design uses clock gating</td></tr>
+<tr><td><span class="change-sev warning">I/O Constraints</span></td><td>Input delay (min / hold) <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing -min — hold timing unchecked</td></tr>
+<tr><td><span class="change-sev warning">I/O Constraints</span></td><td>Output delay (min / hold) <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing -min — output hold unchecked</td></tr>
+<tr><td><span class="change-sev warning">I/O Constraints</span></td><td>Driving cell / input transition</td><td style="color:#6b7280;font-size:12px">Missing — input slew is ideal</td></tr>
+<tr><td><span class="change-sev warning">I/O Constraints</span></td><td>Output load</td><td style="color:#6b7280;font-size:12px">Missing — output capacitance unconstrained</td></tr>
+<tr><td><span class="change-sev warning">Timing Exceptions</span></td><td>False paths</td><td style="color:#6b7280;font-size:12px">None defined — all paths timing-analyzed</td></tr>
+<tr><td><span class="change-sev warning">Timing Exceptions</span></td><td>Multicycle paths</td><td style="color:#6b7280;font-size:12px">None defined — all paths single-cycle</td></tr>
+<tr><td><span class="change-sev warning">Timing Exceptions</span></td><td>Max delay</td><td style="color:#6b7280;font-size:12px">None — use for path-specific max constraints</td></tr>
+<tr><td><span class="change-sev warning">Timing Exceptions</span></td><td>Min delay</td><td style="color:#6b7280;font-size:12px">None — use for path-specific min constraints</td></tr>
+<tr><td><span class="change-sev warning">Timing Exceptions</span></td><td>Group paths</td><td style="color:#6b7280;font-size:12px">Missing — improves synthesis optimization focus</td></tr>
+<tr><td><span class="change-sev warning">Timing Exceptions</span></td><td>Disable timing arcs</td><td style="color:#6b7280;font-size:12px">None — all cell timing arcs active</td></tr>
+<tr><td><span class="change-sev warning">Design Rules</span></td><td>Units</td><td style="color:#6b7280;font-size:12px">Missing — add set_units to avoid unit mismatches</td></tr>
+<tr><td><span class="change-sev warning">Design Rules</span></td><td>Max fanout <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — no fanout limit</td></tr>
+<tr><td><span class="change-sev warning">Design Rules</span></td><td>Max transition <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — no slew limit</td></tr>
+<tr><td><span class="change-sev warning">Design Rules</span></td><td>Max capacitance</td><td style="color:#6b7280;font-size:12px">Missing — no capacitance limit</td></tr>
+<tr><td><span class="change-sev warning">Design Rules</span></td><td>Max area</td><td style="color:#6b7280;font-size:12px">Missing — no area target for synthesis</td></tr>
+<tr><td><span class="change-sev warning">AOCV / Derate</span></td><td>Timing derate <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — needed for AOCV/POCVM signoff</td></tr>
+<tr><td><span class="change-sev warning">AOCV / Derate</span></td><td>Derate early + late</td><td style="color:#6b7280;font-size:12px">No derate</td></tr>
+<tr><td><span class="change-sev warning">AOCV / Derate</span></td><td>Derate cell + net</td><td style="color:#6b7280;font-size:12px">No derate</td></tr>
+<tr><td><span class="change-sev warning">AOCV / Derate</span></td><td>Operating conditions <b>*</b></td><td style="color:#6b7280;font-size:12px">Missing — PVT corner not specified</td></tr>
+<tr><td><span class="change-sev warning">AOCV / Derate</span></td><td>Wire load mode</td><td style="color:#6b7280;font-size:12px">Missing — legacy wire load model</td></tr>
+<tr><td><span class="change-sev warning">Power / DFT</span></td><td>Max dynamic power</td><td style="color:#6b7280;font-size:12px">Missing — no power budget</td></tr>
+<tr><td><span class="change-sev warning">Power / DFT</span></td><td>Max leakage power</td><td style="color:#6b7280;font-size:12px">Missing — no leakage budget</td></tr>
+<tr><td><span class="change-sev warning">Power / DFT</span></td><td>Case analysis (DFT)</td><td style="color:#6b7280;font-size:12px">Missing — DFT paths not isolated</td></tr>
+<tr><td><span class="change-sev warning">Power / DFT</span></td><td>Dont-use cells</td><td style="color:#6b7280;font-size:12px">Missing — no cell exclusion</td></tr>
+<tr><td><span class="change-sev warning">Power / DFT</span></td><td>Ideal network</td><td style="color:#6b7280;font-size:12px">Missing — reset/scan_en not marked ideal</td></tr>
+<tr><td><span class="change-sev warning">Power / DFT</span></td><td>Min pulse width</td><td style="color:#6b7280;font-size:12px">Missing — narrow pulses may cause metastability</td></tr>
+</tbody></table>
+</div>
+<div class="footer">Generated by <b>Ṛta</b> v1.5.6 &mdash; 2026-08-13</div>
+</body></html>

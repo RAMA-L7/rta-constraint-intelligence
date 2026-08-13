@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Converter | Ṛta</title>
+  <meta name="description" content="Parse your SDC into structured JSON or YAML for tool integration, scripting, dashboards and audits.">
+  <link rel="icon" href="../assets/img/rta-favicon.png">
+  <link rel="apple-touch-icon" href="../assets/img/rta-apple-touch.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/business.css">
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+<header id="site-header"></header>
+
+<section class="hero" style="padding-top:140px;padding-bottom:var(--sp-7)" aria-label="Converter overview">
+  <div class="container">
+    <div class="section-head" style="margin-bottom:var(--sp-6)">
+      <p class="eyebrow">Tool · Converter</p>
+      <h1 class="display-hero glow-hero" style="font-size:clamp(2.2rem,4.5vw,3.4rem)">SDC as data, not text</h1>
+      <p class="lede" style="margin-top:20px">Parse an SDC file and output structured JSON or YAML for tool integration, scripting, dashboards and audits. Same parser the checker uses, so what you convert is what you validate.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-label="What is the converter">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">In plain words</p>
+      <h2 class="display-2 glow">What does the converter do?</h2>
+      <p class="lede" style="margin-top:16px">Your SDC is text. Sometimes you need it as data: to feed an in-house dashboard, run a script over every constraint, or keep a machine-readable inventory for audits. The converter makes that one command.</p>
+    </div>
+    <div class="split">
+      <div class="reveal">
+        <ul class="tick-list">
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Tool integration:</b> feed constraint structure into your own scripts and dashboards.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Audit-friendly:</b> machine-readable constraint inventories for reviews.</span></li>
+          <li><span class="tick">✓</span><span><b style="color:var(--text-primary)">Diff-friendly:</b> compare JSON snapshots instead of SDC text.</span></li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <code class="block">
+<span class="c-dim">$ rta convert top.sdc --format json</span>
+{
+  <span class="c-acc">"commands"</span>: [
+    {
+      <span class="c-acc">"command"</span>: <span class="c-ok">"create_clock"</span>,
+      <span class="c-acc">"flags"</span>: {<span class="c-acc">"-name"</span>: <span class="c-ok">"clk"</span>,
+                   <span class="c-acc">"-period"</span>: <span class="c-ok">10.0</span>},
+      <span class="c-acc">"objects"</span>: [<span class="c-ok">"sys_clk"</span>],
+      <span class="c-acc">"line"</span>: 3
+    }
+  ]
+}
+        </code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" aria-label="Try it">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Try it</p>
+      <h2 class="display-2 glow">Convert your constraints</h2>
+    </div>
+    <div class="install-strip reveal-scale">
+      <div class="install-head">
+        <span class="label">Convert to JSON / YAML</span>
+        <button class="install-copy" data-copy="rta convert your_block.sdc --format json --output constraints.json">Copy</button>
+      </div>
+      <div class="install-body">
+        <span class="p">$ </span><span class="c">rta convert your_block.sdc --format json --output constraints.json</span><br>
+        <span class="p">$ </span><span class="c">rta convert your_block.sdc --format yaml</span> <span class="p"># YAML to stdout</span>
+      </div>
+    </div>
+    <div class="hero-ctas" style="justify-content:center;margin-top:28px">
+      <a class="btn btn--primary btn--lg" href="https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/" target="_blank" rel="noopener">Try it in the app <span class="mono">↗</span></a>
+      <a class="btn btn--outline btn--lg" href="../index.html#features">All features</a>
+    </div>
+  </div>
+</section>
+
+<footer id="site-footer"></footer>
+
+<script src="../assets/js/business.js"></script>
+</body>
+</html>

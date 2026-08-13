@@ -83,7 +83,7 @@
     el.innerHTML =
       '<div class="container-wide nav">'
       + '<a class="brand" href="' + rel("index.html") + '" aria-label="Ṛta home">' + brandSvg()
-      +   '<span>Ṛta<span class="brand-sub">Constraint Intelligence for Digital Design</span></span></a>'
+      +   '<span>Ṛta<span class="brand-sub">Bringing order to timing intent with deterministic precision</span></span></a>'
       + '<button class="nav-burger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">☰</button>'
       + '<nav class="nav-links" id="nav-links">' + links      + '<a class="btn btn--primary btn--sm nav-cta" href="http://localhost:8501/" title="Run `rta web` (or `sdc-tools web`) to start the workspace on port 8501">Launch Ṛta ↗</a>'
       + '</nav></div>';
@@ -110,7 +110,7 @@
       + '<div class="footer-grid">'
       +   '<div><a class="brand" href="' + rel("index.html") + '">' + brandSvg() + '<span>Ṛta</span></a>'
       +     '<p style="color:var(--text-secondary);font-size:13.5px;max-width:34ch;margin-top:12px">'
-      +     "Constraint Quality Intelligence and Pre-STA Validation — deterministic, offline-capable, evidence-driven.</p>"
+      +     "Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.</p>"
       +     '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">'
       +       '<span class="badge badge--success"><span class="sq"></span>Deterministic</span>'
       +       '<span class="badge badge--accent"><span class="sq"></span>Offline-capable</span>'
@@ -119,7 +119,7 @@
       +   cols
       + "</div>"
       + '<div class="footer-bottom">'
-      +   '<span>Ṛta v1.3.0 · RC_READY_WITH_KNOWN_LIMITATIONS</span>'
+      +   '<span>Ṛta v1.5.7 · RC_READY_WITH_KNOWN_LIMITATIONS</span>'
       +   '<span>Validates SDC constraint quality — not an STA timing signoff tool.</span>'
       + "</div></div>";
   }
