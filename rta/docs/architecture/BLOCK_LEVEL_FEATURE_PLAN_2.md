@@ -4,7 +4,7 @@
 > (rules registry, `checker.py`, `clock_relations.py`, `dft_scan_check.py`,
 > `design_context.py`, `design_coverage.py`) before writing, so every claim below
 > is verified, not assumed.
-> **Discipline:** additive-only. Existing engine modules and all 824 tests stay
+> **Discipline:** additive-only. Existing engine modules and all 826 tests stay
 > behavior-identical; every feature lands as new SDC codes + a guarded section in
 > `check_sdc` calling a new standalone module — the exact pattern used by Phases
 > 8–10 and F1–F4. No existing code or severity is touched.
@@ -373,7 +373,7 @@ SDC-158 (G1) · SDC-159 (G2) · SDC-164 (G7) · SDC-165 (G8).
 - **Evidence sync:** regenerate `RELEASE_EVIDENCE.json` via
   `python rta/evidence/build_evidence.py` (rule count changes to 123 after
   Phase 1, 126 after Phase 2) — same drift discipline as v1.5.0→v1.5.6.
-- **Regression:** full `pytest rta/tests -q` (824 → 824+new, all green) +
+- **Regression:** full `pytest rta/tests -q` (826 → 826+new, all green) +
   `smoke_test.py` + readiness/golden/golden-semantic runners.
 - **Docs:** new codes appear in `rta rules list/show`, the UI rules reference,
   and the CLI guide; new tabs documented in the web UI feature docs.

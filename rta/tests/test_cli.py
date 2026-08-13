@@ -44,6 +44,22 @@ class TestCliHelp:
         result = run_cli("--help")
         assert result.returncode == 0
 
+    def test_whats_new(self):
+        """whats-new prints release notes and the latest version."""
+        from rules_registry import APP_VERSION
+        result = run_cli("whats-new")
+        assert result.returncode == 0
+        assert f"Ṛta v{APP_VERSION}" in result.stdout
+        assert "what changed" in result.stdout
+
+    def test_whats_new_all(self):
+        """whats-new --all shows the full set of release notes."""
+        from rta.engine.meta.release_notes import RELEASE_NOTES
+        result = run_cli("whats-new", "--all")
+        assert result.returncode == 0
+        for version in RELEASE_NOTES:
+            assert f"v{version}" in result.stdout
+
 
 class TestCliCheck:
     """Tests for the `check` command."""

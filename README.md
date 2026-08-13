@@ -101,9 +101,19 @@ python3 smoke_test.py                # fast engine check, no browser needed
 pytest rta/tests -q                   # full test suite
 ```
 
+### See what changed in each release
+
+```bash
+rta whats-new          # release notes for the latest versions
+rta whats-new --all    # full changelog from the terminal
+```
+
+Works offline after install (the notes ship inside the wheel). If your
+installed version is behind, it tells you the exact upgrade command.
+
 > 📖 **New to the CLI?** Read the complete [**Ṛta CLI User Guide — Every Feature**](docs/features/README-11-cli-user-guide.md): installation, all 12 commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
 
-Ṛta ships with **824 pytest tests** across the engine, covering deterministic
+Ṛta ships with **826 pytest tests** across the engine, covering deterministic
 checks, netlist resolution, interactions, and readiness scoring — backed by
 **9 golden runners** and **42 benchmark suites**. All counts are recorded in
 `RELEASE_EVIDENCE.json` and regenerated via `python rta/evidence/build_evidence.py`.
@@ -400,7 +410,7 @@ rta-constraint-intelligence/    (clone dir)
 │   ├── evidence/               # release evidence, golden runners, benchmarks,
 │   │                           #   RELEASE_EVIDENCE.json
 │   ├── tools/                  # deploy_hf_space.py, report/, corners/, ...
-│   ├── tests/                  # 824 pytest tests
+│   ├── tests/                  # 826 pytest tests
 │   ├── examples/ docs/ knowledge/
 │   └── business-site/          # 🌐 marketing site (GitHub Pages)
 │
@@ -431,6 +441,7 @@ rta-constraint-intelligence/    (clone dir)
 | `convert` | SDC to JSON/YAML | `--format`, `--output` |
 | `batch` | Directory-wide processing | `check`, `lint`, `report`, `--fix` |
 | `report` | HTML reports | `check`, `diff`, `clock-relations`, `coverage` |
+| `whats-new` | Release notes | `--all` (full changelog) |
 | `web` | Launch browser UI | (opens `http://localhost:8501`) |
 
 ---

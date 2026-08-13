@@ -23,6 +23,7 @@ import os
 import textwrap
 
 from rules_registry import APP_VERSION, get_all_rules, get_rule, get_rules_by_module
+from rta.engine.meta.release_notes import RELEASE_NOTES, latest_version
 
 
 # ── Output helpers ───────────────────────────────────────────────────────────
@@ -1269,6 +1270,30 @@ def _bar_chart(pct: float, width: int = 20) -> str:
 
 # ── Subcommand: web ───────────────────────────────────────────────────────────
 
+def cmd_whats_new(args):
+    """Print recent release notes so engineers can see what changed."""
+    versions = list(RELEASE_NOTES)
+    if not args.all:
+        versions = versions[:3]
+    for i, v in enumerate(versions):
+        header = f"Ṛta v{v} — what changed"
+        if i == 0:
+            header += "  (latest)"
+        print(header)
+        bullets = RELEASE_NOTES[v]
+        if not bullets:
+            print("  (no release notes)")
+        for b in bullets:
+            print(f"  • {b}")
+        print()
+    if not args.all and latest_version() != APP_VERSION:
+        print(f"You are on v{APP_VERSION}. Upgrade with:")
+        print("  pip install -U rta-constraint-intelligence")
+    elif latest_version() == APP_VERSION:
+        print("You are up to date.")
+    print("Full changelog: https://github.com/RAMA-L7/rta-constraint-intelligence/blob/main/CHANGELOG.md")
+
+
 def cmd_web(args):
     """Launch the local Ṛta workspace.
 
@@ -1604,6 +1629,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_rules.add_argument("--output", "-o", default="", help="Write output to file")
 
     # ── web ──
+    p_whats_new = sub.add_parser("whats-new", help="Show what changed in recent releases",
+        description="Print the release notes for the latest versions of Ṛta, plus an upgrade hint if you are behind.")
+    p_whats_new.add_argument("--all", action="store_true",
+        help="Show the full changelog instead of the default 3 most recent releases")
     sub.add_parser("web", help="Launch the Streamlit web UI",
                    description="Launch the Ṛta workspace in your browser.")
 
@@ -1719,6 +1748,7 @@ def main(argv: list[str] | None = None):
         "coverage": cmd_coverage,
         "report": cmd_report,
         "web": cmd_web,
+        "whats-new": cmd_whats_new,
         "lint": cmd_lint,
         "convert": cmd_convert,
         "batch": cmd_batch,

@@ -5,13 +5,13 @@
   "release_status": "RC_READY_WITH_KNOWN_LIMITATIONS",
   "license": "MIT",
   "python_requirement": ">=3.10",
-  "test_count": 824,
+  "test_count": 826,
   "test_files": 26,
   "test_files_detail": {
     "test_batch_runner.py": 7,
     "test_branding.py": 52,
     "test_checker.py": 96,
-    "test_cli.py": 54,
+    "test_cli.py": 56,
     "test_clock_relations.py": 15,
     "test_constraint_diff.py": 13,
     "test_constraint_interactions.py": 44,
@@ -50,5 +50,5 @@
   "golden_runner_count": 9,
   "benchmark_suites": 42,
   "phase_count": 15,
-  "evidence_updated": "2026-08-12"
+  "evidence_updated": "2026-08-13"
 }
