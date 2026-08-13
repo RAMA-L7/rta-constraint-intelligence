@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rta-constraint-intelligence"
-version = "1.5.7"
+version = "1.5.8"
 description = "Ṛta — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking. No EDA tool required."
 readme = "README.md"
 license = "MIT"

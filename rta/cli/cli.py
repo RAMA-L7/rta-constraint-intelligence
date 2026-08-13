@@ -939,6 +939,7 @@ def _write_analyze_all_html(args, text, check, cov, clock, ctx):
     with open(args.output, "w", encoding="utf-8") as fh:
         fh.write(html)
     print(f"Written to {args.output}")
+    _print_report_open_hint(args.output)
 
 
 def _analyze_clock_relations(args):
@@ -1387,6 +1388,15 @@ def cmd_report(args):
         fatal(f"unknown report type: {args.report_type}")
 
 
+def _print_report_open_hint(output_path: str):
+    """Print how to open a generated HTML report on the current platform."""
+    if os.name == "nt":
+        hint = f"start {output_path}"
+    else:
+        hint = f"open {output_path}"
+    print(f"Open with: {hint}")
+
+
 def _write_report(html: str, output_path: str):
     """Write HTML to file or stdout."""
     if output_path:
@@ -1396,6 +1406,7 @@ def _write_report(html: str, output_path: str):
         except OSError as e:
             fatal(f"cannot write report '{output_path}': {e}", code=2)
         print(f"Written to {output_path}")
+        _print_report_open_hint(output_path)
     else:
         sys.stdout.reconfigure(encoding="utf-8") if hasattr(sys.stdout, "reconfigure") else None
         print(html)

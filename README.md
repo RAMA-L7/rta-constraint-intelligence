@@ -3,7 +3,7 @@
 > **Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.7-blue" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.5.8-blue" alt="Version">
   <img src="https://img.shields.io/badge/Python-3.10+-yellow" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-gray" alt="Platform">
@@ -322,6 +322,16 @@ rta report diff old.sdc new.sdc -o diff_report.html
 rta report clock-relations design.sdc -o clock_report.html
 rta report coverage design.sdc -o coverage_report.html
 ```
+
+The CLI prints how to open the report right after writing it:
+
+```
+Written to quality_report.html
+Open with: start quality_report.html      # Windows
+Open with: open quality_report.html       # macOS / Linux
+```
+
+On Windows, `start quality_report.html` opens it in your default browser. The `rta analyze all ... -o report.html` full-analysis report prints the same hint.
 
 ---
 

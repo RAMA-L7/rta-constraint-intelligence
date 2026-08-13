@@ -2,6 +2,15 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.8] — 2026-08-13
+
+### Added
+
+- After writing any HTML report (`rta report ... -o file.html` and
+  `rta analyze all ... -o report.html`), the CLI now prints how to open it
+  (`Open with: start file.html` on Windows, `open file.html` on
+  macOS/Linux). Documented in the README Signoff Reports section.
+
 ## [1.5.7] — 2026-08-13
 
 ### Added

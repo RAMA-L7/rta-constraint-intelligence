@@ -23,7 +23,7 @@
 
   /* ── Live product facts (keep in sync with rta/evidence/manifest) ─────── */
   var FACTS = {
-    version: "1.5.7",
+    version: "1.5.8",
     rules: 119,
     tests: 824,
     suites: 42,
