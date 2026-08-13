@@ -12,6 +12,13 @@
   <img src="https://img.shields.io/pypi/v/rta-constraint-intelligence" alt="PyPI version">
 </p>
 
+<p align="center">
+  <a href="https://RAMA-L7.github.io/rta-constraint-intelligence/">🌐 Business Site</a> ·
+  <a href="https://pypi.org/project/rta-constraint-intelligence/">📦 PyPI</a> ·
+  <a href="docs/features/README-11-cli-user-guide.md">📖 CLI User Guide</a> ·
+  <a href="rta/evidence/manifest/RELEASE_EVIDENCE.json">🧾 Release Evidence</a>
+</p>
+
 ---
 
 ## What is Ṛta?
@@ -30,11 +37,46 @@
 
 **READY ≠ STA signoff. Coverage ≠ correctness. CI pass ≠ timing closure.** Ṛta is honest about what it does and doesn't prove.
 
-**Scope:** block-level (single flat RTL or gate-level netlist) today. Hierarchical, full-chip resolution is a planned extension of the same design-context model — see `design_context.py`.
+**Scope:** block-level (single flat RTL or gate-level netlist) today. Hierarchical, full-chip resolution is a planned extension of the same design-context model — see `rta/engine/context/design_context.py`.
+
+---
+
+## 🆕 What's New
+
+### v1.5.7 (latest)
+
+**Engine fixes (found by real-usage verification):**
+- **`rst_n` reset trees now detected by SDC-151/152/153.** The pin classifier previously recognized `rst`/`reset`/`rstn` but not `rst_n` — the most common reset naming in real designs — so the reset-tree checks silently never fired for most blocks. `_pin_role` now also matches `rst_n`, `reset_n`, `arst_n`.
+- **Semantic diff reports the highest-signal changes.** A clock period *increase* (e.g. 10 → 12 ns) previously produced no finding — only decreases fired. New **`CHG-CK-006`** flags it. IO delay *value* changes were misreported as remove+add pairs; they now match on endpoint+mode and report as **`CHG-IO-001`** modifications.
+
+**New surfaces:**
+- 🌐 **Business site** (`rta/business-site/`) — premium marketing pages for every feature, with install commands, a searchable **Rules catalog** (all rules, filters, per-rule detail), and the brand North Star. Live at **https://RAMA-L7.github.io/rta-constraint-intelligence/** (also reachable from the tool header nav).
+- 🧪 **Engineer test kit** (`engineer_test_kit/`) — self-contained per-feature fixture sets (SDC + matching netlists) with a README and machine-readable manifest, so you can validate every promised feature exactly as an engineer would. The commands in the [Test Kit](#-engineer-test-kit) section below are copy-paste ready.
+
+### Earlier in v1.5.x — the "advanced rules" batch
+
+| Code | Severity | What it catches |
+|---|---|---|
+| `SDC-150` | warning | Timing exception (`set_false_path` / `set_multicycle_path` / `set_case_analysis`) with no explanatory comment nearby — an undocumented exception can hide a real violation |
+| `SDC-151` | warning | Unconstrained reset tree — a net driving ≥2 flip-flop reset pins with no timing exception |
+| `SDC-152` | warning | Blanket wildcard false path covering a reset tree — hides the sync-input vs deassertion distinction |
+| `SDC-153` | warning | Reset synchronizer shape — a reset tree that also drives data inputs needs distinct sync-input vs deassertion exceptions |
+| `SDC-154` | warning | Scan enable referenced with no `set_case_analysis` mode assignment — STA would blend shift and capture paths |
+| `SDC-155` | warning | Fully-blanket false path in a DFT design — cannot distinguish scan-present from non-scan flops |
+| `SDC-156` | info | Flat single-number derates on an advanced (≤16nm) flow — consider AOCV/POCV |
+| `SDC-157` | info | Flat and sigma/table derates mixed in one file — pick one methodology per corner |
+
+Full details: `rta rules show SDC-150` … `rta rules show SDC-157`.
 
 ---
 
 ## 🚀 Quick Start
+
+### Install from PyPI (recommended)
+```bash
+pip install rta-constraint-intelligence
+rta --version        # Ṛta v1.5.7
+```
 
 ### Install from source
 ```bash
@@ -46,11 +88,11 @@ pip install -e ".[web]"
 streamlit run legacy/streamlit/app.py   # preserved legacy Streamlit UI
 ```
 
-### CLI
+### CLI (from source, use `python cli.py`; after pip install, use `rta`)
 ```bash
-python3 cli.py check sample.sdc                       # validate
-python3 cli.py generate --design MY_CHIP --clock clk=10.0   # generate
-python3 cli.py --help                                 # see all commands
+rta check sample.sdc                       # validate
+rta generate --design MY_CHIP --clock clk=10.0   # generate
+rta --help                                 # see all commands
 ```
 
 ### Verify your setup
@@ -75,27 +117,30 @@ docker run -p 8501:8501 rta web                     # Web UI
 
 ---
 
-## 📋 Feature Overview (15 Major Features)
+## 📋 Feature Overview (119 Rules · 15 Major Features)
 
 | # | Feature | Module | CLI Command | Description |
 |---|---------|--------|-------------|-------------|
-| 1 | [**Checker / Validator**](docs/features/README-01-checker.md) | `checker.py` | `rta check` | 100+ semantic checks: errors, warnings, best practices |
-| 2 | [**Generator**](docs/features/README-02-generator.md) | `generator.py` | `rta generate` | Generate a complete signoff-ready SDC from a structured spec (11 sections: clocks, I/O, design rules, derate, DFT, exceptions, power, dont-use) |
-| 3 | **Netlist-Aware Cross-Checks** *(new)* | `design_context.py`, `design_coverage.py` | `rta check --netlist` | Resolves get_ports/get_pins/get_cells against a real RTL or gate-level Verilog file via structural connectivity — not name-matching |
-| 4 | **Constraint Interactions** *(new)* | `constraint_interactions.py` | — | Detects exact duplicates, silent overrides, and contradictory constraints (e.g. max_delay < min_delay) within one SDC |
-| 5 | **Constraint Readiness** *(new)* | `constraint_readiness.py` | — | Aggregates Checker evidence into a 7-dimension signoff-readiness verdict with prioritized fix-actions |
-| 6 | [**Linter**](docs/features/README-01-checker.md#sdc-linter) | `linter.py` | `rta lint` | Format & reorganize SDC files with section ordering |
-| 7 | [**Converter**](#sdc-convert) | `converter.py` | `rta convert` | Parse SDC to structured JSON/YAML for tool integration |
-| 8 | [**Batch Processor**](#sdc-batch) | `batch_runner.py` | `rta batch` | Process all SDCs in a directory — check, lint, report |
-| 9 | [**Constraint Change Analyzer**](docs/features/README-03-diff.md) | `constraint_diff.py` | `rta diff` | Semantic diff with TCL variable resolution + wildcard drift |
-| 10 | [**Clock Relation Analyzer**](docs/features/README-04-clock-relations.md) | `clock_relations.py` | `rta analyze clock-relations` | Infer correct clock relationships and detect mismatches |
-| 11 | [**Multi-Corner Manager (MMC)**](docs/features/README-05-mmc.md) | `corner_manager.py` + `mmc.py` | `rta corners` | PVT corner presets, per-corner SDC generation, ZIP packaging |
-| 12 | [**Constraint Coverage Gap Analysis**](docs/features/README-06-coverage.md) | `coverage.py` | `rta coverage` | Category gap analysis, plus netlist-aware real-port coverage when a design is supplied |
-| 13 | [**Custom Rules Engine**](docs/features/README-07-custom-rules.md) | `custom_rules.py` | `rta check --custom-rules` | YAML-based project-specific validation policies |
-| 14 | [**Rules Registry**](docs/features/README-08-rules-registry.md) | `rules_registry.py` | `rta rules` | Centralized documentation of all 111+ rule codes |
-| 15 | [**HTML Signoff Reports**](docs/features/README-09-reports.md) | `reporter.py` | `rta report` | Self-contained, zero-dependency HTML reports |
+| 1 | [**Checker / Validator**](docs/features/README-01-checker.md) | `rta/engine/rules/checker.py` | `rta check` | 119 semantic checks: errors, warnings, best practices |
+| 2 | [**Generator**](docs/features/README-02-generator.md) | `rta/engine/generate/generator.py` | `rta generate` | Generate a complete signoff-ready SDC from a structured spec |
+| 3 | **Netlist-Aware Cross-Checks** | `rta/engine/context/design_context.py`, `design_coverage.py` | `rta check --netlist` | Resolves get_ports/get_pins/get_cells against a real RTL or gate-level Verilog file via structural connectivity — not name-matching |
+| 4 | **Constraint Interactions** | `rta/engine/analysis/constraint_interactions.py` | — | Detects exact duplicates, silent overrides, and contradictory constraints |
+| 5 | **Constraint Readiness** | `rta/engine/analysis/constraint_readiness.py` | — | Aggregates Checker evidence into a 7-dimension signoff-readiness verdict |
+| 6 | [**Linter**](docs/features/README-01-checker.md#sdc-linter) | `rta/engine/lint/linter.py` | `rta lint` | Format & reorganize SDC files with section ordering |
+| 7 | [**Converter**](#sdc-convert) | `rta/engine/convert/converter.py` | `rta convert` | Parse SDC to structured JSON/YAML for tool integration |
+| 8 | [**Batch Processor**](#sdc-batch) | `rta/engine/batch/batch_runner.py` | `rta batch` | Process all SDCs in a directory — check, lint, report |
+| 9 | [**Constraint Change Analyzer**](docs/features/README-03-diff.md) | `rta/engine/diff/constraint_diff.py` | `rta diff` | Semantic diff with TCL variable resolution + wildcard drift |
+| 10 | [**Clock Relation Analyzer**](docs/features/README-04-clock-relations.md) | `rta/engine/analysis/clock_relations.py` | `rta analyze clock-relations` | Infer correct clock relationships and detect mismatches |
+| 11 | [**Multi-Corner Manager (MMC)**](docs/features/README-05-mmc.md) | `rta/engine/corners/corner_manager.py` + `mmc.py` | `rta corners` | PVT corner presets, per-corner SDC generation, ZIP packaging |
+| 12 | [**Constraint Coverage Gap Analysis**](docs/features/README-06-coverage.md) | `rta/engine/analysis/design_coverage.py` | `rta coverage` | Category gap analysis, plus netlist-aware real-port coverage |
+| 13 | [**Custom Rules Engine**](docs/features/README-07-custom-rules.md) | `rta/engine/rules/custom_rules.py` | `rta check --custom-rules` | YAML-based project-specific validation policies |
+| 14 | [**Rules Registry**](docs/features/README-08-rules-registry.md) | `rta/engine/rules/rules_registry.py` | `rta rules` | Centralized documentation of all 119 rule codes |
+| 15 | [**HTML Signoff Reports**](docs/features/README-09-reports.md) | `rta/engine/report/reporter.py` | `rta report` | Self-contained, zero-dependency HTML reports |
 
-Plus a preserved legacy [**Streamlit Web UI**](docs/features/README-10-web-ui.md) (`legacy/streamlit/app.py`) with all 12 tools as equal-prominence tabs — Checker, Generator, Linter, Converter, Corner Mgr, MMC SDC, Diff, Clock, Coverage, Interactions, Readiness, Rules (retired from the launch path; kept in `legacy/`).
+Plus:
+- **Advanced constraint-intelligence rules (SDC-150…157)** — rationale linting, reset/CDC structural completeness, DFT/scan-mode coverage, and AOCV/POCV derate methodology (see [What's New](#-whats-new)).
+- A preserved legacy [**Streamlit Web UI**](docs/features/README-10-web-ui.md) (`legacy/streamlit/app.py`) with all 12 tools as equal-prominence tabs — Checker, Generator, Linter, Converter, Corner Mgr, MMC SDC, Diff, Clock, Coverage, Interactions, Readiness, Rules (kept in `legacy/` by design).
+- A **static workspace UI** with a stdlib API server (`rta/workspace/`) — the active web surface, also deployed to **Hugging Face Spaces**.
 
 ---
 
@@ -110,6 +155,18 @@ rta check design.sdc
 #
 #   [SDC-001] No create_clock defined — all paths unconstrained.
 #   [SDC-024] 4 clocks but no set_clock_groups — CDC un-flagged.
+```
+
+### Design-aware checking (SDC + netlist)
+
+Give Ṛta the RTL/gate-level netlist and it resolves every `get_ports` / `get_pins` / `get_cells` structurally — typo'd ports, empty wildcards, and bad hierarchy are caught with proof, and the reset/CDC/scan/coverage rules have real fanout to work with:
+
+```bash
+rta check design.sdc --netlist design.v --top top
+#   Design context: top (12 ports, 34 instances)
+#   ...
+#   [SDC-151] Reset tree 'rst_n' drives 2 flip-flop reset pin(s) but has no
+#             timing exception — async reset deassertion and CDC paths are unconstrained.
 ```
 
 With JSON output for CI integration:
@@ -176,7 +233,9 @@ rta diff old.sdc new.sdc \
   --verbose
 # Output:
 #   FATAL  [CHG-FP-001]  False path removed — timing now checked on this path
-#   WARN   [CHG-CK-001]  Clock period decreased from 5ns to 4ns
+#   INFO   [CHG-CK-001]  Clock period decreased from 5ns to 4ns
+#   INFO   [CHG-CK-006]  Clock period increased from 10.0ns to 12.0ns — verify intentional
+#   INFO   [CHG-IO-001]  Input delay on data[0] changed 2.0ns -> 2.5ns
 #   INFO   [CHG-GEN-001] New constraint added
 ```
 
@@ -225,10 +284,10 @@ rta coverage design.sdc --json            # for automation
 ## 📋 Rules Lookup
 
 ```bash
-rta rules list                             # all 60+ rules
+rta rules list                             # all 119 rules
 rta rules list --severity error             # errors only
 rta rules list --search derate              # search by keyword
-rta rules show SDC-060                      # single rule details
+rta rules show SDC-151                      # single rule details
 ```
 
 ## 📋 Custom Rules YAML
@@ -266,70 +325,83 @@ rta report coverage design.sdc -o coverage_report.html
 
 ---
 
+## 🧪 Engineer Test Kit
+
+The repo ships a self-contained **`engineer_test_kit/`** — per-feature fixture sets (SDC + matching netlists) with a `README.md` and machine-readable `manifest.json`, so you (or an engineer on your team) can validate every promised feature on realistic inputs:
+
+| Kit | Feature | What it exercises |
+|---|---|---|
+| `01_block_full` | Reference good block | A clean APB+UART block (0 errors) — the baseline every other set is compared against |
+| `02_check_variants` | Checker edge cases | No I/O delays, I/O exceeding period, missing generated-clock source, duplicate clocks, empty file |
+| `03_clock_relations` | Clock relation analysis | Async-vs-exclusive mismatch, missing clock groups, generated-clock chains |
+| `04_coverage` | Coverage (netlist-aware) | Partially constrained bus → partial-coverage finding |
+| `05_design_context` | Design context | Typo'd port, wildcard with no match, bad hierarchy → SDC-055/056/057 |
+| `06_scan_dft` | DFT/scan mode | Unconstrained scan_en → SDC-154; blanket scan cut → SDC-155 |
+| `07_reset_cdc` | Reset / CDC | Unconstrained `rst_n` → SDC-151; blanket → SDC-152; sync-stage → SDC-153; covered → clean |
+| `08_derate_ocv` | Derate methodology | Flat derate on 16nm corner → SDC-156; mixed flat+sigma → SDC-157 |
+| `09_rationale` | Exception comments | No-comment false path → SDC-150; commented → clean |
+| `10_generate` – `17_report` | Tool features | generate, lint, convert, diff (incl. TCL), baseline + gate, corners, batch, HTML reports |
+
+Quick tour (from the repo root):
+
+```bash
+# Reference block — expect 0 errors
+python cli.py check engineer_test_kit/01_block_full/apb_uart.sdc \
+  --netlist engineer_test_kit/01_block_full/apb_uart_netlist.v --top apb_uart_top
+
+# Unconstrained reset tree — expect SDC-151
+python cli.py check engineer_test_kit/07_reset_cdc/reset_unconstrained.sdc \
+  --netlist engineer_test_kit/07_reset_cdc/apb_uart_netlist.v --top apb_uart_top
+
+# Covered reset — expect SDC-151/152/153 absent
+python cli.py check engineer_test_kit/07_reset_cdc/reset_covered.sdc \
+  --netlist engineer_test_kit/07_reset_cdc/apb_uart_netlist.v --top apb_uart_top
+
+# Flat derate on a 16nm corner — expect SDC-156 (--verbose shows info-level findings)
+python cli.py check --verbose engineer_test_kit/08_derate_ocv/flat_on_16nm.sdc
+
+# Full E2E: analyze all → HTML report
+python cli.py analyze all engineer_test_kit/01_block_full/apb_uart.sdc \
+  --netlist engineer_test_kit/01_block_full/apb_uart_netlist.v --top apb_uart_top -o report.html
+```
+
+Every set's expected findings are documented in `engineer_test_kit/README.md` and `engineer_test_kit/manifest.json`.
+
+---
+
 ## 📦 Project Structure
 
 ```
 rta-constraint-intelligence/    (clone dir)
 │
-├── core modules ──────────────────────────────
-│   ├── checker.py           # SDC validation (40+ checks)
-│   ├── generator.py         # SDC generation from params
-│   ├── linter.py            # SDC formatter + section reorganization
-│   ├── converter.py         # SDC → JSON/YAML parser
-│   ├── batch_runner.py      # Directory-wide batch processing
-│   ├── constraint_diff.py   # Semantic SDC diff + change rules
-│   ├── clock_relations.py   # Clock relation inference + mismatches
-│   ├── corner_manager.py    # PVT corner data model + presets
-│   ├── mmc.py               # Multi-corner SDC operations
-│   ├── coverage.py          # Constraint coverage gap analysis
-│   ├── custom_rules.py      # YAML-based custom validation rules
-│   ├── rules_registry.py    # Central rule code documentation (60+)
-│   ├── reporter.py          # HTML signoff report generator
-│   ├── tcl_resolver.py      # TCL $variable resolution
-│   └── wildcard_analyzer.py # Wildcard pattern risk analysis
+├── rta/ ────────────────────────────────── the package (pip-installable)
+│   ├── engine/                 # deterministic analysis core
+│   │   ├── rules/              # checker, rules_registry (119 codes), custom_rules
+│   │   ├── context/            # design_context (netlist resolution)
+│   │   ├── analysis/           # interactions, readiness, clock_relations,
+│   │   │                       #   design_coverage, async_reset_check,
+│   │   │                       #   dft_scan_check, derate_methodology
+│   │   ├── diff/               # constraint_diff (semantic diff)
+│   │   ├── generate/ lint/ convert/ batch/ corners/ report/
+│   ├── cli/cli.py              # command-line interface (12 commands)
+│   ├── api/                    # HTTP API server (workspace backend)
+│   ├── workspace/              # static web UI (active web surface)
+│   ├── branding/               # product identity
+│   ├── evidence/               # release evidence, golden runners, benchmarks,
+│   │                           #   RELEASE_EVIDENCE.json
+│   ├── tools/                  # deploy_hf_space.py, report/, corners/, ...
+│   ├── tests/                  # 824 pytest tests
+│   ├── examples/ docs/ knowledge/
+│   └── business-site/          # 🌐 marketing site (GitHub Pages)
 │
-├── interfaces ─────────────────────────────────
-│   ├── cli.py               # Command-line interface (12 commands)
-│   └── legacy/streamlit/    # Preserved legacy Streamlit UI (retired)
-│       ├── app.py           # Legacy Streamlit shell
-│       └── ui/              # Legacy tab modules (modular UI)
-│
-├── packaging & deployment ─────────────────────
-│   ├── pyproject.toml       # PyPI package configuration
-│   ├── Dockerfile           # Container image (Python 3.11-slim)
-│   ├── .dockerignore        # Docker build exclusions
-│   └── __init__.py          # Package init
-│
-├── sample files ───────────────────────────────
-│   ├── samples/
-│   │   ├── example.sdc                 # Full example SDC file
-│   │   ├── constraint_diff_v1.sdc      # Diff demo: version 1
-│   │   ├── constraint_diff_v2.sdc      # Diff demo: version 2
-│   │   └── clock_relations.sdc         # Clock relations demo
-│   └── custom_rules_example.yaml       # 10 example custom rules
-│
-├── git hooks & CI ─────────────────────────────
-│   ├── .pre-commit-config.yaml         # Pre-commit framework config
-│   ├── .pre-commit-hooks/sdc-check.sh  # Standalone git hook
-│   └── rta.cmd                        # Windows CLI wrapper
-│
-├── documentation ──────────────────────────────
-│   ├── README.md                       # This file
-│   └── docs/features/                  # Detailed feature docs
-│       ├── README-01-checker.md         # SDC Checker / Validator
-│       ├── README-02-generator.md       # SDC Generator
-│       ├── README-03-diff.md            # Constraint Change Analyzer
-│       ├── README-04-clock-relations.md # Clock Relation Analyzer
-│       ├── README-05-mmc.md             # Multi-Corner Manager
-│       ├── README-06-coverage.md        # Constraint Coverage Gap
-│       ├── README-07-custom-rules.md    # Custom Rules Engine
-│       ├── README-08-rules-registry.md  # Rules Registry
-│       ├── README-09-reports.md         # HTML Signoff Reports
-│       ├── README-10-web-ui.md          # Streamlit Web UI
-│       └── README-11-cli-user-guide.md  # Engineer-facing CLI guide (every feature)
-│
-├── MIT License                          # Open-source (MIT)
-└── .gitignore                           # Git exclusions
+├── engineer_test_kit/          # 🧪 per-feature SDC+netlist fixture sets
+├── legacy/streamlit/           # preserved legacy Streamlit UI (retired)
+├── cli.py                      # root shim: `python cli.py ...` (== `rta`)
+├── pyproject.toml              # PyPI package (rta-constraint-intelligence)
+├── Dockerfile                  # container image
+├── samples/                    # demo SDC files
+├── docs/features/              # detailed per-feature documentation
+└── CONTRIBUTING.md / CHANGELOG.md / LICENSE
 ```
 
 ---
@@ -338,13 +410,13 @@ rta-constraint-intelligence/    (clone dir)
 
 | Command | Purpose | Key Flags |
 |---------|---------|-----------|
-| `check` | Validate SDC | `--json`, `--junit`, `--custom-rules`, `--verbose`, `--format` |
+| `check` | Validate SDC | `--json`, `--junit`, `--custom-rules`, `--netlist`, `--top`, `--verbose`, `--format`, `--baseline`, `--gate` |
 | `generate` | Generate SDC | `--clock`, `--design`, `--derate`, `--operating-condition` |
 | `diff` | Semantic diff | `--linked-v1`, `--linked-v2`, `--json`, `--verbose` |
 | `corners` | Manage corners | `list`, `show <name>` |
-| `analyze` | Deep analysis | `clock-relations`, `--json` |
+| `analyze` | Deep analysis | `clock-relations`, `all`, `--netlist`, `--top`, `--json` |
 | `rules` | Rule lookup | `list`, `show <code>`, `--module`, `--severity`, `--search` |
-| `coverage` | Gap analysis | `--json`, `--missing-only` |
+| `coverage` | Gap analysis | `--json`, `--missing-only`, `--netlist`, `--top` |
 | `lint` | Format/reorganize SDC | `--check`, `--fix`, `--output` |
 | `convert` | SDC to JSON/YAML | `--format`, `--output` |
 | `batch` | Directory-wide processing | `check`, `lint`, `report`, `--fix` |
@@ -355,12 +427,13 @@ rta-constraint-intelligence/    (clone dir)
 
 ## 🏗️ Design Principles
 
-1. **Zero external dependencies** for core validation (stdlib only)
-2. **Single Python files** — no complex package hierarchies
-3. **Fail-fast on errors** — CLI exits with code 1 if any errors found
-4. **Graceful optional features** — YAML (PyYAML optional), Web (Streamlit optional)
-5. **CI-friendly** — JUnit XML, JSON output, exit codes, pre-commit hooks
-6. **Self-contained reports** — HTML with inline CSS, no CDN, no JS
+1. **Deterministic, no LLMs** — the analysis path is pure, provable, and reproducible
+2. **Provable findings only** — anything the resolver can't verify stays un-assumed (never silent correctness)
+3. **Zero external dependencies** for core validation (stdlib only)
+4. **Fail-fast on errors** — CLI exits with code 1 if any errors found
+5. **Graceful optional features** — YAML (PyYAML optional), Web (Streamlit optional)
+6. **CI-friendly** — JUnit XML, JSON output, exit codes, pre-commit hooks
+7. **Self-contained reports** — HTML with inline CSS, no CDN, no JS
 
 ---
 
@@ -405,14 +478,13 @@ python -m pytest rta/tests/ -q
 
 ## 🤝 Contributing
 
-Contributions welcome! The project is organized for easy extension:
+Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide, including the rule-authoring guide for custom rules and the evidence/benchmark discipline. At a glance:
 
-- **Add a new checker rule:** Edit `checker.py` (add condition) + `rules_registry.py` (add documentation)
-- **Add a new custom condition:** Edit `custom_rules.py` (add `@_cond("name")` handler)
-- **Add a new coverage item:** Edit `coverage.py` (add to appropriate category)
-- **Add a new report section:** Edit `reporter.py` (add generator function)
-- **Add a new tab (legacy UI):** Create `legacy/streamlit/ui/tab_<name>.py` and add to `legacy/streamlit/app.py` tab list
-- **Add a new Streamlit tab:** Edit `app.py` (add to `st.tabs()` list)
+- **Add a new checker rule:** Edit `rta/engine/rules/checker.py` + register it in `rta/engine/rules/rules_registry.py`
+- **Add a new custom condition:** Edit `rta/engine/rules/custom_rules.py`
+- **Add a new coverage item:** Edit `rta/engine/analysis/design_coverage.py`
+- **Add a new report section:** Edit `rta/engine/report/reporter.py`
+- **Run the evidence gate:** `python rta/evidence/build_evidence.py` then `pytest rta/tests/test_evidence.py`
 
 ---
 
