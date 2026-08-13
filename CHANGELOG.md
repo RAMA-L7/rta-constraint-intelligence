@@ -10,6 +10,12 @@ All notable changes to Ṛta (formerly SDC Tools) are documented here.
   `rta analyze all ... -o report.html`), the CLI now prints how to open it
   (`Open with: start file.html` on Windows, `open file.html` on
   macOS/Linux). Documented in the README Signoff Reports section.
+- **`rta whats-new`** — see what changed in each release straight from
+  the terminal. Prints the release notes for the latest versions (notes
+  ship inside the wheel, so it works offline), tells you when your
+  installed version is behind and shows the exact upgrade command, and
+  `--all` prints the full changelog. Registry: 826 tests (2 new CLI
+  tests).
 
 ## [1.5.7] — 2026-08-13
 
