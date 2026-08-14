@@ -41,17 +41,12 @@
       </div>
 
       <div class="cmdbar-actions">
-        <button class="cmd-btn" id="cmd-open-session" type="button" title="Current session and recent sessions (this browser tab)">Open Session</button>
-        <button class="cmd-btn" id="cmd-import" type="button" title="Go to Validate and import an SDC file">Import</button>
-        <button class="cmd-btn" id="cmd-quick" type="button" title="Frequent workspace actions">Quick Actions</button>
-        <button class="cmd-btn" id="cmd-settings" type="button" title="Workspace settings">Settings</button>
+        <a class="cmd-link" href="#/documentation" data-view="documentation" title="Documentation">Docs</a>
+        <a class="cmd-link" href="#/trust" data-view="trust" title="Trust model and evidence">Trust</a>
+        <a class="cmd-link" href="#/feedback" data-view="feedback" title="Report a problem or suggest an improvement">Feedback</a>
+        <button class="cmd-btn" id="cmd-new" type="button" title="Start over — clear the session and load the sample">New</button>
         <span class="ver mono" id="ver">v1.3.0</span>
       </div>
-
-      <!-- Command menus (real actions; placeholders are honest, never fake) -->
-      <div class="cmd-menu" id="menu-session" hidden role="menu" aria-label="Sessions"></div>
-      <div class="cmd-menu" id="menu-quick" hidden role="menu" aria-label="Quick actions"></div>
-      <div class="cmd-menu" id="menu-settings" hidden role="menu" aria-label="Settings"></div>
     </header>
 
     <!-- ═════════════ ANALYSIS SESSION HEADER ═════════════ -->
@@ -65,11 +60,8 @@
       <span class="sh-sep" aria-hidden="true"></span>
       <span class="ctx-item mono" data-ctx="mode" title="Analysis mode">—</span>
       <span class="sh-sep" aria-hidden="true"></span>
-      <span id="ctx-trust"></span>
-      <span class="sh-sep" aria-hidden="true"></span>
       <span id="ctx-readiness"></span>
       <span class="sh-sep" aria-hidden="true"></span>
-      <span class="ctx-item mono" id="session-time" title="Analysis timestamp"></span>
       <span class="sh-right mono" id="session-scope"></span>
     </div>
 

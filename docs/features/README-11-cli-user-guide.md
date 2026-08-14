@@ -57,7 +57,7 @@ rta check samples/real_design_full.sdc     # run from the repo root
 | `rta batch` | Run check/lint/report over a directory of SDCs | Regression runs |
 | `rta web` | Launch the Streamlit web workspace | Interactive use |
 
-Run `rta <command> --help` for the exact flags of any command. (The legacy name `sdc-tools` was dropped in the rebrand — the command is `rta`.)
+Run `rta <command> --help` for the exact flags of any command. (The legacy name `rta` was dropped in the rebrand — the command is `rta`.)
 
 ---
 
@@ -387,22 +387,24 @@ table plus per-file exit behavior.
 
 ---
 
-## 14. `rta web` — the local web workspace
+## 14. `rta web` — pointing to the tool UI
 
-Launches the stdlib-only API server that serves the static product frontend
-(`rta/workspace/webui/`) and exposes the same deterministic backend over HTTP.
-No extra dependencies, works offline:
+`rta web` now prints how to launch the product tool instead of starting a
+server. The earlier workspace surface (port 8501) has been retired as the
+product UI to avoid two competing tool interfaces:
 
 ```bash
 rta web
-# Ṛta — opening http://127.0.0.1:8501  (port default 8501)
+# Ṛta — the workspace web UI at :8501 has been retired.
+# The product tool is the Streamlit UI. Launch it with:
+#     streamlit run legacy/streamlit/app.py
 ```
 
 ### The Streamlit app (12 tabs) — `legacy/streamlit/app.py`
 
 The full 12-tab interactive workspace (Checker, Generator, Linter, Converter,
 Corner Mgr, MMC SDC, Diff, Clock, Coverage, Interactions, Readiness, Rules)
-is the Streamlit app. It requires the `web` extra:
+is the Streamlit app and the product tool. It requires the `web` extra:
 
 ```bash
 pip install "rta-constraint-intelligence[web]"

@@ -75,7 +75,7 @@ Full details: `rta rules show SDC-150` … `rta rules show SDC-157`.
 ### Install from PyPI (recommended)
 ```bash
 pip install rta-constraint-intelligence
-rta --version        # Ṛta v1.5.7
+rta --version        # Ṛta v1.5.8
 ```
 
 ### Install from source
@@ -85,7 +85,7 @@ cd rta-constraint-intelligence
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 pip install -e ".[web]"
-streamlit run legacy/streamlit/app.py   # preserved legacy Streamlit UI
+streamlit run legacy/streamlit/app.py   # the Ṛta tool UI (product surface)
 ```
 
 ### CLI (from source, use `python cli.py`; after pip install, use `rta`)
@@ -113,7 +113,7 @@ installed version is behind, it tells you the exact upgrade command.
 
 > 📖 **New to the CLI?** Read the complete [**Ṛta CLI User Guide — Every Feature**](docs/features/README-11-cli-user-guide.md): installation, all 12 commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
 
-Ṛta ships with **826 pytest tests** across the engine, covering deterministic
+Ṛta ships with **887 pytest tests** across the engine, covering deterministic
 checks, netlist resolution, interactions, and readiness scoring — backed by
 **9 golden runners** and **42 benchmark suites**. All counts are recorded in
 `RELEASE_EVIDENCE.json` and regenerated via `python rta/evidence/build_evidence.py`.
@@ -122,7 +122,7 @@ checks, netlist resolution, interactions, and readiness scoring — backed by
 ```bash
 docker build -t rta .
 docker run -it rta check sample.sdc                # CLI
-docker run -p 8501:8501 rta web                     # Web UI
+# Web tool UI: streamlit run legacy/streamlit/app.py (see above)
 ```
 
 ---
@@ -410,7 +410,7 @@ rta-constraint-intelligence/    (clone dir)
 │   ├── evidence/               # release evidence, golden runners, benchmarks,
 │   │                           #   RELEASE_EVIDENCE.json
 │   ├── tools/                  # deploy_hf_space.py, report/, corners/, ...
-│   ├── tests/                  # 826 pytest tests
+│   ├── tests/                  # 887 pytest tests
 │   ├── examples/ docs/ knowledge/
 │   └── business-site/          # 🌐 marketing site (GitHub Pages)
 │

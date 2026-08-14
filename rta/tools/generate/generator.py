@@ -285,9 +285,13 @@ def generate_sdc(p: SDCParams) -> str:
         L.append(f"set_max_area {p.max_area}")
     L.append("")
 
-    if p.add_oper_cond:
+    # P1-3: never emit a malformed `set_operating_conditions -max ` with an
+    # empty value — omit the section entirely when no operating condition name
+    # is present (defense in depth: the CLI already gates on bool(name), and
+    # API callers cannot produce an empty-name line either).
+    if p.add_oper_cond and p.oper_cond_name.strip():
         L.append("# ── Operating conditions ────────────────────────────────────────")
-        L.append(f"set_operating_conditions -max {p.oper_cond_name}")
+        L.append(f"set_operating_conditions -max {p.oper_cond_name.strip()}")
         L.append("")
 
     if p.add_derate:

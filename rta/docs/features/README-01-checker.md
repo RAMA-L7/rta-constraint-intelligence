@@ -1,6 +1,6 @@
 # Feature 1: SDC Constraint Checker / Validator
 
-> **Module:** `checker.py` · **CLI:** `sdc-tools check` · **UI:** Checker Tab · **Code:** SDC-001..043, SDC-060..063, SDC-100..132
+> **Module:** `checker.py` · **CLI:** `rta check` · **UI:** Checker Tab · **Code:** SDC-001..043, SDC-060..063, SDC-100..132
 
 ---
 
@@ -144,22 +144,22 @@ SDC Text Input
 
 ```bash
 # Basic check
-sdc-tools check my_design.sdc
+rta check my_design.sdc
 
 # With verbose info and stats
-sdc-tools check my_design.sdc --verbose
+rta check my_design.sdc --verbose
 
 # JSON output for programmatic consumption
-sdc-tools check my_design.sdc --json
+rta check my_design.sdc --json
 
 # JUnit XML for CI integration
-sdc-tools check my_design.sdc --junit --output results.xml
+rta check my_design.sdc --junit --output results.xml
 
 # With custom rules
-sdc-tools check my_design.sdc --custom-rules my_policy.yaml
+rta check my_design.sdc --custom-rules my_policy.yaml
 
 # Save report to file
-sdc-tools check my_design.sdc --output check_report.txt
+rta check my_design.sdc --output check_report.txt
 ```
 
 ## Python API

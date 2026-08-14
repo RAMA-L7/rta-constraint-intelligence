@@ -1,6 +1,6 @@
 # Feature 3: Constraint Change Analyzer (Semantic Diff)
 
-> **Module:** `constraint_diff.py` · **CLI:** `sdc-tools diff` · **UI:** Change Analyzer Tab · **Codes:** CHG-FP-001..CHG-GEN-003
+> **Module:** `constraint_diff.py` · **CLI:** `rta diff` · **UI:** Change Analyzer Tab · **Codes:** CHG-FP-001..CHG-GEN-003
 
 **Dependencies:** `tcl_resolver.py` (TCL variable resolution), `wildcard_analyzer.py` (wildcard drift detection)
 
@@ -187,21 +187,21 @@ Inspired by [Ausdia TimeVision](https://www.ausdia.com/blog/6/not-much-change-in
 
 ```bash
 # Basic diff
-sdc-tools diff old.sdc new.sdc
+rta diff old.sdc new.sdc
 
 # With linked TCL variable files
-sdc-tools diff old.sdc new.sdc \
+rta diff old.sdc new.sdc \
   --linked-v1 params_v1.tcl \
   --linked-v2 params_v2.tcl
 
 # JSON output
-sdc-tools diff old.sdc new.sdc --json
+rta diff old.sdc new.sdc --json
 
 # Verbose (show V1/V2 text per change)
-sdc-tools diff old.sdc new.sdc --verbose
+rta diff old.sdc new.sdc --verbose
 
 # Save to file
-sdc-tools diff old.sdc new.sdc --output diff_report.txt
+rta diff old.sdc new.sdc --output diff_report.txt
 ```
 
 ## Python API

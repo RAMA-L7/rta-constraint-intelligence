@@ -1,6 +1,6 @@
 # Feature 9: HTML Signoff Reports
 
-> **Module:** `reporter.py` · **CLI:** `sdc-tools report`
+> **Module:** `reporter.py` · **CLI:** `rta report`
 
 ---
 
@@ -102,7 +102,7 @@ Checker Module          Diff Module           Clock Relations       Coverage Mod
      │                       │                      │                    │
      ▼                       ▼                      ▼                    ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
-│  CLI: sdc-tools report check/diff/clock-relations/coverage               │
+│  CLI: rta report check/diff/clock-relations/coverage               │
 │  API: generate_*_report(result, ...) → str (HTML)                        │
 │                                                                          │
 │  Each generator:                                                         │
@@ -153,28 +153,28 @@ Checker Module          Diff Module           Clock Relations       Coverage Mod
 
 ```bash
 # SDC Quality Report
-sdc-tools report check design.sdc --output quality_report.html
+rta report check design.sdc --output quality_report.html
 
 # With info-level items included
-sdc-tools report check design.sdc --verbose -o report.html
+rta report check design.sdc --verbose -o report.html
 
 # Change Impact Report
-sdc-tools report diff old.sdc new.sdc \
+rta report diff old.sdc new.sdc \
   --v1-name "RTL Freeze" \
   --v2-name "ECO #42" \
   --output diff_report.html
 
 # With linked TCL files
-sdc-tools report diff old.sdc new.sdc \
+rta report diff old.sdc new.sdc \
   --linked-v1 params_v1.tcl \
   --linked-v2 params_v2.tcl \
   -o diff_report.html
 
 # Clock Relations Report
-sdc-tools report clock-relations design.sdc -o clock_report.html
+rta report clock-relations design.sdc -o clock_report.html
 
 # Coverage Report
-sdc-tools report coverage design.sdc -o coverage_report.html
+rta report coverage design.sdc -o coverage_report.html
 ```
 
 ## Python API

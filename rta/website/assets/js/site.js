@@ -45,7 +45,7 @@
       ["Known limitations", "trust.html#limitations"],
     ]],
     ["Resources", [
-      ["GitHub", "https://github.com/RAMA-L7/sdc-tools"],
+      ["GitHub", "https://github.com/RAMA-L7/rta-constraint-intelligence"],
       ["Architecture", "docs/product/PRODUCT_EXPERIENCE_ARCHITECTURE.md"],
       ["Design system", "docs/product/VISUAL_DESIGN_SYSTEM.md"],
       ["Changelog", "CHANGELOG.md"],
@@ -85,7 +85,7 @@
       + '<a class="brand" href="' + rel("index.html") + '" aria-label="Ṛta home">' + brandSvg()
       +   '<span>Ṛta<span class="brand-sub">Bringing order to timing intent with deterministic precision</span></span></a>'
       + '<button class="nav-burger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">☰</button>'
-      + '<nav class="nav-links" id="nav-links">' + links      + '<a class="btn btn--primary btn--sm nav-cta" href="http://localhost:8501/" title="Run `rta web` (or `sdc-tools web`) to start the workspace on port 8501">Launch Ṛta ↗</a>'
+      + '<nav class="nav-links" id="nav-links">' + links      + '<a class="btn btn--primary btn--sm nav-cta" href="http://localhost:8501/" title="Run `rta web` (or `rta web`) to start the workspace on port 8501">Launch Ṛta ↗</a>'
       + '</nav></div>';
     var burger = el.querySelector(".nav-burger");
     var navLinks = el.querySelector(".nav-links");

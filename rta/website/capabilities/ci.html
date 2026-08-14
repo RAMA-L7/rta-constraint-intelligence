@@ -69,7 +69,7 @@
         <code class="block">
 <span class="c-dim"># GitHub Actions is one example — any CI can call the CLI</span>
 - name: Validate constraints
-  <span class="c-cmd">run:</span> sdc-tools check $SDC \
+  <span class="c-cmd">run:</span> rta check $SDC \
       --baseline base.json --gate STRICT
         </code>
         <p style="margin-top:12px;font-size:13.5px;color:var(--text-secondary)">The same command works in Jenkins, GitLab CI, or a local pre-commit hook — no vendor lock-in.</p>
@@ -91,7 +91,7 @@
   <div class="container center">
     <h2 class="display-2">Put a gate on your constraints</h2>
     <div class="hero-ctas" style="justify-content:center;margin-top:24px">
-      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `sdc-tools web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
       <a class="btn btn--outline btn--lg" href="../capabilities.html">All capabilities</a>
     </div>
   </div>

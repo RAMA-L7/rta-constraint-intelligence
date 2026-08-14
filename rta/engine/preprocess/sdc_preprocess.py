@@ -166,7 +166,8 @@ def _resolve_variables(commands: list) -> list:
         m = _SET_CMD.match(new_text)
         if m:
             env[m.group(1)] = _clean_set_value(m.group(2))
-        resolved.append(LogicalCommand(new_text, cmd.start_line, cmd.end_line))
+        resolved.append(LogicalCommand(new_text, cmd.start_line, cmd.end_line,
+                                       list(cmd.diagnostics or [])))
     return resolved
 
 
@@ -198,6 +199,11 @@ class LogicalCommand:
     text: str       # command text (comments removed, continuations joined)
     start_line: int  # 1-based first physical line
     end_line: int    # 1-based last physical line
+    diagnostics: list = None  # lexical diagnostics attached during preprocessing
+
+    def __post_init__(self):
+        if self.diagnostics is None:
+            self.diagnostics = []
 
 
 def preprocess_sdc(text: str) -> list:
@@ -212,12 +218,22 @@ def preprocess_sdc(text: str) -> list:
       3. Attach start/end physical-line provenance to every logical command.
 
     Returns a list of LogicalCommand. A blank result list means "no commands".
+
+    Lexical diagnostics (``LogicalCommand.diagnostics``): when the file ends
+    inside an unclosed Tcl bracket/brace (or with a dangling backslash
+    continuation), the affected logical command carries an explicit diagnostic
+    naming the opening line so the malformed construct is never silently
+    merged away. This mirrors Tcl(n) rule 10: an unclosed bracket/brace is a
+    syntax error, and the preprocessor reports it instead of hiding it.
     """
     commands: list = []
     cur_buf: list = []
     cur_start: int = 0
     in_brace = 0
     in_bracket = 0
+    open_brace_line = 0   # physical line where the current { ... } span opened
+    open_bracket_line = 0  # physical line where the current [ ... ] span opened
+    dangling_cont = False  # a continuation backslash is pending when EOF hits
 
     lines = text.split('\n')
     for idx, raw in enumerate(lines):
@@ -232,6 +248,7 @@ def preprocess_sdc(text: str) -> list:
                 commands.append(LogicalCommand(
                     ' '.join(cur_buf).strip(), cur_start, lineno - 1))
                 cur_buf, cur_start = [], 0
+            dangling_cont = False
             continue
 
         # Remove comments on this physical line (respecting braces/brackets),
@@ -249,10 +266,16 @@ def preprocess_sdc(text: str) -> list:
         if cont:
             cleaned = cleaned.rstrip('\\')
         cur_buf.append(cleaned.strip())
+        dangling_cont = cont
 
         # Update depth after collecting tokens (opening/closing chars).
         in_brace += cleaned.count('{') - cleaned.count('}')
         in_bracket += cleaned.count('[') - cleaned.count(']')
+        # Remember the physical line where the current unbalanced span opened.
+        if in_brace > 0 and open_brace_line == 0:
+            open_brace_line = lineno
+        if in_bracket > 0 and open_bracket_line == 0:
+            open_bracket_line = lineno
         in_brace = max(in_brace, 0)
         in_bracket = max(in_bracket, 0)
 
@@ -265,15 +288,46 @@ def preprocess_sdc(text: str) -> list:
             commands.append(LogicalCommand(
                 ' '.join(cur_buf).strip(), cur_start, lineno))
             cur_buf, cur_start = [], 0
+            open_brace_line = 0
+            open_bracket_line = 0
+            dangling_cont = False
 
     if cur_buf:
+        diags = []
+        if in_bracket > 0:
+            diags.append(
+                f"unclosed '[' opened at line {open_bracket_line} — the bracket "
+                f"never closes, so lines {open_bracket_line}..{len(lines)} were "
+                f"merged into this command; add the missing ']'")
+        if in_brace > 0:
+            diags.append(
+                f"unclosed '{{' opened at line {open_brace_line} — the brace "
+                f"never closes, so lines {open_brace_line}..{len(lines)} were "
+                f"merged into this command; add the missing '}}'")
+        if dangling_cont and not in_brace and not in_bracket:
+            diags.append(
+                f"dangling backslash continuation at line {len(lines)} — the "
+                f"line ends with '\\' but the file ends; the command is incomplete")
         commands.append(LogicalCommand(
-            ' '.join(cur_buf).strip(), cur_start, len(lines)))
+            ' '.join(cur_buf).strip(), cur_start, len(lines), diags))
 
     # Keep only non-empty logical commands.
     commands = [c for c in commands if c.text.strip()]
     # Bounded Tcl variable resolution (order-aware; inert if no 'set' present).
     return _resolve_variables(commands)
+
+
+def collect_diagnostics(commands) -> list:
+    """Return every lexical diagnostic attached to a preprocessed command set.
+
+    A convenience for consumers that want to surface preprocessing issues
+    (e.g. an unclosed bracket at EOF) without threading diagnostics through
+    each analysis module.
+    """
+    out: list = []
+    for c in commands:
+        out.extend(c.diagnostics or [])
+    return out
 
 
 def _strip_line_comment(line: str, in_brace: int, in_bracket: int) -> str:

@@ -16,6 +16,7 @@ Endpoints:
     GET  /api/health                 version + status
     GET  /api/design                 design tokens + status metadata
     GET  /api/rules                  rule catalog
+    GET  /api/evidence               release evidence (manifest-derived counts)
     POST /api/analyze                full analysis pipeline (SDC + optional
                                      netlist/baseline/gate/custom rules)
     POST /api/lint                   lint an SDC
@@ -105,12 +106,20 @@ def serialize_issues(issues) -> list:
 
 
 def serialize_info(info) -> list:
-    return [{"code": getattr(x, "code", ""), "msg": getattr(x, "msg", "")}
+    return [{"code": getattr(x, "code", ""), "msg": getattr(x, "msg", ""),
+             "line": int(getattr(x, "line", 0) or 0)}
             for x in (info or [])]
 
 
 def serialize_clock_relations(text: str) -> dict:
-    """Run clock-relation analysis and return a JSON-safe summary."""
+    """Run clock-relation analysis and return a JSON-safe summary.
+
+    P1-7 contract: ``stats.mismatches == len(mismatches)``,
+    ``stats.missing == len(missing_constraints)``, and
+    ``stats.advisories == len(advisories)`` always hold. SDC-062 findings are
+    exposed under ``missing_constraints`` — never inside the ``mismatches``
+    list — so a consumer reading stats can never get a contradictory count.
+    """
     from clock_relations import analyze_clock_relations
     r = analyze_clock_relations(text)
     return {
@@ -118,6 +127,8 @@ def serialize_clock_relations(text: str) -> dict:
         "clocks": [_jsonable(c) for c in r.clocks],
         "pairs": [_jsonable(p) for p in r.pairs],
         "mismatches": [_jsonable(m) for m in r.mismatches],
+        "missing_constraints": [_jsonable(m) for m in r.missing_constraints],
+        "advisories": [_jsonable(m) for m in r.advisories],
         "existing_groups": _jsonable(r.existing_groups),
     }
 
@@ -247,6 +258,36 @@ def analyze(sdc_text: str, netlist: str = "", top: str = "",
                                       "clocks": [], "pairs": [],
                                       "mismatches": [], "existing_groups": []}
 
+    # 5b. P1-5: SDC constraint coverage (39-category gap analysis) — computed
+    # ALWAYS, netlist or not. The webui Coverage surface shows this category
+    # score even in SDC-only mode, distinct from design-aware port coverage.
+    try:
+        from coverage import parse_sdc_coverage
+        cov = parse_sdc_coverage(sdc_text)
+        payload["category_coverage"] = {
+            "score_pct": round(cov.score, 1),
+            "total_present": cov.total_present,
+            "total_items": cov.total_items,
+            "total_missing": cov.total_missing,
+            "coverage_is_not_correctness": True,
+            "categories": [{
+                "name": cat.name,
+                "icon": cat.icon,
+                "score": round(cat.score, 1),
+                "covered": cat.covered,
+                "total": cat.total,
+                "missing": cat.missing,
+                "items": [{
+                    "name": it.name,
+                    "present": it.present,
+                    "critical": it.is_critical,
+                    "detail": it.detail,
+                } for it in cat.items],
+            } for cat in cov.categories],
+        }
+    except Exception as exc:  # pragma: no cover
+        payload["category_coverage"] = {"error": str(exc)}
+
     # 6. Optional baseline diff + CI gate
     if baseline and baseline.strip():
         try:
@@ -273,6 +314,44 @@ def analyze(sdc_text: str, netlist: str = "", top: str = "",
         payload["baseline"] = None
 
     return payload
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# INPUT VALIDATION (P1-6)
+# ═══════════════════════════════════════════════════════════════════════════
+
+_SDC_REQUIRED_ENDPOINTS = ("/api/analyze", "/api/lint", "/api/convert", "/api/snapshot")
+
+
+def require_sdc(body: dict, endpoint: str):
+    """Validate that an SDC-requiring endpoint got real SDC text.
+
+    Returns ``(sdc_text, error)``. Missing / empty / whitespace-only ``sdc``
+    is a deterministic 400 (P1-6) — an integration bug must never silently
+    "succeed" with an empty-string analysis. Optional fields (netlist,
+    baseline, gate, custom_rules, format, ...) are untouched: only ``sdc`` is
+    required on these endpoints.
+    """
+    sdc = body.get("sdc")
+    if sdc is None:
+        return None, {
+            "error": "missing required field 'sdc'",
+            "code": "MISSING_SDC",
+            "endpoint": endpoint,
+        }
+    if not isinstance(sdc, str):
+        return None, {
+            "error": "field 'sdc' must be a string",
+            "code": "INVALID_SDC_TYPE",
+            "endpoint": endpoint,
+        }
+    if not sdc.strip():
+        return None, {
+            "error": "field 'sdc' must not be empty",
+            "code": "EMPTY_SDC",
+            "endpoint": endpoint,
+        }
+    return sdc, None
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -484,13 +563,54 @@ def mmc_zip_bytes(template: dict, corners: list) -> bytes:
     return buf.getvalue()
 
 
+def snapshot_sdc_json(sdc_text: str) -> dict:
+    """Build a real engine readiness snapshot from SDC text.
+
+    Thin serialization wrapper over the frozen engine (check_sdc →
+    build_snapshot) — used by the CI page's "Build baseline" action so the
+    baseline is always a genuine engine snapshot, never a hand-rolled object.
+    """
+    from checker import check_sdc
+    from readiness_diff import build_snapshot, snapshot_to_json
+    result = check_sdc(sdc_text)
+    snap = build_snapshot(result, source_name="webui-baseline")
+    return {"snapshot": snap, "json": snapshot_to_json(snap)}
+
+
 def diff_sdc_json(v1: str, v2: str) -> dict:
-    """V1 vs V2 SDC regression diff (readiness_diff authority)."""
+    """V1 vs V2 SDC regression diff.
+
+    Readiness-diff is the primary authority (NEW/RESOLVED/CHANGED findings,
+    gate, debt). The semantic constraint-diff engine (CLI `rta diff`) is
+    layered on additively as `constraint_changes` — CHG-* rules (period
+    changes, I/O delay changes, false-path/multicycle changes, wildcard risk,
+    additions/removals) that the readiness authority does not surface. The
+    readiness result is unchanged; this field is additive only.
+    """
     from checker import check_sdc
     from readiness_diff import build_snapshot, diff_snapshots
+    from constraint_diff import analyze_constraint_changes
     base = build_snapshot(check_sdc(v1), source_name="v1")
     cur = build_snapshot(check_sdc(v2), source_name="v2")
-    return diff_snapshots(base, cur)
+    out = diff_snapshots(base, cur)
+    try:
+        changes = analyze_constraint_changes(v1, v2)
+        out["constraint_changes"] = {
+            "stats": dict(changes.stats),
+            "changes": [{
+                "code": c.rule.rule_id,
+                "severity": c.rule.severity,
+                "description": c.rule.description,
+                "category": c.category,
+                "constraint_type": c.constraint_type,
+                "v1": c.v1_text,
+                "v2": c.v2_text,
+                "explanation": c.explanation,
+            } for c in changes.changes],
+        }
+    except Exception:  # noqa: BLE001 — semantic engine must never break the diff page
+        out["constraint_changes"] = {"stats": {}, "changes": []}
+    return out
 
 
 def report_html_json(analysis: dict, sdc: str) -> dict:
@@ -520,15 +640,31 @@ def report_html_json(analysis: dict, sdc: str) -> dict:
     return {"html": html}
 
 
+MAX_FEEDBACK_COMMENT = 2000
+
+
 def feedback_json(entry: dict) -> dict:
     from rta.workspace.server.feedback import FeedbackEntry, save_feedback
+    comment = str(entry.get("comment", "")).strip()
+    feature = str(entry.get("feature", ""))
+    rating = entry.get("rating", 0)
+    if not comment:
+        return {"ok": False, "error": "comment is required"}
+    if len(comment) > MAX_FEEDBACK_COMMENT:
+        return {"ok": False,
+                "error": f"comment exceeds {MAX_FEEDBACK_COMMENT} characters"}
+    try:
+        rating = int(rating)
+    except (TypeError, ValueError):
+        rating = 0
+    rating = max(-1, min(1, rating))
     e = FeedbackEntry(
         timestamp=str(entry.get("timestamp", "")),
-        feature=str(entry.get("feature", "")),
-        rating=int(entry.get("rating", 0)),
-        comment=str(entry.get("comment", "")),
-        sdc_file=str(entry.get("sdc_file", "")),
-        results_summary=str(entry.get("results_summary", "")),
+        feature=feature[:120],
+        rating=rating,
+        comment=comment[:MAX_FEEDBACK_COMMENT],
+        sdc_file=str(entry.get("sdc_file", ""))[:200],
+        results_summary=str(entry.get("results_summary", ""))[:500],
     )
     save_feedback(e)
     return {"ok": True}
@@ -562,6 +698,36 @@ def rules_json() -> dict:
             "fix": r.fix, "reference_url": r.reference_url,
             "module": r.module, "added_version": r.added_version,
         } for r in rules],
+    }
+
+
+def evidence_json() -> dict:
+    """Release evidence — derived from the canonical RELEASE_EVIDENCE.json
+    manifest plus the live rule registry. Trust surfaces render these numbers
+    so claims always match the evidence system (never hard-coded in UI)."""
+    manifest = None
+    manifest_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "evidence", "manifest", "RELEASE_EVIDENCE.json")
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+    except Exception:  # pragma: no cover — never break Trust on a missing file
+        manifest = {}
+    try:
+        rule_count = len(get_all_rules())
+    except Exception:  # pragma: no cover
+        rule_count = manifest.get("rule_count", 0)
+    return {
+        "product": manifest.get("product", "Ṛta"),
+        "version": manifest.get("version", APP_VERSION),
+        "release_status": manifest.get("release_status", ""),
+        "test_count": manifest.get("test_count", 0),
+        "test_files": manifest.get("test_files", 0),
+        "rule_count": rule_count,
+        "golden_runner_count": manifest.get("golden_runner_count", 0),
+        "evidence_updated": manifest.get("evidence_updated", ""),
+        "engine": "deterministic · local-first · offline-capable · no LLM",
     }
 
 
@@ -652,6 +818,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, rules_json())
             except Exception as exc:  # pragma: no cover
                 return self._json(500, {"error": str(exc)})
+        if path == "/api/evidence":
+            try:
+                return self._json(200, evidence_json())
+            except Exception as exc:  # pragma: no cover
+                return self._json(500, {"error": str(exc)})
+
         if path.startswith("/api/"):
             return self._json(404, {"error": "unknown api endpoint"})
         return self._serve_static(path)
@@ -661,9 +833,13 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         body = self._read_body()
         try:
+            if path in _SDC_REQUIRED_ENDPOINTS:
+                sdc_text, sdc_err = require_sdc(body, path)
+                if sdc_err is not None:
+                    return self._json(400, sdc_err)
             if path == "/api/analyze":
                 return self._json(200, analyze(
-                    sdc_text=body.get("sdc", ""),
+                    sdc_text=sdc_text,
                     netlist=body.get("netlist", ""),
                     top=body.get("top", ""),
                     baseline=body.get("baseline", ""),
@@ -671,11 +847,13 @@ class Handler(BaseHTTPRequestHandler):
                     custom_rules=body.get("custom_rules", ""),
                     rules_filename=body.get("rules_filename", "rules.yaml"),
                 ))
+            if path == "/api/snapshot":
+                return self._json(200, snapshot_sdc_json(sdc_text))
             if path == "/api/lint":
-                return self._json(200, lint_sdc_json(body.get("sdc", ""),
+                return self._json(200, lint_sdc_json(sdc_text,
                                                      fix=bool(body.get("fix", True))))
             if path == "/api/convert":
-                return self._json(200, convert_sdc_json(body.get("sdc", ""),
+                return self._json(200, convert_sdc_json(sdc_text,
                                                         fmt=body.get("format", "json")))
             if path == "/api/generate":
                 return self._json(200, generate_sdc_json(body.get("params", {})))

@@ -117,26 +117,25 @@ async function boot() {
   });
 
   wireCommandBar();
-  // brand mark returns to the New Analysis landing (primary action)
+  // brand mark returns to the capability catalog (feature-first entry)
   const brand = $(".cmdbar-brand");
-  if (brand) brand.addEventListener("click", () => { location.hash = "#/new_analysis"; });
+  if (brand) brand.addEventListener("click", () => { location.hash = "#/catalog"; });
 
   route();
 }
 
 function closeMenus() {
-  ["menu-session", "menu-quick", "menu-settings"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.hidden = true;
-  });
+  // Phase E — the generic command menus (Session / Import / Quick Actions /
+  // Settings) are removed from the primary workspace; actions live at the
+  // feature that owns them. Kept as a safe no-op for legacy callers.
 }
 
 function currentView() {
   const h = location.hash.replace(/^#\/?/, "");
   if (PAGES[h]) return h;
-  // Pre-analysis the product IS the input screen (New Analysis, no sidebar).
+  // Pre-analysis the product IS the capability catalog (feature-first entry).
   // After analysis the engineer lands on Findings — "what did Ṛta find?"
-  return App.state.analysis ? "validator" : "new_analysis";
+  return App.state.analysis ? "validator" : "catalog";
 }
 
 /* ── Routing ────────────────────────────────────────────────────────────── */
@@ -174,7 +173,6 @@ function renderNav() {
       const action = btn.dataset.action;
       if (action === "new-session") { newSession(); return; }
       if (action === "recent-sessions") { showRecentSessions(); return; }
-      if (action === "settings") { const s = $("#cmd-settings"); if (s) s.click(); return; }
       if (btn.dataset.view) location.hash = `#/${btn.dataset.view}`;
     });
   });
@@ -198,7 +196,7 @@ function newSession() {
   toast("New session started — sample SDC loaded");
   // Re-render even when the hash is already the landing (no hashchange fires),
   // so the body class and sidebar always reflect the cleared analysis.
-  if (location.hash !== "#/new_analysis") location.hash = "#/new_analysis";
+  if (location.hash !== "#/catalog") location.hash = "#/catalog";
   route();
 }
 
@@ -287,101 +285,13 @@ function wireCommandBar() {
     search.addEventListener("keydown", e => { if (e.key === "Escape") { search.value = ""; apply(); search.blur(); } });
   }
 
-  const toggleMenu = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const was = !el.hidden; // open before toggling
-    closeMenus();
-    el.hidden = was; // re-open if it was closed; close if it was open
-  };
+  // Phase E — one primary action: New / Start over. Sessions stay implicit
+  // (context strip + related results); a generic session menu is gone.
+  const newBtn = $("#cmd-new");
+  if (newBtn) newBtn.addEventListener("click", () => { newSession(); });
 
-  const openBtn = $("#cmd-open-session");
-  if (openBtn) openBtn.addEventListener("click", () => {
-    const s = App.state.session;
-    const menu = $("#menu-session");
-    if (!menu) return;
-    const list = App.state.recentSessions;
-    toggleMenu("menu-session");
-    if (menu.hidden) return;
-    menu.innerHTML = `<div class="cmd-menu-label">Current session</div>
-      <button class="cmd-menu-item" data-m="cur" type="button"><span class="mono">${esc(currentSessionName())}</span><span class="m-sub">${esc(s && s.status ? s.status : "EMPTY")}</span></button>
-      <div class="cmd-menu-label">Recent sessions (this tab)</div>`
-      + (list.length
-        ? list.map((e, i) => `<button class="cmd-menu-item" data-m="r${i}" type="button"><span class="mono">${esc(e.name)}</span><span class="m-sub">${esc(new Date(e.createdAt).toLocaleTimeString())}${e.readiness ? " · " + esc(e.readiness) : ""}</span></button>`).join("")
-        : `<div class="cmd-menu-item disabled">no sessions yet</div>`)
-      + `<div class="cmd-menu-label">Actions</div>
-         <button class="cmd-menu-item" data-m="new" type="button">New Session</button>`;
-    menu.querySelectorAll("[data-m]").forEach(b => b.addEventListener("click", () => {
-      const m = b.dataset.m;
-      closeMenus();
-      if (m === "new") newSession();
-      else if (m === "cur") { location.hash = "#/overview"; }
-      else if (m.startsWith("r")) restoreSession(list[+m.slice(1)]);
-    }));
-  });
-
-  const impBtn = $("#cmd-import");
-  if (impBtn) impBtn.addEventListener("click", () => {
-    const inp = document.createElement("input");
-    inp.type = "file"; inp.accept = ".sdc,.txt,.tcl";
-    inp.addEventListener("change", async () => {
-      const f = inp.files && inp.files[0];
-      if (!f) return;
-      const text = await f.text();
-      App.state.sdc = text;
-      App.state.filename = f.name || "pasted.sdc";
-      toast(`Imported ${f.name}`);
-      location.hash = "#/validator";
-      // pageValidator renders the textarea from App.state.sdc — no push needed
-    });
-    inp.click();
-  });
-
-  const quickBtn = $("#cmd-quick");
-  if (quickBtn) quickBtn.addEventListener("click", () => {
-    const menu = $("#menu-quick");
-    if (!menu) return;
-    const has = !!App.state.analysis;
-    menu.innerHTML = `<div class="cmd-menu-label">Quick actions</div>
-      <button class="cmd-menu-item" data-q="sample" type="button">Load sample SDC</button>
-      <button class="cmd-menu-item" data-q="validate" type="button">Go to Findings</button>
-      <button class="cmd-menu-item" data-q="overview" type="button">Go to Summary</button>
-      <button class="cmd-menu-item${has ? "" : " disabled"}" data-q="json" type="button">${has ? "Download analysis JSON" : "Download analysis JSON (run analysis first)"}</button>
-      <button class="cmd-menu-item${has ? "" : " disabled"}" data-q="new" type="button">New Session</button>`;
-    toggleMenu("menu-quick");
-    if (menu.hidden) return;
-    menu.querySelectorAll("[data-q]").forEach(b => b.addEventListener("click", () => {
-      const q = b.dataset.q;
-      closeMenus();
-      if (q === "sample") { location.hash = "#/validator"; setTimeout(() => { const b2 = $("#val-load-sample"); if (b2) b2.click(); }, 80); }
-      else if (q === "validate") location.hash = "#/validator";
-      else if (q === "overview") location.hash = "#/overview";
-      else if (q === "json" && has) {
-        const blob = new Blob([JSON.stringify(App.state.analysis, null, 2)], { type: "application/json" });
-        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "analysis_result.json"; a.click();
-        URL.revokeObjectURL(a.href); toast("Downloaded analysis_result.json");
-      }
-      else if (q === "new") newSession();
-    }));
-  });
-
-  const setBtn = $("#cmd-settings");
-  if (setBtn) setBtn.addEventListener("click", () => {
-    const menu = $("#menu-settings");
-    if (!menu) return;
-    menu.innerHTML = `<div class="cmd-menu-label">Workspace</div>
-      <div class="cmd-menu-item"><span class="m-sub">Motion: ${window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduced (system preference respected)" : "ambient (respects system reduced-motion preference)"}</span></div>
-      <div class="cmd-menu-item"><span class="m-sub">Engine: deterministic · local · offline · no LLM</span></div>
-      <div class="cmd-menu-item"><span class="m-sub">Sessions: in-memory for this browser tab</span></div>
-      <div class="cmd-menu-label">About</div>
-      <div class="cmd-menu-item"><span class="mono">Ṛta — Constraint Intelligence for Digital Design</span></div>`;
-    toggleMenu("menu-settings");
-  });
-
-  // click-away closes command menus
-  document.addEventListener("click", (e) => {
-    if (!e.target.closest(".cmdbar")) closeMenus();
-  });
+  // Phase E — support links in the command bar navigate to their pages;
+  // hash navigation is handled by the router, no extra wiring needed.
 }
 
 function updateContext() {
@@ -400,11 +310,9 @@ function updateContext() {
   if (nEl) nEl.textContent = ctx.netlist;
   const nameEl = $("#session-name");
   if (nameEl) nameEl.textContent = currentSessionName();
-  const timeEl = $("#session-time");
-  if (timeEl) timeEl.textContent = sess.createdAt ? new Date(sess.createdAt).toLocaleTimeString() : "";
   const scopeEl = $("#session-scope");
   const statEl = $("#session-status");
-  const trustEl = $("#ctx-trust"), rdyEl = $("#ctx-readiness");
+  const rdyEl = $("#ctx-readiness");
   if (a) {
     const issues = a.issues || [];
     const errs = issues.filter(i => i.sev === "error").length;
@@ -412,12 +320,11 @@ function updateContext() {
     const clk = ((a.clock_relations || {}).clocks || []).length;
     if (scopeEl) scopeEl.textContent = `${errs}E · ${warns}W · ${clk} clk`;
     if (statEl) statEl.textContent = sess.status || "ANALYZED";
-    trustEl.innerHTML = statusBadge("trust", (a.scope || {}).status || "NOT_VALIDATED");
-    rdyEl.innerHTML = statusBadge("readiness", (a.readiness || {}).overall || "—");
+    if (rdyEl) rdyEl.innerHTML = statusBadge("readiness", (a.readiness || {}).overall || "—");
   } else {
     if (scopeEl) scopeEl.textContent = "";
     if (statEl) statEl.textContent = sess.status || "EMPTY";
-    trustEl.innerHTML = ""; rdyEl.innerHTML = "";
+    if (rdyEl) rdyEl.innerHTML = "";
   }
   // status rail
   const rail = $("#rail");
@@ -450,7 +357,10 @@ function updateContext() {
 
 async function wirePage(view) {
   const main = $("#main");
-  if (view === "new_analysis") wireNewAnalysis(main);
+  if (view === "catalog") wireCatalog(main);
+  else if (view === "new_analysis") wireNewAnalysis(main);
+  else if (view === "clocks" || view === "coverage" || view === "context"
+           || view === "interactions" || view === "readiness") wireAnalysisPanel(main, view);
   else if (view === "validator") wireValidator(main);
   else if (view === "diff") wireDiff(main);
   else if (view === "reports") wireReports(main);
@@ -462,10 +372,60 @@ async function wirePage(view) {
   else if (view === "mmc") wireMMC(main);
   else if (view === "rules") wireRules(main);
   else if (view === "test_drive") wireTestDrive(main);
+  else if (view === "ci") wireCI(main);
   else if (view === "feedback") wireFeedback(main);
   else if (view === "clocks") wireClocks(main);
   else if (view === "overview" || view === "readiness" || view === "coverage"
            || view === "interactions" || view === "context") wireCrossLinks(main);
+}
+
+/* ── Standalone analysis input (Phase C / Group 2) ──────────────────────
+   Shared by the five analysis capability pages (Clocks, Coverage, Design
+   Context, Conflicts, Readiness). Each page carries its own SDC input; the
+   run adopts the result into the session so RESULTS views stay in sync. */
+function wireAnalysisPanel(main, cap) {
+  const sdcEl = $("#cap-sdc");
+  if (sdcEl) sdcEl.addEventListener("input", () => { App.state.sdc = sdcEl.value; });
+  const netEl = $("#cap-netlist");
+  const sampleBtn = $("#cap-sample");
+  if (sampleBtn) sampleBtn.addEventListener("click", () => {
+    App.state.sdc = SAMPLE;
+    App.state.filename = "sample_block.sdc";
+    if (sdcEl) sdcEl.value = SAMPLE;
+    if (netEl && cap === "context") netEl.value = SAMPLE_NETLIST;
+    toast("Sample loaded — press Analyze");
+  });
+  const clearSdc = $("#cap-clear-sdc");
+  if (clearSdc) clearSdc.addEventListener("click", () => {
+    App.state.sdc = ""; if (sdcEl) sdcEl.value = ""; App.state.filename = "pasted.sdc";
+  });
+  const clearAll = $("#cap-clear");
+  if (clearAll) clearAll.addEventListener("click", () => {
+    App.state.analysis = null;
+    App.state.sdc = ""; App.state.filename = "pasted.sdc";
+    route();
+  });
+  const run = $("#cap-analyze");
+  if (run) run.addEventListener("click", async () => {
+    const sdc = sdcEl ? sdcEl.value.trim() : "";
+    if (!sdc) { toast("Paste or load an SDC file first", true); return; }
+    App.state.sdc = sdc;
+    await runAnalyze({
+      sdc, filename: App.state.filename || "pasted.sdc",
+      netlist: netEl ? netEl.value : "",
+    }, cap);
+  });
+}
+
+/* ── Capability catalog (feature-first entry) ─────────────────────────── */
+function wireCatalog(main) {
+  main.querySelectorAll(".cat-card").forEach(card => {
+    card.addEventListener("click", () => { /* real link — default navigation */ });
+  });
+  main.querySelectorAll("[data-view]").forEach(el => {
+    // Cards are real <a href> links; keyboard/click navigation is native.
+    // We only preload sample SDC when the Validator quick action is used.
+  });
 }
 
 /* ── New Analysis (guided entry) ───────────────────────────────────────── */
@@ -704,6 +664,16 @@ function wireDiff(main) {
   main.querySelectorAll("#diff-seg [data-seg]").forEach(btn => {
     btn.addEventListener("click", () => { App.state.diffFilter = btn.dataset.seg; route(); });
   });
+  // Next action: open V2 in the Validator (functional cross-link, not a dead link)
+  main.querySelectorAll('a[href="#/validator"]').forEach(a => {
+    a.addEventListener("click", () => {
+      const v2 = $("#diff-v2");
+      if (v2 && v2.value.trim()) {
+        App.state.sdc = v2.value.trim();
+        App.state.filename = App.state.filename || "pasted.sdc";
+      }
+    });
+  });
   wireExpDownload(main);
 }
 
@@ -876,20 +846,25 @@ function wireCorners(main) {
 
 /* ── MMC ────────────────────────────────────────────────────────────────── */
 function wireMMC(main) {
-  const cornersPayload = () => CORNER_PRESETS.CLASSIC_3.map(c => ({ name: c.name, operating_condition: c.operating_condition, voltage: c.voltage, temperature: c.temperature, process_type: c.process_type, derate_cell_early: c.derate_cell_early, derate_cell_late: c.derate_cell_late, derate_net_early: c.derate_net_early, derate_net_late: c.derate_net_late, uncertainty_scale: c.uncertainty_scale }));
+  const sel = $("#mmc-preset");
+  const cornersFor = (key) => (CORNER_PRESETS[key] || CORNER_PRESETS.CLASSIC_3).map(c => ({ name: c.name, operating_condition: c.operating_condition, voltage: c.voltage, temperature: c.temperature, process_type: c.process_type, derate_cell_early: c.derate_cell_early, derate_cell_late: c.derate_cell_late, derate_net_early: c.derate_net_early, derate_net_late: c.derate_net_late, uncertainty_scale: c.uncertainty_scale }));
+  const cornersPayload = () => cornersFor(sel ? sel.value : "CLASSIC_3");
   $("#mmc-run").addEventListener("click", async () => {
     const clk = ($("#mmc-clock").value || "clk_core clk 5.0").trim().split(/\s+/);
     const design = ($("#mmc-design").value || "MY_DESIGN").trim();
     const template = () => ({ design_name: design, clocks: [{ name: clk[0], port: clk[1] || "clk", period: parseFloat(clk[2] || 5.0) }] });
     try {
       const res = await post("/api/mmc", { template: template(), corners: cornersPayload() });
-      let h = `<div class="metric-row"><div class="metric"><div class="m-num">${res.names.length}</div><div class="m-label">corners</div></div>
+      const usedPreset = sel ? sel.value : "CLASSIC_3";
+      let h = `<div class="chips" style="margin-top:10px"><span class="mono" style="font-size:11px;color:var(--text-muted)">corner set: ${esc(usedPreset)} · ${res.names.length} corners</span></div>`;
+      h += `<div class="metric-row"><div class="metric"><div class="m-num">${res.names.length}</div><div class="m-label">corners</div></div>
         <div class="metric"><div class="m-num">${res.check.errors}</div><div class="m-label">errors</div></div>
         <div class="metric"><div class="m-num">${res.check.warnings}</div><div class="m-label">warnings</div></div></div>
         <div style="margin:8px 0"><button class="btn btn-sm" id="mmc-zip" type="button">📦 Download all (.zip)</button></div>`;
       res.names.forEach((name, i) => {
         h += accordion(`SDC — ${name}`,
-          `<div style="margin-bottom:6px"><button class="btn btn-sm" data-cdl="${i}" type="button">Download .sdc</button></div>
+          `<div style="margin-bottom:6px"><button class="btn btn-sm" data-cdl="${i}" type="button">Download .sdc</button>
+           <button class="btn btn-sm" data-copen="${i}" type="button">Open in Validate</button></div>
            <pre class="mono" style="font-size:11.5px;white-space:pre-wrap;color:var(--text-secondary);margin:0">${esc(res.sdcs[name])}</pre>`);
       });
       if (res.diffs && res.diffs.length) {
@@ -923,6 +898,19 @@ function wireMMC(main) {
           if (name) dl(`${name}.sdc`, res.sdcs[name], "text/plain");
         });
       });
+      main.querySelectorAll("[data-copen]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const name = res.names[+btn.dataset.copen];
+          const sdc = res.sdcs[name];
+          if (!sdc) return;
+          App.state.sdc = sdc;
+          App.state.filename = `${name}.sdc`;
+          App.state.analysis = null;
+          App.state.filters = { sev: "All", rule: "All", q: "" };
+          route();
+          toast("Adopted into Validate — press Analyze to check this corner");
+        });
+      });
     } catch (e) { toast("MMC generation failed", true); }
   });
 }
@@ -942,6 +930,31 @@ function wireRules(main) {
       `### ${r.code} — ${r.short_name} (${r.severity})\n\n${r.description}${r.why_matters ? `\n\nWhy: ${r.why_matters}` : ""}`).join("\n\n");
     dl("sdc_rules.md", md, "text/markdown");
   });
+  // Custom-rule execution: real engine (same as `rta check --custom-rules`).
+  const CR_SAMPLE_SDC = "create_clock -name clk -period 12.0 [get_ports clk]\n";
+  const CR_EXAMPLE_YAML = `name: Example Rules\nversion: "1.0"\nrules:\n  - id: CUST-001\n    name: "Clock period maximum"\n    severity: warning\n    command: create_clock\n    condition: value_above\n    field: period\n    pattern: "-period\\s+([\\d.]+)"\n    threshold: 10.0\n    message: "Clock period {value}ns exceeds 10ns limit — verify with architect"\n  - id: CUST-002\n    name: "Require propagated clock"\n    severity: error\n    command: set_propagated_clock\n    condition: present\n    message: "No set_propagated_clock — required for post-layout correlation"\n`;
+  const $cs = $("#cr-sdc"), $cy = $("#cr-yaml"), $co = $("#cr-out");
+  if (!$cs) return;
+  $("#cr-sample").addEventListener("click", () => { $cs.value = CR_SAMPLE_SDC; });
+  $("#cr-example").addEventListener("click", () => { $cy.value = CR_EXAMPLE_YAML; });
+  $("#cr-run").addEventListener("click", async () => {
+    const sdc = $cs.value.trim();
+    const yaml = $cy.value.trim();
+    if (!sdc || !yaml) { toast("Provide both an SDC and a rules YAML", true); return; }
+    $co.innerHTML = `<div class="mono" style="font-size:12px;color:var(--text-muted);padding:10px 0">running custom rules…</div>`;
+    try {
+      const res = await post("/api/analyze", { sdc, custom_rules: yaml, rules_filename: "rules.yaml" });
+      const cr = res.custom_rules || [];
+      const fail = cr.filter(r => !r.passed);
+      let h = `<div class="metric-row"><div class="metric"><div class="m-num">${cr.length}</div><div class="m-label">rules</div></div>
+        <div class="metric"><div class="m-num">${fail.length}</div><div class="m-label">failed</div></div></div>`;
+      cr.forEach(r => {
+        h += `<div class="ilink"><span class="il-rule">${esc(r.id)}</span><span class="il-kind" style="color:${r.passed ? "var(--success)" : "var(--error)"}">${r.passed ? "PASS" : "FAIL"}</span><span class="il-a">${esc(r.msg || r.description || "")}</span></div>`;
+      });
+      h += `<p class="callout co-info"><span><strong>Real engine</strong> — these results are produced by the same deterministic custom-rule engine used by <span class="mono">rta check --custom-rules</span>.</span></p>`;
+      $co.innerHTML = h;
+    } catch (e) { $co.innerHTML = typedError("error", "Custom-rule run failed — invalid YAML or engine error."); }
+  });
 }
 
 /* ── Test Drive ─────────────────────────────────────────────────────────── */
@@ -951,19 +964,54 @@ const TD_SAMPLES = {
   multi: "create_clock -name clk_a -period 5.0 [get_ports clk_a]\ncreate_clock -name clk_b -period 7.5 [get_ports clk_b]\nset_clock_groups -asynchronous -group [get_clocks clk_a] -group [get_clocks clk_b]\n",
   generated: "create_clock -name clk -period 5.0 [get_ports clk]\ncreate_generated_clock -name div2 -divide_by 2 -master_clock clk [get_pins u0/o]\ncreate_generated_clock -name div4 -divide_by 2 -master_clock div2 [get_pins u0/o2]\n",
 };
+const TD_WHY = {
+  good: "A clean, fully constrained SDC — expect few warnings and a REVIEW_REQUIRED readiness verdict.",
+  bad: "A buggy SDC — an undefined clock reference, a duplicate clock name and a generated clock with no source. Expect concrete SDC-xxx findings with lines.",
+  multi: "Two clocks declared asynchronous via set_clock_groups — expect the relationship matrix to show the declared group.",
+  generated: "A generated-clock chain (div2 from clk, div4 from div2) — expect master/divide ancestry in the inventory.",
+};
 function wireTestDrive(main) {
+  const $sel = $("#td-sample"), $sdc = $("#td-sdc"), $why = $("#td-why"), $out = $("#td-out");
+  const fill = () => {
+    const k = $sel.value;
+    $sdc.value = TD_SAMPLES[k] || "";
+    if ($why) $why.textContent = TD_WHY[k] || "";
+  };
+  $sel.addEventListener("change", fill);
+  fill();
   $("#td-run").addEventListener("click", async () => {
-    const sdc = TD_SAMPLES[$("#td-sample").value] || "";
+    const sdc = $sdc.value || TD_SAMPLES[$sel.value] || "";
+    if (!sdc) { toast("No sample SDC to analyze", true); return; }
+    $out.innerHTML = `<div class="mono" style="font-size:12px;color:var(--text-muted);padding:10px 0">analyzing ${esc($sel.value)} sample…</div>`;
     try {
       const res = await post("/api/analyze", { sdc });
       App.state.sdc = sdc;
-      App.state.filename = `sample_${$("#td-sample").value}.sdc`;
+      App.state.filename = `sample_${$sel.value}.sdc`;
       App.state.analysis = res;
       adoptAnalysis(res, { sdc, netlist: "", filename: App.state.filename,
-                           name: `sample_${$("#td-sample").value}` });
+                           name: `sample_${$sel.value}` });
       App.state.filters = { sev: "All", rule: "All", q: "" };
-      route();
-    } catch (e) { toast("Analysis failed", true); }
+      const issues = res.issues || [];
+      const errs = issues.filter(i => i.sev === "error").length;
+      const warns = issues.filter(i => i.sev === "warning").length;
+      const infos = issues.filter(i => i.sev === "info").length;
+      const cr = (res.clock_relations || {});
+      const clocks = (cr.clocks || []).length;
+      const cov = res.category_coverage || {};
+      const rdy = (res.readiness || {});
+      let h = `<div class="metric-row"><div class="metric"><div class="m-num">${errs}</div><div class="m-label">errors</div></div>
+        <div class="metric"><div class="m-num">${warns}</div><div class="m-label">warnings</div></div>
+        <div class="metric"><div class="m-num">${infos}</div><div class="m-label">info</div></div>
+        <div class="metric"><div class="m-num">${clocks}</div><div class="m-label">clocks</div></div>
+        <div class="metric"><div class="m-num">${cov.score_pct !== undefined ? Math.round(cov.score_pct) + "%" : "—"}</div><div class="m-label">coverage</div></div>
+        <div class="metric"><div class="m-num">${esc(rdy.overall || "—")}</div><div class="m-label">readiness</div></div></div>`;
+      h += `<div class="chips" style="margin:10px 0">
+        <a class="cat-inline" href="#/validator" data-view="validator">Open findings →</a>&nbsp;·&nbsp;
+        <a class="cat-inline" href="#/clocks" data-view="clocks">Open clocks →</a>&nbsp;·&nbsp;
+        <a class="cat-inline" href="#/coverage" data-view="coverage">Open coverage →</a></div>`;
+      h += `<p class="callout co-info"><span><strong>Real backend</strong> — this summary is computed from the actual /api/analyze response for the sample SDC above.</span></p>`;
+      $out.innerHTML = h;
+    } catch (e) { $out.innerHTML = typedError("error", "Analysis failed — no fake results, the backend errored."); }
   });
   const tdl = $("#td-dl");
   if (tdl) tdl.addEventListener("click", () => {
@@ -975,19 +1023,93 @@ function wireTestDrive(main) {
 /* ── Feedback ───────────────────────────────────────────────────────────── */
 function wireFeedback(main) {
   $("#fb-submit").addEventListener("click", async () => {
+    const comment = ($("#fb-comment").value || "").trim();
+    if (!comment) { toast("Write a comment before submitting", true); return; }
+    if (comment.length > 2000) { toast("Comment too long (2000 char max)", true); return; }
     const entry = {
       timestamp: new Date().toISOString(),
       feature: $("#fb-feature").value,
       rating: +$("#fb-rating").value,
-      comment: $("#fb-comment").value || "",
+      comment,
       sdc_file: App.state.filename || "",
       results_summary: App.state.analysis ? `${(App.state.analysis.issues || []).filter(i => i.sev === "error").length} errors, ${(App.state.analysis.issues || []).filter(i => i.sev === "warning").length} warnings` : "no analysis",
     };
     try {
-      await post("/api/feedback", entry);
+      const res = await post("/api/feedback", entry);
+      if (!res.ok) { toast(res.error || "Feedback rejected", true); return; }
       $("#fb-comment").value = "";
       toast("Feedback recorded — thank you");
     } catch (e) { toast("Could not save feedback", true); }
+  });
+}
+
+/* ── CI gate ────────────────────────────────────────────────────────────── */
+const CI_SAMPLE = "set sdc_version 2.2\ncreate_clock -name clk_core -period 5.0 [get_ports clk]\nset_clock_uncertainty -setup 0.15 -hold 0.08 [get_clocks clk_core]\nset_input_delay -max 1.0 -min 0.3 -clock clk_core [all_inputs]\nset_output_delay -max 1.5 -min 0.5 -clock clk_core [all_outputs]\n";
+function wireCI(main) {
+  const $sdc = $("#ci-sdc"), $bl = $("#ci-baseline"), $out = $("#ci-out");
+  $("#ci-sample").addEventListener("click", () => { $sdc.value = CI_SAMPLE; });
+  $("#ci-clrbase").addEventListener("click", () => { $bl.value = ""; App.state.ciBaseline = ""; });
+  // Build a real baseline snapshot from the current SDC (POST /api/analyze
+  // returns baseline evidence only when a baseline is supplied, so snapshot
+  // via the CLI engine shape through analyze's diff pipeline is not
+  // available — instead we fetch via /api/analyze twice: first without a
+  // baseline to confirm validity, then use a server-side snapshot builder
+  // exposed through /api/analyze? No — the snapshot builder is engine-side.
+  // Simplest honest approach: the baseline field accepts a real snapshot
+  // JSON; we also allow building one client-side through the Export page's
+  // readiness evidence (App.state.analysis.readiness). That evidence is the
+  // same engine snapshot shape, so we serialize it here.
+  $("#ci-mkbase").addEventListener("click", async () => {
+    const sdc = $sdc.value.trim();
+    if (!sdc) { toast("Paste an SDC first to build its baseline", true); return; }
+    try {
+      const res = await post("/api/snapshot", { sdc });
+      $bl.value = res.json || JSON.stringify(res.snapshot || {}, null, 2);
+      App.state.ciBaseline = $bl.value;
+      toast("Real engine snapshot built from this SDC");
+    } catch (e) { toast("Snapshot build failed", true); }
+  });
+  $("#ci-run").addEventListener("click", async () => {
+    const sdc = $sdc.value.trim();
+    if (!sdc) { toast("Paste an SDC to run the gate", true); return; }
+    const gate = $("#ci-policy").value;
+    const baseline = $bl.value.trim();
+    $out.innerHTML = `<div class="mono" style="font-size:12px;color:var(--text-muted);padding:10px 0">running gate ${esc(gate)}…</div>`;
+    try {
+      const res = await post("/api/analyze", { sdc, baseline, gate });
+      const b = res.baseline || {};
+      const g = b.gate || {};
+      const scope = res.scope || {};
+      const issues = res.issues || [];
+      const errs = issues.filter(i => i.sev === "error").length;
+      const warns = issues.filter(i => i.sev === "warning").length;
+      const blErr = b.error;
+      let h = `<div class="metric-row">`;
+      h += `<div class="metric"><div class="m-num">${esc(g.result || "—")}</div><div class="m-label">gate</div></div>`;
+      h += `<div class="metric"><div class="m-num">${esc(g.exit_code !== undefined ? g.exit_code : "—")}</div><div class="m-label">exit code</div></div>`;
+      h += `<div class="metric"><div class="m-num">${errs}</div><div class="m-label">errors</div></div>`;
+      h += `<div class="metric"><div class="m-num">${warns}</div><div class="m-label">warnings</div></div>`;
+      h += `<div class="metric"><div class="m-num">${esc(scope.status || "—")}</div><div class="m-label">scope</div></div></div>`;
+      if (blErr) {
+        h += typedError("invalid", `Baseline rejected: ${esc(blErr)} — the gate did not run.`);
+      }
+      if (g.result && !blErr) {
+        const color = g.result === "PASS" ? "var(--success)" : g.result === "FAIL" ? "var(--error)" : "var(--warning)";
+        h += `<div class="ilink"><span class="il-rule">GATE</span><span class="il-kind" style="color:${color}">${esc(g.result)}</span><span class="il-a">policy ${esc(g.policy || gate)} · exit ${esc(g.exit_code)}</span></div>`;
+      }
+      (g.reasons || []).slice(0, 8).forEach(r => {
+        h += `<div class="ilink"><span class="il-rule">WHY</span><span class="il-kind" style="color:var(--warning)">REGRESSION</span><span class="il-a">${esc(r)}</span></div>`;
+      });
+      h += `<div style="margin:10px 0"><button class="btn btn-sm" id="ci-dl" type="button">Download gate JSON</button></div>`;
+      if (g.result === "PASS") {
+        h += `<p class="callout co-info"><span><strong>CI PASS ≠ timing pass</strong> — the gate held, but this is constraint-readiness evidence only.</span></p>`;
+      } else if (g.result === "FAIL") {
+        h += `<p class="callout" style="border-color:var(--error);color:var(--error)"><span><strong>Merge blocked</strong> — the revision regresses readiness under ${esc(g.policy || gate)}. Fix the findings above, or revisit the policy with the team.</span></p>`;
+      }
+      $out.innerHTML = h;
+      const dlb = $("#ci-dl");
+      if (dlb) dlb.addEventListener("click", () => dl("gate_result.json", JSON.stringify({ gate: g, baseline: b, sdc }, null, 2), "application/json"));
+    } catch (e) { $out.innerHTML = typedError("error", "Gate evaluation failed — the engine never fakes a PASS."); }
   });
 }
 

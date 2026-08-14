@@ -1,6 +1,6 @@
 # Feature 10: Streamlit Web UI
 
-> **Module:** `app.py` · **CLI:** `sdc-tools web` · **Access:** `streamlit run app.py`
+> **Module:** `app.py` · **CLI:** `rta web` · **Access:** `streamlit run app.py`
 
 ---
 
@@ -100,7 +100,7 @@ The Streamlit web UI wraps all CLI features into a visual dashboard — no termi
 ## Flow Diagram
 
 ```
-User opens browser → http://localhost:8501
+User opens browser → http://localhost:8502
                         │
                         ▼
               ┌─────────────────────┐
@@ -220,15 +220,13 @@ User opens browser → http://localhost:8501
 ## CLI Usage
 
 ```bash
-# Launch the web UI
-sdc-tools web
-
-# Or directly with Streamlit
-streamlit run app.py
-
-# Docker
-docker run -p 8501:8501 ramal7/sdc-tools web
+# Launch the tool UI (the product surface)
+streamlit run legacy/streamlit/app.py
 ```
+
+> Note: the older `rta web` workspace surface (port 8501) has been retired as
+> the product UI and is no longer launched by the CLI.
+
 
 ## Python API (Not applicable — UI-only module)
 

@@ -565,29 +565,49 @@ def generate_clock_report(result, filename: str) -> str:
     stats = result.stats or {}
     n_mismatch = stats.get("mismatches", 0)
     n_missing = stats.get("missing", 0)
+    n_adv = stats.get("advisories", 0)
 
     metrics = _summary_metrics([
         (str(stats.get("clocks", 0)), "Clocks", "blue"),
         (str(stats.get("pairs", 0)), "Pairs", "green"),
         (str(n_mismatch), "Mismatches", "red"),
         (str(n_missing), "Missing", "yellow"),
+        (str(n_adv), "Advisories", "blue"),
     ])
 
-    # Mismatch cards
-    cards = ""
-    for m in result.mismatches:
-        sev_css = "warning" if m.severity == "warning" else "info"
-        cards += f"""<div class="change-card {sev_css}">
+    # P1-2: render each semantic category under its own label — SDC-062
+    # missing constraints must never appear under a "mismatches" heading.
+    def _cards(items):
+        out = ""
+        for m in items:
+            sev_css = "warning" if m.severity == "warning" else "info"
+            out += f"""<div class="change-card {sev_css}">
 <div><span class="change-sev {sev_css}">{esc(m.severity.upper())}</span> <span class="change-rule">[{esc(m.code)}]</span></div>
 <div style="margin:4px 0"><b>{esc(m.clock_a)}</b> vs <b>{esc(m.clock_b)}</b></div>
 <div style="font-size:13px;color:#374151">Specified: {esc(m.specified)} | Expected: {esc(m.expected)}</div>
 <div style="font-size:13px;color:#374151;margin-top:2px">{esc(m.msg)}</div>
 </div>\n"""
+        return out
 
-    mismatches_section = f"""<div class="section">
-<div class="section-title">Issues ({len(result.mismatches)})</div>
-{cards if cards else '<div class="empty-state">No mismatches found.</div>'}
+    sections = ""
+    if result.mismatches:
+        sections += f"""<div class="section">
+<div class="section-title">Mismatches ({len(result.mismatches)})</div>
+{_cards(result.mismatches)}
 </div>"""
+    if result.missing_constraints:
+        sections += f"""<div class="section">
+<div class="section-title">Missing Constraints ({len(result.missing_constraints)})</div>
+{_cards(result.missing_constraints)}
+</div>"""
+    if result.advisories:
+        sections += f"""<div class="section">
+<div class="section-title">Advisories ({len(result.advisories)})</div>
+{_cards(result.advisories)}
+</div>"""
+    if not sections:
+        sections = '<div class="empty-state">No mismatches found.</div>'
+    mismatches_section = sections
 
     # Clock list
     clk_rows = ""

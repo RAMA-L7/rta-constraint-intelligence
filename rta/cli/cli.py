@@ -306,9 +306,11 @@ def cmd_check(args):
         data = {
             "version": APP_VERSION,
             "file": args.file.name,
-            "errors": [{"code": i.code, "msg": i.msg} for i in result.errors],
-            "warnings": [{"code": i.code, "msg": i.msg} for i in result.warnings],
-            "info": [{"code": i.code, "msg": i.msg} for i in result.info],
+            "errors": [{"code": i.code, "msg": i.msg, "line": i.line,
+                         "line2": i.line2} for i in result.errors],
+            "warnings": [{"code": i.code, "msg": i.msg, "line": i.line,
+                           "line2": i.line2} for i in result.warnings],
+            "info": [{"code": i.code, "msg": i.msg, "line": i.line} for i in result.info],
             "stats": result.stats,
             "summary": {
                 "errors": len(result.errors),
@@ -476,7 +478,8 @@ def cmd_check(args):
         if result.info and args.verbose:
             out.writeln(f"\n  INFO  ({len(result.info)}):")
             for i in result.info:
-                out.writeln(f"  [{i.code}] {i.msg}")
+                ln = f" :{i.line}" if i.line else ""
+                out.writeln(f"  [{i.code}]{ln} {i.msg}")
 
         # Stats
         if result.stats and args.verbose:
@@ -507,7 +510,7 @@ def _write_junit(out: OutputWriter, result, filename: str):
 
     total = len(result.errors) + len(result.warnings) + len(result.info)
     out.writeln('<?xml version="1.0" encoding="UTF-8"?>')
-    out.writeln(f'<testsuite name="sdc-tools" tests="{total}" errors="{len(result.errors)}" failures="{len(result.warnings)}">')
+    out.writeln(f'<testsuite name="rta" tests="{total}" errors="{len(result.errors)}" failures="{len(result.warnings)}">')
     out.writeln(f'  <properties><property name="file" value="{saxutils.escape(filename)}"/></properties>')
 
     for i in result.errors:
@@ -553,12 +556,16 @@ def cmd_generate(args):
             uncertainty=args.uncertainty,
         ))
 
+    # P1-3: --operating-condition defaults to "" (empty string), so `is not
+    # None` was always True — that emitted a broken `set_operating_conditions
+    # -max ` (empty value) whenever no operating condition was supplied. Only
+    # enable the operating-conditions section when a real name was given.
     p = SDCParams(
         design_name=args.design,
         sdc_version=args.sdc_version,
         clocks=clocks,
         add_units=True,
-        add_oper_cond=args.operating_condition is not None,
+        add_oper_cond=bool(args.operating_condition),
         oper_cond_name=args.operating_condition or "",
         add_derate=args.derate,
         derate_cell_early=1.08,
@@ -782,6 +789,16 @@ def _analyze_all(args):
                      "clock_b": m.clock_b, "message": m.msg}
                     for m in clock.mismatches
                 ],
+                "missing_constraints": [
+                    {"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
+                     "clock_b": m.clock_b, "message": m.msg}
+                    for m in clock.missing_constraints
+                ],
+                "advisories": [
+                    {"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
+                     "clock_b": m.clock_b, "message": m.msg}
+                    for m in clock.advisories
+                ],
             },
             "constraint_interactions": getattr(check, "interactions", {}) or {},
             "constraint_readiness": getattr(check, "readiness", {}) or {},
@@ -834,6 +851,14 @@ def _analyze_all(args):
             out.writeln("\nClock relation mismatches:")
             for m in clock.mismatches:
                 out.writeln(f"  [{m.code}] {m.clock_a} vs {m.clock_b}: {m.msg}")
+        if clock.missing_constraints:
+            out.writeln("\nClock relation missing constraints:")
+            for m in clock.missing_constraints:
+                out.writeln(f"  [{m.code}] {m.clock_a} vs {m.clock_b}: {m.msg}")
+        if clock.advisories:
+            out.writeln("\nClock relation advisories:")
+            for m in clock.advisories:
+                out.writeln(f"  [{m.code}] {m.clock_a} vs {m.clock_b}: {m.msg}")
         out.writeln("\n  NOTE: constraint-readiness review, NOT an STA timing signoff.")
 
     out.flush()
@@ -884,14 +909,40 @@ def _write_analyze_all_html(args, text, check, cov, clock, ctx):
 </div>"""
 
     # ── Clock relations ──────────────────────────────────────────────────────
+    # P1-2: mismatches / missing constraints / advisories are separate
+    # semantic categories — each rendered under its own label, never merged
+    # under a single "mismatches" heading.
     mm = clock.mismatches or []
-    mm_rows = "".join(
-        f"<tr><td>{esc(m.clock_a)}</td><td>{esc(m.clock_b)}</td><td><code>{esc(m.code)}</code></td><td>{esc(m.msg)}</td></tr>\n"
-        for m in mm
-    )
+    missing_mm = clock.missing_constraints or []
+    adv_mm = clock.advisories or []
+
+    def _cr_rows(items):
+        return "".join(
+            f"<tr><td>{esc(m.clock_a)}</td><td>{esc(m.clock_b)}</td><td><code>{esc(m.code)}</code></td><td>{esc(m.msg)}</td></tr>\n"
+            for m in items
+        )
+
+    cr_html = ""
+    if mm:
+        cr_html += f"""<div class="section">
+<div class="section-title">Clock Relation Mismatches ({len(mm)})</div>
+{_table(["Clock A", "Clock B", "Code", "Message"], _cr_rows(mm))}
+</div>"""
+    if missing_mm:
+        cr_html += f"""<div class="section">
+<div class="section-title">Clock Relation Missing Constraints ({len(missing_mm)})</div>
+{_table(["Clock A", "Clock B", "Code", "Message"], _cr_rows(missing_mm))}
+</div>"""
+    if adv_mm:
+        cr_html += f"""<div class="section">
+<div class="section-title">Clock Relation Advisories ({len(adv_mm)})</div>
+{_table(["Clock A", "Clock B", "Code", "Message"], _cr_rows(adv_mm))}
+</div>"""
+    if not (mm or missing_mm or adv_mm):
+        cr_html = '<div class="empty-state">No clock relation mismatches.</div>'
     body += f"""<div class="section">
-<div class="section-title">Clock Relations — {clock.stats.get('clocks', 0)} clocks, {clock.stats.get('pairs', 0)} pairs, {len(mm)} mismatches</div>
-{_table(["Clock A", "Clock B", "Code", "Message"], mm_rows) if mm_rows else '<div class="empty-state">No clock relation mismatches.</div>'}
+<div class="section-title">Clock Relations — {clock.stats.get('clocks', 0)} clocks, {clock.stats.get('pairs', 0)} pairs</div>
+{cr_html}
 </div>"""
 
     # ── Constraint interactions ──────────────────────────────────────────────
@@ -983,11 +1034,25 @@ def _analyze_clock_relations(args):
                  "generated": c.is_generated, "virtual": c.is_virtual}
                 for c in result.clocks
             ],
+            # P1-2/P1-7: stats.mismatches == len(mismatches),
+            # stats.missing == len(missing_constraints) — always.
             "mismatches": [
                 {"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
                  "clock_b": m.clock_b, "specified": m.specified, "expected": m.expected,
                  "message": m.msg}
                 for m in result.mismatches
+            ],
+            "missing_constraints": [
+                {"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
+                 "clock_b": m.clock_b, "specified": m.specified, "expected": m.expected,
+                 "message": m.msg}
+                for m in result.missing_constraints
+            ],
+            "advisories": [
+                {"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
+                 "clock_b": m.clock_b, "specified": m.specified, "expected": m.expected,
+                 "message": m.msg}
+                for m in result.advisories
             ],
             "pairs": [
                 {"clock_a": p.clock_a, "clock_b": p.clock_b,
@@ -1017,13 +1082,34 @@ def _analyze_clock_relations(args):
         out.writeln(f"  {'Physically Exclusive:':<24} {result.stats.get('physically_exclusive', 0)}")
         out.writeln(f"  {'Mismatches:':<24} {result.stats.get('mismatches', 0)}")
         out.writeln(f"  {'Missing Constraints:':<24} {result.stats.get('missing', 0)}")
+        out.writeln(f"  {'Advisories:':<24} {result.stats.get('advisories', 0)}")
         out.writeln()
 
+        # P1-2: each section label matches the semantic category. `mismatches`
+        # holds warning-severity real conflicts; SDC-062 findings are missing
+        # constraints, NEVER labeled as mismatches.
         if result.mismatches:
             out.writeln("Mismatches:")
             for m in result.mismatches:
-                sev_label = "WARN" if m.severity == "warning" else "INFO"
-                out.writeln(f"  [{m.code}] {sev_label}  {m.clock_a} vs {m.clock_b}")
+                out.writeln(f"  [{m.code}] WARN  {m.clock_a} vs {m.clock_b}")
+                out.writeln(f"          Specified: {m.specified}")
+                out.writeln(f"          Expected:  {m.expected}")
+                out.writeln(f"          {m.msg}")
+                out.writeln()
+
+        if result.missing_constraints:
+            out.writeln("Missing Constraints:")
+            for m in result.missing_constraints:
+                out.writeln(f"  [{m.code}] INFO  {m.clock_a} vs {m.clock_b}")
+                out.writeln(f"          Specified: {m.specified}")
+                out.writeln(f"          Expected:  {m.expected}")
+                out.writeln(f"          {m.msg}")
+                out.writeln()
+
+        if result.advisories:
+            out.writeln("Advisories:")
+            for m in result.advisories:
+                out.writeln(f"  [{m.code}] INFO  {m.clock_a} vs {m.clock_b}")
                 out.writeln(f"          Specified: {m.specified}")
                 out.writeln(f"          Expected:  {m.expected}")
                 out.writeln(f"          {m.msg}")
@@ -1189,6 +1275,9 @@ def cmd_coverage(args):
             "total_items": result.total_items,
             "total_present": result.total_present,
             "total_missing": result.total_missing,
+            # P1-4: the trust meaning is part of the contract — coverage is a
+            # presence gap-analysis, never a correctness verdict.
+            "coverage_is_not_correctness": True,
             "categories": [
                 {
                     "name": cat.name,
@@ -1220,6 +1309,9 @@ def cmd_coverage(args):
         out.writeln()
         out.writeln(f"  Overall Coverage: {result.score:.1f}%  ({result.total_present}/{result.total_items} items)")
         out.writeln(f"  Missing: {result.total_missing}")
+        # P1-4: coverage is a presence gap-analysis, never a correctness
+        # verdict — the standalone CLI must state it like every other surface.
+        out.writeln("  Coverage is NOT correctness — a fully covered SDC can still have timing errors.")
         out.writeln("-" * 60)
 
         if args.missing_only:
@@ -1295,30 +1387,21 @@ def cmd_whats_new(args):
 
 
 def cmd_web(args):
-    """Launch the local Ṛta workspace.
+    """Launch the Ṛta tool in your browser.
 
-    Starts the stdlib-only API server that serves the static product frontend
-    (``rta/workspace/webui/``) and exposes the frozen deterministic backend over
-    HTTP. No new runtime dependencies; works offline.
+    The product tool is the Streamlit UI (``legacy/streamlit/app.py``). The
+    earlier static workspace (``rta/workspace/webui/`` served by
+    ``rta/api/api_server.py``) has been retired as the product surface; this
+    command no longer starts it, to avoid two competing tool UIs.
     """
-    import subprocess
     import sys
-    import webbrowser
 
-    port = int(getattr(args, "port", None) or 8501)
-    # Resolve api_server.py relative to this file so `rta web` works from any cwd.
-    server_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                               "api", "api_server.py")
-    if not os.path.exists(server_path):
-        sys.exit(f"error: cannot find api_server.py at {server_path} — is the repository intact?")
-    url = f"http://127.0.0.1:{port}"
-    print(f"Ṛta — opening {url}")
-    threading_timer = None
-    try:
-        webbrowser.open(url)
-    except Exception:  # pragma: no cover - headless environments
-        pass
-    subprocess.run([sys.executable, server_path, str(port)])
+    sys.exit(
+        "Ṛta — the workspace web UI at :8501 has been retired.\n"
+        "The product tool is the Streamlit UI. Launch it with:\n\n"
+        "    streamlit run legacy/streamlit/app.py\n\n"
+        "(or simply visit the deployed app from the business site)."
+    )
 
 
 # ── Subcommand: report ───────────────────────────────────────────────────────
@@ -1633,8 +1716,8 @@ def build_parser() -> argparse.ArgumentParser:
         description="Print the release notes for the latest versions of Ṛta, plus an upgrade hint if you are behind.")
     p_whats_new.add_argument("--all", action="store_true",
         help="Show the full changelog instead of the default 3 most recent releases")
-    sub.add_parser("web", help="Launch the Streamlit web UI",
-                   description="Launch the Ṛta workspace in your browser.")
+    sub.add_parser("web", help="Point to the Streamlit tool UI",
+                   description="Print how to launch the Ṛta tool (the retired workspace web UI is no longer started by this command).")
 
     # ── coverage ──
     p_cov = sub.add_parser("coverage", help="Analyze constraint coverage", description="Measure which constraint categories are covered vs. missing in an SDC file — gap analysis for signoff readiness.")

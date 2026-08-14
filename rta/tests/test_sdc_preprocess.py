@@ -11,7 +11,10 @@ import pytest
 from checker import check_sdc
 from converter import parse_sdc
 from clock_relations import analyze_clock_relations
-from sdc_preprocess import preprocess_sdc, parse_number, parse_collection, logical_text
+from sdc_preprocess import (
+    preprocess_sdc, parse_number, parse_collection, logical_text,
+    collect_diagnostics,
+)
 
 
 # ── Shared preprocessing primitives ───────────────────────────────────────────
@@ -87,6 +90,103 @@ class TestParseCollection:
 
     def test_three(self):
         assert parse_collection("[get_clocks {clk_a clk_b clk_c}]") == ["clk_a", "clk_b", "clk_c"]
+
+
+# ── Phase 9 — lexical diagnostics for unclosed constructs (parity hardening) ──
+
+class TestPreprocessDiagnostics:
+    """preprocess_sdc must surface, never silently swallow, malformed Tcl
+    constructs (unclosed bracket/brace at EOF, dangling continuation).
+    Verified against real_design_full.sdc: line 58's unclosed bracket used to
+    merge lines 58-117 into one command with no signal."""
+
+    def test_valid_multiline_bracket_no_diagnostic(self):
+        """(a) A bracket span across physical lines that CLOSES is valid and
+        must produce no diagnostic."""
+        text = "set_false_path -from [get_clocks\n    clk_a clk_b] -to [get_pins U/A]\n"
+        cmds = preprocess_sdc(text)
+        assert len(cmds) == 1
+        assert collect_diagnostics(cmds) == []
+        assert "clk_a clk_b" in cmds[0].text
+
+    def test_valid_backslash_continuation_no_diagnostic(self):
+        """(b) Valid backslash-newline continuations join into one command with
+        no diagnostic."""
+        text = "create_clock \\\n    -name c \\\n    -period 5.0 [get_ports clk]\n"
+        cmds = preprocess_sdc(text)
+        assert len(cmds) == 1
+        assert collect_diagnostics(cmds) == []
+        assert cmds[0].text == "create_clock -name c -period 5.0 [get_ports clk]"
+        assert cmds[0].start_line == 1
+        assert cmds[0].end_line == 3
+
+    def test_unclosed_bracket_at_eof_diagnostic(self):
+        """(c) An unclosed '[' at EOF must produce an explicit diagnostic naming
+        the opening line — the remaining file must NOT be silently merged."""
+        text = (
+            "set_driving_cell -lib_cell BUF_X4 -pin Z "
+            "[remove_from_collection [all_inputs]\n"
+            "set_load 0.05 [all_outputs]\n"
+            "set_false_path -from [get_ports a]\n"
+        )
+        cmds = preprocess_sdc(text)
+        diags = collect_diagnostics(cmds)
+        assert any("unclosed" in d and "[" in d for d in diags), diags
+        assert any("line 1" in d for d in diags), diags
+        # The diagnostic is attached to the merged command (data preserved,
+        # never silently dropped) and is actionable.
+        assert any("add the missing ']'" in d for d in diags), diags
+
+    def test_unclosed_brace_at_eof_diagnostic(self):
+        """An unclosed '{' at EOF must also be diagnosed (brace/group form)."""
+        text = "set_clock_groups -asynchronous -group {clk_a clk_b\n"
+        cmds = preprocess_sdc(text)
+        diags = collect_diagnostics(cmds)
+        assert any("unclosed" in d and "{" in d for d in diags), diags
+        assert any("line 1" in d for d in diags), diags
+
+    def test_brace_nested_in_unclosed_bracket_reports_bracket(self):
+        """A brace nested inside an unclosed bracket is reported as the outer
+        (root-cause) unclosed bracket — the actionable construct."""
+        text = "set_clock_groups -asynchronous -group [get_clocks {clk_a clk_b}\n"
+        cmds = preprocess_sdc(text)
+        diags = collect_diagnostics(cmds)
+        assert any("unclosed" in d and "[" in d for d in diags), diags
+
+    def test_dangling_backslash_continuation_diagnostic(self):
+        """(d) A file ending mid-continuation (backslash, no trailing newline)
+        must produce a diagnostic; a backslash followed by an empty final line
+        is a complete command and must not."""
+        dangling = "create_clock -name c -period 5.0 \\"
+        cmds = preprocess_sdc(dangling)
+        diags = collect_diagnostics(cmds)
+        assert any("dangling" in d for d in diags), diags
+
+        complete = "create_clock -name c -period 5.0 \\\n"
+        cmds2 = preprocess_sdc(complete)
+        assert collect_diagnostics(cmds2) == []
+        assert cmds2[0].text == "create_clock -name c -period 5.0"
+
+    def test_diagnostics_survive_variable_resolution(self):
+        """Diagnostics must be carried through _resolve_variables (not dropped
+        when bounded Tcl variables are present elsewhere in the file)."""
+        text = (
+            "set P 5.0\n"
+            "set_driving_cell [remove_from_collection [all_inputs]\n"
+            "create_clock -name c -period $P [get_ports clk]\n"
+        )
+        cmds = preprocess_sdc(text)
+        diags = collect_diagnostics(cmds)
+        assert any("unclosed" in d for d in diags), diags
+
+    def test_repaired_fixture_produces_no_diagnostics(self):
+        """The repaired real_design_full.sdc fixture must preprocess cleanly
+        (the exact regression the parity sprint fixed)."""
+        from pathlib import Path
+        path = Path(__file__).resolve().parent.parent.parent / "samples" / "real_design_full.sdc"
+        cmds = preprocess_sdc(path.read_text(encoding="utf-8"))
+        assert collect_diagnostics(cmds) == [], collect_diagnostics(cmds)
+        assert len(cmds) >= 50  # full fixture: dozens of logical commands
 
 
 # ── Phase 4 — bounded Tcl variable support ──────────────────────────────────

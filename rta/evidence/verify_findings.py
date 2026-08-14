@@ -53,6 +53,9 @@ def run_all(text, label):
         for m in cr.mismatches[:6]:
             print(f"                MISMATCH {m.code} {m.severity}: {m.clock_a}/{m.clock_b} "
                   f"spec={m.specified} exp={m.expected}")
+        for m in cr.missing_constraints[:6]:
+            print(f"                MISSING  {m.code} {m.severity}: {m.clock_a}/{m.clock_b} "
+                  f"spec={m.specified} exp={m.expected}")
     except Exception as e:  # noqa: BLE001
         print(f"[clock_rel]     CRASH {type(e).__name__}: {e}")
     try:

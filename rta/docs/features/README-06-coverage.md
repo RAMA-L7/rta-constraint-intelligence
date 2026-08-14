@@ -1,6 +1,6 @@
 # Feature 6: Constraint Coverage Gap Analysis
 
-> **Module:** `coverage.py` · **CLI:** `sdc-tools coverage`, `sdc-tools report coverage` · **UI:** Coverage Tab
+> **Module:** `coverage.py` · **CLI:** `rta coverage`, `rta report coverage` · **UI:** Coverage Tab
 
 ---
 
@@ -180,19 +180,19 @@ SDC Text Input
 
 ```bash
 # Full coverage analysis
-sdc-tools coverage design.sdc
+rta coverage design.sdc
 
 # JSON output
-sdc-tools coverage design.sdc --json
+rta coverage design.sdc --json
 
 # Show only missing items (compact)
-sdc-tools coverage design.sdc --missing-only
+rta coverage design.sdc --missing-only
 
 # Generate HTML coverage report
-sdc-tools report coverage design.sdc --output coverage_report.html
+rta report coverage design.sdc --output coverage_report.html
 
 # Save text output
-sdc-tools coverage design.sdc --output coverage.txt
+rta coverage design.sdc --output coverage.txt
 ```
 
 ## Python API

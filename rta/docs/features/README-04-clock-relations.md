@@ -1,6 +1,6 @@
 # Feature 4: Clock Relation Analyzer
 
-> **Module:** `clock_relations.py` · **CLI:** `sdc-tools analyze clock-relations` · **UI:** Clock Relations Tab · **Codes:** SDC-060..063
+> **Module:** `clock_relations.py` · **CLI:** `rta analyze clock-relations` · **UI:** Clock Relations Tab · **Codes:** SDC-060..063
 
 ---
 
@@ -174,16 +174,16 @@ Same period?             Common master?
 
 ```bash
 # Basic analysis
-sdc-tools analyze clock-relations design.sdc
+rta analyze clock-relations design.sdc
 
 # JSON output
-sdc-tools analyze clock-relations design.sdc --json
+rta analyze clock-relations design.sdc --json
 
 # Verbose — show all clock pairs and definitions
-sdc-tools analyze clock-relations design.sdc --verbose
+rta analyze clock-relations design.sdc --verbose
 
 # Save to file
-sdc-tools analyze clock-relations design.sdc --output analysis.txt
+rta analyze clock-relations design.sdc --output analysis.txt
 ```
 
 ## Python API

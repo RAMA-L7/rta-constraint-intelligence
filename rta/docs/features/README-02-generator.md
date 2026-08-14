@@ -1,6 +1,6 @@
 # Feature 2: SDC Constraint Generator
 
-> **Module:** `generator.py` · **CLI:** `sdc-tools generate` · **UI:** Generator Tab
+> **Module:** `generator.py` · **CLI:** `rta generate` · **UI:** Generator Tab
 
 ---
 
@@ -151,10 +151,10 @@ SDCParams instance
 
 ```bash
 # Minimal — single clock
-sdc-tools generate --design MY_CHIP --clock clk=10.0 > my_chip.sdc
+rta generate --design MY_CHIP --clock clk=10.0 > my_chip.sdc
 
 # Multiple clocks with port
-sdc-tools generate \
+rta generate \
   --design MY_CHIP \
   --clock clk_core=5.0:sys_clk \
   --clock clk_slow=20.0:slow_clk \
@@ -165,7 +165,7 @@ sdc-tools generate \
   --output my_chip.sdc
 
 # With DFT and reset handling
-sdc-tools generate \
+rta generate \
   --design MY_CHIP \
   --clock clk=10.0:clk \
   --ideal-reset --reset-port rst_n \

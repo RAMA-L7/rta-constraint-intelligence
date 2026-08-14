@@ -54,11 +54,26 @@ class ClockMismatch:
 
 @dataclass
 class RelationAnalysisResult:
-    """Full analysis result."""
+    """Full analysis result.
+
+    The mismatch collection is split by SEMANTIC category so every stats key
+    equals the length of its collection (P1-2/P1-7 consistency contract):
+
+    - ``mismatches``          — warning-severity real conflicts (SDC-060/061)
+    - ``missing_constraints`` — info-severity SDC-062 (no set_clock_groups
+                                declared for an async/exclusive pair)
+    - ``advisories``          — info-severity SDC-063 (declared exclusion that
+                                appears asynchronous — verify intentional)
+
+    ``stats['mismatches'] == len(mismatches)``, ``stats['missing'] ==
+    len(missing_constraints)``, ``stats['advisories'] == len(advisories)``.
+    """
     clocks: List[ClockDefCK] = field(default_factory=list)
     pairs: List[ClockPair] = field(default_factory=list)
     existing_groups: List[Dict] = field(default_factory=list)
     mismatches: List[ClockMismatch] = field(default_factory=list)
+    missing_constraints: List[ClockMismatch] = field(default_factory=list)
+    advisories: List[ClockMismatch] = field(default_factory=list)
     stats: Dict[str, int] = field(default_factory=dict)
 
 
@@ -433,13 +448,19 @@ def analyze_clock_relations(text: str) -> RelationAnalysisResult:
     # Find mismatches
     mismatches = _find_mismatches(pairs, existing_groups)
 
+    # ── P1-2/P1-7: split findings into semantic categories so every stats key
+    # equals the length of its collection. SDC-062 ("no set_clock_groups") is a
+    # MISSING CONSTRAINT, not a mismatch — the CLI/API must never report
+    # stats.mismatches == 0 while a list named `mismatches` holds 18 SDC-062s.
+    warning_mm = [m for m in mismatches if m.severity == "warning"]
+    missing_mm = [m for m in mismatches if m.code == "SDC-062"]
+    advisory_mm = [m for m in mismatches if m.code == "SDC-063"]
+
     # Stats
     n_sync = sum(1 for p in pairs if p.inferred_relation == "synchronous")
     n_async = sum(1 for p in pairs if p.inferred_relation == "asynchronous")
     n_phy = sum(1 for p in pairs if p.inferred_relation == "physically_exclusive")
     n_log = sum(1 for p in pairs if p.inferred_relation == "logically_exclusive")
-    n_mismatch = sum(1 for m in mismatches if m.severity == "warning")
-    n_missing = sum(1 for m in mismatches if m.severity == "info")
 
     stats = {
         "clocks": len(clocks),
@@ -448,8 +469,9 @@ def analyze_clock_relations(text: str) -> RelationAnalysisResult:
         "asynchronous": n_async,
         "physically_exclusive": n_phy,
         "logically_exclusive": n_log,
-        "mismatches": n_mismatch,
-        "missing": n_missing,
+        "mismatches": len(warning_mm),
+        "missing": len(missing_mm),
+        "advisories": len(advisory_mm),
         "constraints": len(existing_groups),
     }
 
@@ -457,6 +479,8 @@ def analyze_clock_relations(text: str) -> RelationAnalysisResult:
         clocks=clocks,
         pairs=pairs,
         existing_groups=existing_groups,
-        mismatches=mismatches,
+        mismatches=warning_mm,
+        missing_constraints=missing_mm,
+        advisories=advisory_mm,
         stats=stats,
     )

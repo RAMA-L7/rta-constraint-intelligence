@@ -1,6 +1,6 @@
 # Feature 7: Custom Rules Engine
 
-> **Module:** `custom_rules.py` · **CLI:** `sdc-tools check --custom-rules` · **UI:** Checker Tab (YAML upload) · **Example:** `custom_rules_example.yaml`
+> **Module:** `custom_rules.py` · **CLI:** `rta check --custom-rules` · **UI:** Checker Tab (YAML upload) · **Example:** `custom_rules_example.yaml`
 
 ---
 
@@ -196,15 +196,15 @@ rules:
 
 ```bash
 # Single custom rules file
-sdc-tools check design.sdc --custom-rules my_policy.yaml
+rta check design.sdc --custom-rules my_policy.yaml
 
 # Multiple rules files (repeatable)
-sdc-tools check design.sdc \
+rta check design.sdc \
   --custom-rules team_policy.yaml \
   --custom-rules foundry_requirements.yaml
 
 # With JSON output (custom rules included in data)
-sdc-tools check design.sdc --custom-rules my_policy.yaml --json
+rta check design.sdc --custom-rules my_policy.yaml --json
 ```
 
 ## Python API

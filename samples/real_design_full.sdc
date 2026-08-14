@@ -26,8 +26,8 @@ create_clock -name vclk_axi  -period 5.0 -virtual
 
 # ── Generated Clock Definitions ───────────────────────
 
-create_generated_clock -name clk_core_div2 -source [get_ports clk_core] \
-create_generated_clock -name clk_core_div4 -source [get_ports clk_core] \
+create_generated_clock -name clk_core_div2 -source [get_ports clk_core]
+create_generated_clock -name clk_core_div4 -source [get_ports clk_core]
 
 # ── Clock Attributes ──────────────────────────────────
 
@@ -42,8 +42,8 @@ set_propagated_clock [get_clocks {clk_core clk_axi clk_mem}]
 
 # ── Clock Groups (CDC) ────────────────────────────────
 
-set_clock_groups -asynchronous \ -group [get_clocks {clk_core clk_core_div2 clk_core_div4}] \
-set_clock_groups -asynchronous \ -group [get_clocks clk_core] \
+set_clock_groups -asynchronous  -group [get_clocks {clk_core clk_core_div2 clk_core_div4}]
+set_clock_groups -asynchronous  -group [get_clocks clk_core]
 
 # ── I/O Constraints ───────────────────────────────────
 
@@ -55,7 +55,7 @@ set_input_delay -max 1.50 -clock vclk_axi [get_ports {axi_aw* axi_w* axi_ar*}]
 set_input_delay -min 0.30 -clock vclk_axi [get_ports {axi_aw* axi_w* axi_ar*}]
 set_output_delay -max 1.80 -clock vclk_axi [get_ports {axi_b* axi_r*}]
 set_output_delay -min 0.40 -clock vclk_axi [get_ports {axi_b* axi_r*}]
-set_driving_cell -lib_cell BUF_X4 -pin Z [remove_from_collection [all_inputs] \
+set_driving_cell -lib_cell BUF_X4 -pin Z [remove_from_collection [all_inputs] [all_outputs]]
 set_load 0.05 [all_outputs]
 
 # ── False Paths ───────────────────────────────────────

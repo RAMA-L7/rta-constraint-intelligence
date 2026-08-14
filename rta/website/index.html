@@ -24,7 +24,7 @@
       <h1 id="hero-h" class="display-hero">Constraint quality,<br>assessed before STA.</h1>
       <p class="lede">Ṛta deterministically validates your timing constraints before signoff tooling — rule checking, clock intelligence, design-aware coverage, constraint interactions and readiness, with regression diff for CI. Offline, reproducible, evidence-driven.</p>
       <div class="hero-ctas">
-        <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` (or `sdc-tools web`) to start the workspace on port 8501">Launch Ṛta <span class="mono">↗</span></a>
+        <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` (or `rta web`) to start the workspace on port 8501">Launch Ṛta <span class="mono">↗</span></a>
         <a class="btn btn--outline btn--lg" href="platform.html">See how it works</a>
       </div>
       <div class="hero-trust">
@@ -38,7 +38,7 @@
       <div class="hero-terminal">
         <div class="term-bar">
           <span class="tl"></span><span class="tl"></span><span class="tl"></span>
-          <span class="term-title">sdc-tools check — deterministic analysis</span>
+          <span class="term-title">rta check — deterministic analysis</span>
         </div>
         <div id="hero-terminal-body" class="term-body" aria-label="Animated SDC validation terminal output"></div>
       </div>
@@ -159,7 +159,7 @@
       <div class="pipe-step reveal reveal-delay-3"><span class="ps-idx">07</span><div class="ps-name">Readiness</div><div class="ps-desc">7 dimensions + recommended actions</div></div>
       <div class="pipe-step reveal reveal-delay-3"><span class="ps-idx">08</span><div class="ps-name">Diff / CI</div><div class="ps-desc">baseline snapshots · quality gates</div></div>
     </div>
-    <p style="margin-top:20px;font-size:13.5px;color:var(--text-muted)"><span class="mono">sdc-tools check design.sdc [--netlist top.v] [--baseline base.json] [--gate STRICT]</span> — one command, machine-readable output, deterministic exit codes.</p>
+    <p style="margin-top:20px;font-size:13.5px;color:var(--text-muted)"><span class="mono">rta check design.sdc [--netlist top.v] [--baseline base.json] [--gate STRICT]</span> — one command, machine-readable output, deterministic exit codes.</p>
   </div>
 </section>
 
@@ -239,7 +239,7 @@
       <p class="lede">Every number on this page maps to a repository benchmark suite, a golden runner, or the release manifest. Nothing is extrapolated.</p>
     </div>
     <div class="stats-band">
-      <div class="stat reveal"><div class="stat-num">826<span class="suffix">/826</span></div><div class="stat-label">pytest suite</div><div class="stat-note">deterministic tests</div></div>
+      <div class="stat reveal"><div class="stat-num">887<span class="suffix">/887</span></div><div class="stat-label">pytest suite</div><div class="stat-note">deterministic tests</div></div>
       <div class="stat reveal reveal-delay-1"><div class="stat-num">9<span class="suffix">/9</span></div><div class="stat-label">golden runners</div><div class="stat-note">parser · semantic · netlist · readiness</div></div>
       <div class="stat reveal reveal-delay-1"><div class="stat-num">42<span class="suffix">/42</span></div><div class="stat-label">benchmark suites</div><div class="stat-note">adversarial · metamorphic · security · perf</div></div>
       <div class="stat reveal reveal-delay-2"><div class="stat-num">17<span class="suffix">/17</span></div><div class="stat-label">clean-room checks</div><div class="stat-note">fresh wheel install journey</div></div>
@@ -267,13 +267,13 @@
       <div class="reveal reveal-delay-1">
         <code class="block">
 <span class="c-dim"># one command, from checkout or installed wheel</span>
-<span class="c-cmd">sdc-tools check</span> design.sdc \
+<span class="c-cmd">rta check</span> design.sdc \
   <span class="c-dim">--netlist soc_top.v --top soc_top</span> \
   <span class="c-dim">--baseline base.json --gate STRICT</span>
 
 <span class="c-dim"># machine-readable everywhere</span>
-<span class="c-cmd">sdc-tools check</span> design.sdc --json &gt; result.json
-<span class="c-cmd">sdc-tools report</span> check design.sdc --format html
+<span class="c-cmd">rta check</span> design.sdc --json &gt; result.json
+<span class="c-cmd">rta report</span> check design.sdc --format html
 
 <span class="c-dim"># exit codes: 0 pass · 1 fail · 2 invalid · 3 engine</span>
 <span class="c-cmd">echo</span> $?  <span class="c-dim"># → 0</span>
@@ -315,14 +315,14 @@
     <h2 class="display-2" style="max-width:24ch;margin:0 auto">Check your first constraint set in minutes</h2>
     <p class="lede" style="max-width:52ch;margin:16px auto 28px">Install from source or Docker, run the Validator on a sample SDC, and see findings with rule, severity, evidence and source line.</p>
     <div class="hero-ctas" style="justify-content:center">
-      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` (or `sdc-tools web`) to start the workspace on port 8501">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` (or `rta web`) to start the workspace on port 8501">Launch Ṛta <span class="mono">↗</span></a>
       <a class="btn btn--outline btn--lg" href="docs.html">Read the docs</a>
       <a class="btn btn--ghost btn--lg" href="benchmarks.html">Explore evidence</a>
     </div>
     <code class="block" style="max-width:640px;margin:28px auto 0;text-align:left">
 <span class="c-cmd">pip install -e ".[web]"</span>
-<span class="c-cmd">sdc-tools check</span> rta/examples/samples/example.sdc
-<span class="c-cmd">sdc-tools web</span>   <span class="c-dim"># launch the workspace</span>
+<span class="c-cmd">rta check</span> rta/examples/samples/example.sdc
+<span class="c-cmd">rta web</span>   <span class="c-dim"># launch the workspace</span>
     </code>
   </div>
 </section>

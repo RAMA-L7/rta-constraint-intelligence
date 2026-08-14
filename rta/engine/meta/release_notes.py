@@ -12,6 +12,13 @@ RELEASE_NOTES: dict[str, list[str]] = {
         "After writing any HTML report the CLI now prints how to open it: "
         "'start report.html' on Windows, 'open report.html' on macOS/Linux.",
         "README documents the report-open hint and links the live surfaces.",
+        "P1 corrections from the VLSI Engineering Acceptance report: consistent "
+        "source line numbers on all checker findings (CLI/JSON/API), clock-relations "
+        "output now separates mismatches from missing constraints with consistent "
+        "stats, the SDC generator never emits a malformed set_operating_conditions "
+        "line, coverage CLI discloses 'coverage is NOT correctness', the webui shows "
+        "SDC-only category coverage, and the API rejects empty/missing SDC with "
+        "HTTP 400 for analyze/lint/convert.",
     ],
     "1.5.7": [
         "rst_n (and reset_n / arst_n) reset trees are now detected by "

@@ -301,41 +301,19 @@ class TestPackagingSmoke:
         assert proc.returncode == 0
         assert "check" in proc.stdout and "web" in proc.stdout
 
-    def test_cli_web_resolves_app_path(self):
-        """cmd_web must resolve api_server.py (Phase 17 workspace) relative to
-        the repo, not the cwd — a clean install or any-cwd invocation works."""
+    def test_cli_web_retired_contract(self):
+        """cmd_web no longer launches the retired workspace server (port 8501);
+        it prints how to launch the Streamlit tool and exits non-zero.
+        """
         import cli
         from types import SimpleNamespace
-        # cmd_web spawns a subprocess and opens a browser; monkeypatch both to
-        # capture the server command without launching anything. The local
-        # `import webbrowser` inside cmd_web is intercepted via sys.modules.
-        calls = {}
-
-        def fake_run(cmd, **_):
-            calls["cmd"] = cmd
-            return SimpleNamespace(returncode=0)
-
-        orig_run = subprocess.run
-        orig_wb = sys.modules.get("webbrowser")
-        fake_wb = type("WB", (), {"open": staticmethod(lambda url: True)})()
         try:
-            import subprocess as sp
-            sp.run = fake_run
-            sys.modules["webbrowser"] = fake_wb
             cli.cmd_web(SimpleNamespace())
-        finally:
-            sp.run = orig_run
-            if orig_wb is None:
-                sys.modules.pop("webbrowser", None)
-            else:
-                sys.modules["webbrowser"] = orig_wb
-        cmd = calls.get("cmd", [])
-        # [sys.executable, <abs api_server.py>, <port>]
-        assert len(cmd) == 3
-        assert cmd[1].endswith("api_server.py")
-        assert os.path.isabs(cmd[1])
-        assert os.path.exists(cmd[1])
-        assert cmd[2] == "8501"
+        except SystemExit as e:
+            # sys.exit(message) surfaces the message string as the code
+            assert e.code is not None and "retired" in str(e.code)
+        else:  # pragma: no cover
+            raise AssertionError("cmd_web should SystemExit, not launch a server")
 
 
 # ── H/I. File input vs text input parity ───────────────────────────────────────

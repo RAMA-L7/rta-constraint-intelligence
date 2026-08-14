@@ -1,6 +1,6 @@
 # Feature 5: Multi-Corner Manager (MMC)
 
-> **Modules:** `corner_manager.py`, `mmc.py` · **CLI:** `sdc-tools corners`, `sdc-tools report check` · **UI:** MMC Corner Manager Tab, MMC SDC Generator Tab
+> **Modules:** `corner_manager.py`, `mmc.py` · **CLI:** `rta corners`, `rta report check` · **UI:** MMC Corner Manager Tab, MMC SDC Generator Tab
 
 ---
 
@@ -99,7 +99,7 @@ Inspired by [Ausdia's analysis of MMMC complexity](https://www.ausdia.com/blog/7
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  CLI: sdc-tools corners list/show                        │
+│  CLI: rta corners list/show                        │
 │  UI:  MMC Corner Manager Tab                             │
 │                                                          │
 │  1. Load preset or create corners manually               │
@@ -142,14 +142,14 @@ Inspired by [Ausdia's analysis of MMMC complexity](https://www.ausdia.com/blog/7
 
 ```bash
 # List available presets
-sdc-tools corners list
+rta corners list
 
 # Show preset details
-sdc-tools corners show "Classic 3-corner"
-sdc-tools corners show "Industrial 5-corner"
+rta corners show "Classic 3-corner"
+rta corners show "Industrial 5-corner"
 
 # Partial name match
-sdc-tools corners show "Industrial"
+rta corners show "Industrial"
 ```
 
 ## Python API

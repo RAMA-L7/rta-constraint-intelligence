@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Benchmarks — Ṛta</title>
-  <meta name="description" content="Verified, traceable benchmark evidence for Ṛta v1.5.6: pytest, golden runners, benchmark suites, clean-room, CLI contract, release smoke.">
+  <meta name="description" content="Verified, traceable benchmark evidence for Ṛta v1.5.8: pytest, golden runners, benchmark suites, clean-room, CLI contract, release smoke.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2338BDF8' stroke-width='1.4'%3E%3Cpath d='M5.5 2.5H4.2A1.7 1.7 0 0 0 2.5 4.2v2.6A1.7 1.7 0 0 1 .8 8a1.7 1.7 0 0 1 1.7 1.2v2.6a1.7 1.7 0 0 0 1.7 1.7h1.3'/%3E%3Cpath d='M10.5 2.5h1.3a1.7 1.7 0 0 1 1.7 1.7v2.6A1.7 1.7 0 0 0 15.2 8a1.7 1.7 0 0 0-1.7 1.2v2.6a1.7 1.7 0 0 1-1.7 1.7h-1.3'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
 <section class="hero" style="padding-bottom:var(--sp-7)">
   <div id="silicon-canvas" class="silicon-canvas"></div>
   <div class="container center" style="position:relative">
-    <p class="eyebrow center" style="margin-bottom:14px">Benchmarks · v1.5.6 · verified 2026-08-12</p>
+    <p class="eyebrow center" style="margin-bottom:14px">Benchmarks · v1.5.8 · verified 2026-08-12</p>
     <h1 class="display-1" style="max-width:22ch;margin:0 auto">Evidence, not marketing</h1>
     <p class="lede" style="max-width:62ch;margin:18px auto 0">Every number on this page maps to an actual repository artifact: a pytest file, a golden runner, a benchmark suite, or the release manifest. These are internal verification results — not independent industry certification.</p>
     <div class="hero-ctas" style="justify-content:center;margin-top:26px">
@@ -35,7 +35,7 @@
     <div class="release-hero reveal">
       <div class="micro-label" style="margin-bottom:16px">Key verified results — traceable to rta/evidence/RELEASE_MANIFEST.md</div>
       <div class="stats-band" style="margin-top:0">
-        <div class="stat"><div class="stat-num">826<span class="suffix">/826</span></div><div class="stat-label">pytest</div><div class="stat-note"><span class="mono">python -m pytest tests/</span></div></div>
+        <div class="stat"><div class="stat-num">887<span class="suffix">/887</span></div><div class="stat-label">pytest</div><div class="stat-note"><span class="mono">python -m pytest tests/</span></div></div>
         <div class="stat"><div class="stat-num">9<span class="suffix">/9</span></div><div class="stat-label">golden runners</div><div class="stat-note">parser · semantic · reference · coverage · netlist · interactions · readiness · diff · PH13</div></div>
         <div class="stat"><div class="stat-num">42<span class="suffix">/42</span></div><div class="stat-label">benchmark suites</div><div class="stat-note">adversarial · metamorphic · security · perf · CI gate · UI · stress</div></div>
         <div class="stat"><div class="stat-num">17<span class="suffix">/17</span></div><div class="stat-label">clean-room</div><div class="stat-note">fresh-wheel install journey</div></div>
@@ -59,21 +59,21 @@
         <div class="sc-top"><span class="sc-name">Parser Golden</span><span class="sc-result">22<span style="color:var(--text-muted);font-size:15px">/22</span></span></div>
         <div class="sc-body">SDC/Tcl parsing semantics: variables, comments, multiline, collections, scientific notation — expected outputs independently derived in the manifest.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span><span class="badge badge--muted">v1.3.0</span></div>
-        <div class="sc-foot"><button data-method="m-parser" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/tree/main/rta/evidence/golden" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-parser" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/evidence/golden" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-parser" class="methodology">Corpus: hand-written golden SDCs covering parser edge cases. Expected behavior source: independently authored manifest with reason fields — not code-derived expectations.</div>
       </div>
       <div class="scorecard reveal reveal-delay-1">
         <div class="sc-top"><span class="sc-name">Semantic Golden</span><span class="sc-result">9<span style="color:var(--text-muted);font-size:15px">/9</span></span></div>
         <div class="sc-body">Semantic validation: clock extraction, generated clocks, reference checks, relationship inference across curated designs.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span><span class="badge badge--muted">v1.3.0</span></div>
-        <div class="sc-foot"><button data-method="m-sem" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/tree/main/rta/evidence/golden_semantic" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-sem" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/evidence/golden_semantic" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-sem" class="methodology">Semantic cases from real design patterns; each expected finding traced to a documented rule and reason.</div>
       </div>
       <div class="scorecard reveal reveal-delay-2">
         <div class="sc-top"><span class="sc-name">Reference Designs</span><span class="sc-result">8<span style="color:var(--text-muted);font-size:15px">/8</span></span></div>
         <div class="sc-body">Realistic multi-clock designs with generated clocks, virtual clocks and cross-domain pairs — analyzed end-to-end.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span><span class="badge badge--muted">v1.3.0</span></div>
-        <div class="sc-foot"><button data-method="m-ref" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/tree/main/rta/evidence/reference_designs" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-ref" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/evidence/reference_designs" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-ref" class="methodology">Reference SDCs exercised through check, clocks and relations; outputs cross-checked across modules (cross-module consistency suite).</div>
       </div>
     </div>
@@ -92,21 +92,21 @@
         <div class="sc-top"><span class="sc-name">Netlist-aware Golden</span><span class="sc-result">10<span style="color:var(--text-muted);font-size:15px">/10</span></span></div>
         <div class="sc-body">Design-context resolution: ports, pins, cells, nets, hierarchy, wildcards against structural Verilog.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span></div>
-        <div class="sc-foot"><button data-method="m-na" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/tree/main/rta/evidence/netlist_aware" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-na" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/evidence/netlist_aware" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-na" class="methodology">Multi-module netlists (flop + reg_out instances, buses, scan/reset pins); expected outcomes independently derived.</div>
       </div>
       <div class="scorecard reveal reveal-delay-1">
         <div class="sc-top"><span class="sc-name">Coverage Golden</span><span class="sc-result">12<span style="color:var(--text-muted);font-size:15px">/12</span></span></div>
         <div class="sc-body">Object-level and bus coverage: constrained, partial, unconstrained, exempt, unknown, not-applicable.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span></div>
-        <div class="sc-foot"><button data-method="m-cov" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/tree/main/rta/evidence/design_coverage" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-cov" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/evidence/design_coverage" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-cov" class="methodology">Coverage buckets verified bit-accurate for bus ranges; metamorphic + adversarial suites protect the semantics.</div>
       </div>
       <div class="scorecard reveal reveal-delay-2">
         <div class="sc-top"><span class="sc-name">Interaction Golden</span><span class="sc-result">20<span style="color:var(--text-muted);font-size:15px">/20</span></span></div>
         <div class="sc-body">Constraint interactions: duplicates, overrides, contradictions, exception overlaps with dual-line provenance.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span></div>
-        <div class="sc-foot"><button data-method="m-int" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/tree/main/rta/evidence/constraint_interactions" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-int" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/evidence/constraint_interactions" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-int" class="methodology">Interaction golden + 21 adversarial cases: provable conflicts vs STA-review overlaps must classify correctly.</div>
       </div>
     </div>
@@ -198,14 +198,14 @@
         <div class="sc-top"><span class="sc-name">Clean-room install</span><span class="sc-result">17<span style="color:var(--text-muted);font-size:15px">/17</span></span></div>
         <div class="sc-body">Fresh wheel → fresh environment → install → run from outside the repo: CLI, entry point, check, JSON, report, baseline, gate, Python API, error journey, offline.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span></div>
-        <div class="sc-foot"><button data-method="m-cr" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/blob/main/rta/evidence/release_cleanroom.py" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-cr" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/blob/main/rta/evidence/release_cleanroom.py" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-cr" class="methodology">Simulates a fresh engineer installing the wheel and running every user-facing command from a directory outside the repository.</div>
       </div>
       <div class="scorecard reveal reveal-delay-2">
         <div class="sc-top"><span class="sc-name">Release smoke</span><span class="sc-result">10<span style="color:var(--text-muted);font-size:15px">/10</span></span></div>
         <div class="sc-body">Imports, help, version, check, JSON purity, HTML report, baseline+gate, netlist-aware, engine-failure-never-passes, HTML escaping.</div>
         <div class="sc-meta"><span class="badge badge--success">PASS</span></div>
-        <div class="sc-foot"><button data-method="m-smoke" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/sdc-tools/blob/main/rta/evidence/test_release_smoke.py" target="_blank" rel="noopener">Artifact ↗</a></div>
+        <div class="sc-foot"><button data-method="m-smoke" aria-expanded="false">Methodology</button><a href="https://github.com/RAMA-L7/rta-constraint-intelligence/blob/main/rta/evidence/test_release_smoke.py" target="_blank" rel="noopener">Artifact ↗</a></div>
         <div id="m-smoke" class="methodology">Fast (~3s) suite intended for every release; the first gate a release candidate must pass.</div>
       </div>
     </div>
@@ -217,7 +217,7 @@
   <div class="container">
     <div class="callout callout--muted reveal">
       <span class="co-icon">◈</span>
-      <span><b>Benchmark honesty.</b> These are internal verification results produced by this project's own suites — not independent industry certification, and not claims of superiority over commercial EDA tools. Results are tied to a recorded environment (Python 3.10 · Windows) and version (v1.5.6). Test counts measure internal quality gates; they are not a proxy for timing accuracy.</span>
+      <span><b>Benchmark honesty.</b> These are internal verification results produced by this project's own suites — not independent industry certification, and not claims of superiority over commercial EDA tools. Results are tied to a recorded environment (Python 3.10 · Windows) and version (v1.5.8). Test counts measure internal quality gates; they are not a proxy for timing accuracy.</span>
     </div>
   </div>
 </section>
@@ -227,7 +227,7 @@
     <h2 class="display-2">Inspect the evidence yourself</h2>
     <p class="lede" style="max-width:52ch;margin:14px auto 26px">Every benchmark, report and manifest is in the repository — reproduce any number locally.</p>
     <div class="hero-ctas" style="justify-content:center">
-      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/sdc-tools/tree/main/benchmarks" target="_blank" rel="noopener">Browse benchmarks <span class="mono">↗</span></a>
+      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/benchmarks" target="_blank" rel="noopener">Browse benchmarks <span class="mono">↗</span></a>
       <a class="btn btn--outline btn--lg" href="trust.html">Trust Center</a>
     </div>
   </div>

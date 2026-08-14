@@ -97,6 +97,12 @@ def analyze_file(path: Path):
             "mismatches": [{"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
                             "clock_b": m.clock_b, "specified": m.specified, "expected": m.expected}
                            for m in r.mismatches],
+            "missing_constraints": [{"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
+                                     "clock_b": m.clock_b, "specified": m.specified, "expected": m.expected}
+                                    for m in r.missing_constraints],
+            "advisories": [{"code": m.code, "severity": m.severity, "clock_a": m.clock_a,
+                            "clock_b": m.clock_b, "specified": m.specified, "expected": m.expected}
+                           for m in r.advisories],
         }
     else:
         rec["clock_relations"] = {"crash": r}

@@ -33,6 +33,8 @@ class Issue:
 class InfoItem:
     code: str
     msg: str
+    line: int = 0  # line number in source (0 = unknown); P1-1: populated where the
+                   # item maps to a concrete SDC command
 
 
 @dataclass
@@ -70,6 +72,32 @@ def _find_line(text: str, pattern: str) -> int:
     m = re.search(pattern, text, re.MULTILINE)
     if m:
         return text[:m.start()].count("\n") + 1
+    return 0
+
+
+def _cmd_line(logical, cmd: str) -> int:
+    """Return the source line of the logical command that matches ``cmd``.
+
+    P1-1: every per-command finding should carry a reliable source location.
+    Uses the same prefix-match strategy as the existing SDC-046/047 lookups
+    (find_line on the first 40 chars), so a finding on a command gets the
+    command's original start line; returns 0 (unknown) when unmappable.
+    """
+    if not cmd:
+        return 0
+    return find_line(logical, cmd.strip()[:40])
+
+
+def _group_line(logical, clock_a: str, clock_b: str) -> int:
+    """Return the source line of the set_clock_groups command that declares
+    both ``clock_a`` and ``clock_b``; 0 when no such command exists.
+
+    Used for SDC-060/061 mismatch findings whose evidence lives in a
+    set_clock_groups declaration (P1-1 source-location consistency).
+    """
+    for c in logical:
+        if "set_clock_groups" in c.text and clock_a in c.text and clock_b in c.text:
+            return c.start_line
     return 0
 
 
@@ -255,16 +283,19 @@ def check_sdc(text: str, context=None) -> CheckResult:
         seen.add(n)
     for n in dupes:
         issues.append(Issue("error", "SDC-002",
-            f'Duplicate clock name "{n}" — two create_clock commands use the same name.'))
+            f'Duplicate clock name "{n}" — two create_clock commands use the same name.',
+            line=_cmd_line(logical, f"create_clock -name {n}")))
 
     # Generated clock missing -source
     for gc in gen_clocks:
         if '-source' not in gc:
             issues.append(Issue("error", "SDC-003",
-                f'create_generated_clock missing required -source: "{gc[:70]}…"'))
+                f'create_generated_clock missing required -source: "{gc[:70]}…"',
+                line=_cmd_line(logical, gc)))
         if '-divide_by' in gc and '-multiply_by' in gc:
             issues.append(Issue("error", "SDC-004",
-                f'create_generated_clock has both -divide_by and -multiply_by — use one only.'))
+                f'create_generated_clock has both -divide_by and -multiply_by — use one only.',
+                line=_cmd_line(logical, gc)))
 
     if not input_delay and clocks:
         issues.append(Issue("error", "SDC-005",
@@ -277,7 +308,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
         port_m = re.search(r'\[get_ports\s+([^\]]+)\]', c)
         if port_m and _is_data_port_name(port_m.group(1)):
             issues.append(Issue("error", "SDC-007",
-                f'create_clock on likely data port "{port_m.group(1)}" — use dedicated clock ports only.'))
+                f'create_clock on likely data port "{port_m.group(1)}" — use dedicated clock ports only.',
+                line=_cmd_line(logical, c)))
 
     # Build a clock-name → period lookup (primary + generated clocks that declare a period)
     period_map: Dict[str, float] = {}
@@ -406,7 +438,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
             name = name_m.group(1)
             if any(name in p for p in propagated):
                 issues.append(Issue("error", "SDC-010",
-                    f'set_propagated_clock applied to virtual clock "{name}" — virtual clocks have no physical source.'))
+                    f'set_propagated_clock applied to virtual clock "{name}" — virtual clocks have no physical source.',
+                    line=_cmd_line(logical, vc)))
 
     for ca in case_analysis:
         val_m = re.search(r'set_case_analysis\s+(\S+)', ca)
@@ -414,7 +447,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
             val = val_m.group(1).lower()
             if val not in ('0', '1', 'rising', 'falling', 'rise', 'fall'):
                 issues.append(Issue("error", "SDC-011",
-                    f'set_case_analysis invalid value "{val_m.group(1)}" — allowed: 0, 1, rising, falling.'))
+                    f'set_case_analysis invalid value "{val_m.group(1)}" — allowed: 0, 1, rising, falling.',
+                    line=_cmd_line(logical, ca)))
 
     # SDC-049 — contradictory set_case_analysis values on the SAME object.
     # e.g. 'set_case_analysis 0 [get_ports mode]' then '1' later — the tool would
@@ -452,7 +486,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
             t_m = re.search(r'-to\s+([^\s\[\]]+|\[[^\]]*\])', fp)
             if f_m and t_m:
                 issues.append(Issue("warning", "SDC-020",
-                    f'set_false_path from {f_m.group(1)} to {t_m.group(1)} — confirm this is a genuine false path.'))
+                    f'set_false_path from {f_m.group(1)} to {t_m.group(1)} — confirm this is a genuine false path.',
+                    line=_cmd_line(logical, fp)))
 
     # SDC-021 — multicycle -setup N (N>1) needs a matching -hold fix. The fix
     # may live in the SAME command ('-setup 2 -hold 1') or in a SEPARATE
@@ -475,7 +510,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
         if sig and sig[1] and sig[1] in _hold_sig_set:
             continue  # matching -hold fix on the same endpoints elsewhere
         issues.append(Issue("warning", "SDC-021",
-            f'Multicycle path -setup {s_m.group(1)} has no -hold fix. Add -hold {int(s_m.group(1))-1}.'))
+            f'Multicycle path -setup {s_m.group(1)} has no -hold fix. Add -hold {int(s_m.group(1))-1}.',
+            line=_cmd_line(logical, mc)))
 
     for u in clk_uncertainty:
         # Extract every -setup/-hold/-rise/-fall value plus a leading flagless
@@ -489,10 +525,12 @@ def check_sdc(text: str, context=None) -> CheckResult:
         if vals:
             if min(vals) < 0.05:
                 issues.append(Issue("warning", "SDC-022",
-                    f'Clock uncertainty {min(vals)}ns is unrealistically tight — below 0.05ns causes over-optimization.'))
+                    f'Clock uncertainty {min(vals)}ns is unrealistically tight — below 0.05ns causes over-optimization.',
+                    line=_cmd_line(logical, u)))
             if max(vals) > 0.5:
                 issues.append(Issue("warning", "SDC-023",
-                    f'Clock uncertainty {max(vals)}ns is very high (>0.5ns). Verify this is intentional.'))
+                    f'Clock uncertainty {max(vals)}ns is very high (>0.5ns). Verify this is intentional.',
+                    line=_cmd_line(logical, u)))
 
     if len(clocks) > 1 and not clk_groups:
         issues.append(Issue("warning", "SDC-024",
@@ -501,18 +539,21 @@ def check_sdc(text: str, context=None) -> CheckResult:
     for dt in dont_touch:
         if re.search(r'\[all_cells\]|\*', dt):
             issues.append(Issue("warning", "SDC-025",
-                'set_dont_touch with wildcard — blocks all optimization and degrades QoR significantly.'))
+                'set_dont_touch with wildcard — blocks all optimization and degrades QoR significantly.',
+                line=_cmd_line(logical, dt)))
 
     for mt in max_trans:
         v_m = re.search(r'set_max_transition\s+(' + NUM_PATTERN + r')', mt)
         if v_m and float(v_m.group(1)) < 0.05:
             issues.append(Issue("warning", "SDC-026",
-                f'set_max_transition {v_m.group(1)}ns extremely tight — may be unachievable.'))
+                f'set_max_transition {v_m.group(1)}ns extremely tight — may be unachievable.',
+                line=_cmd_line(logical, mt)))
 
     for md in max_delay:
         if '-datapath_only' not in md:
             issues.append(Issue("warning", "SDC-027",
-                'set_max_delay without -datapath_only — hold constraints on same path may be violated.'))
+                'set_max_delay without -datapath_only — hold constraints on same path may be violated.',
+                line=_cmd_line(logical, md)))
 
     if input_delay and not any('-min' in i for i in input_delay):
         issues.append(Issue("warning", "SDC-028",
@@ -528,33 +569,40 @@ def check_sdc(text: str, context=None) -> CheckResult:
     for cg in clk_groups:
         if not re.search(r'-asynchronous|-logically_exclusive|-physically_exclusive', cg):
             issues.append(Issue("warning", "SDC-031",
-                'set_clock_groups without -asynchronous/-logically_exclusive/-physically_exclusive.'))
+                'set_clock_groups without -asynchronous/-logically_exclusive/-physically_exclusive.',
+                line=_cmd_line(logical, cg)))
 
     if timing_derate:
         has_early = any('-early' in t for t in timing_derate)
         has_late  = any('-late' in t for t in timing_derate)
         if has_early and not has_late:
-            issues.append(Issue("warning", "SDC-032", 'set_timing_derate has -early but no -late.'))
+            issues.append(Issue("warning", "SDC-032", 'set_timing_derate has -early but no -late.',
+                line=_cmd_line(logical, timing_derate[0])))
         if has_late and not has_early:
-            issues.append(Issue("warning", "SDC-033", 'set_timing_derate has -late but no -early.'))
+            issues.append(Issue("warning", "SDC-033", 'set_timing_derate has -late but no -early.',
+                line=_cmd_line(logical, timing_derate[0])))
 
     for dc in data_check:
         if '-clock' not in dc:
-            issues.append(Issue("warning", "SDC-034", 'set_data_check without -clock reference.'))
+            issues.append(Issue("warning", "SDC-034", 'set_data_check without -clock reference.',
+                line=_cmd_line(logical, dc)))
 
     if len(disable_timing) > 5:
         issues.append(Issue("warning", "SDC-035",
-            f'{len(disable_timing)} set_disable_timing commands — large count can hide real violations.'))
+            f'{len(disable_timing)} set_disable_timing commands — large count can hide real violations.',
+            line=_cmd_line(logical, disable_timing[0])))
     for dt in disable_timing:
         if '-from' not in dt and '-to' not in dt:
             issues.append(Issue("warning", "SDC-036",
-                'set_disable_timing without -from/-to disables ALL arcs on cell — almost always wrong.'))
+                'set_disable_timing without -from/-to disables ALL arcs on cell — almost always wrong.',
+                line=_cmd_line(logical, dt)))
 
     half_setup = [m for m in mc_paths if '-setup' in m and ('-rise_to' in m or '-fall_to' in m)]
     half_hold  = [m for m in mc_paths if '-hold'  in m and ('-rise_to' in m or '-fall_to' in m)]
     if half_setup and not half_hold:
         issues.append(Issue("warning", "SDC-037",
-            'Half-cycle setup paths found but no matching -hold 0 counterpart. Hold analysis will be wrong.'))
+            'Half-cycle setup paths found but no matching -hold 0 counterpart. Hold analysis will be wrong.',
+            line=_cmd_line(logical, half_setup[0])))
 
     # ── MMC / Derate reasonableness warnings (SDC-040..045) ────────────────
     for td in timing_derate:
@@ -562,22 +610,26 @@ def check_sdc(text: str, context=None) -> CheckResult:
         m = re.search(r'-early\s+-cell_delay\s+(' + NUM_PATTERN + r')', td)
         if m and float(m.group(1)) < 1.0:
             issues.append(Issue("warning", "SDC-040",
-                f'set_timing_derate -early -cell_delay {m.group(1)} < 1.0 — early derate is typically > 1.0 for conservative hold analysis.'))
+                f'set_timing_derate -early -cell_delay {m.group(1)} < 1.0 — early derate is typically > 1.0 for conservative hold analysis.',
+                line=_cmd_line(logical, td)))
         # cell_late: typically < 1.0 (makes late paths slower = more conservative)
         m = re.search(r'-late\s+-cell_delay\s+(' + NUM_PATTERN + r')', td)
         if m and float(m.group(1)) > 1.0:
             issues.append(Issue("warning", "SDC-041",
-                f'set_timing_derate -late -cell_delay {m.group(1)} > 1.0 — late derate is typically < 1.0 for conservative setup analysis.'))
+                f'set_timing_derate -late -cell_delay {m.group(1)} > 1.0 — late derate is typically < 1.0 for conservative setup analysis.',
+                line=_cmd_line(logical, td)))
         # net_early: typically > 1.0
         m = re.search(r'-early\s+-net_delay\s+(' + NUM_PATTERN + r')', td)
         if m and float(m.group(1)) < 1.0:
             issues.append(Issue("warning", "SDC-042",
-                f'set_timing_derate -early -net_delay {m.group(1)} < 1.0 — early net derate is typically > 1.0.'))
+                f'set_timing_derate -early -net_delay {m.group(1)} < 1.0 — early net derate is typically > 1.0.',
+                line=_cmd_line(logical, td)))
         # net_late: typically < 1.0
         m = re.search(r'-late\s+-net_delay\s+(' + NUM_PATTERN + r')', td)
         if m and float(m.group(1)) > 1.0:
             issues.append(Issue("warning", "SDC-043",
-                f'set_timing_derate -late -net_delay {m.group(1)} > 1.0 — late net derate is typically < 1.0.'))
+                f'set_timing_derate -late -net_delay {m.group(1)} > 1.0 — late net derate is typically < 1.0.',
+                line=_cmd_line(logical, td)))
 
     for oc in oper_cond:
         name_m = re.search(r'set_operating_conditions\s+(?:-max\s+)?(\S+)', oc)
@@ -585,13 +637,15 @@ def check_sdc(text: str, context=None) -> CheckResult:
             cond_name = name_m.group(1)
             if cond_name and not any(p in cond_name.upper() for p in KNOWN_COMMON_COND):
                 issues.append(Issue("warning", "SDC-044",
-                    f'Operating condition "{cond_name}" does not match common patterns (WORST/BEST/TYP/SSG/TT/FFG).'))    # Clock uncertainty hold vs setup ratio
+                    f'Operating condition "{cond_name}" does not match common patterns (WORST/BEST/TYP/SSG/TT/FFG).',
+                    line=_cmd_line(logical, oc)))    # Clock uncertainty hold vs setup ratio
     for u in clk_uncertainty:
         h_val = _flag_value(u, '-hold')
         s_val = _flag_value(u, '-setup')
         if h_val is not None and s_val is not None and s_val > 0 and abs(h_val / s_val - 0.5) > 0.15:
             issues.append(Issue("warning", "SDC-045",
-                f'Clock uncertainty -hold {h_val}ns is not ~0.5x of -setup {s_val}ns (ratio={h_val/s_val:.2f}). Verify intentional.'))
+                f'Clock uncertainty -hold {h_val}ns is not ~0.5x of -setup {s_val}ns (ratio={h_val/s_val:.2f}). Verify intentional.',
+                line=_cmd_line(logical, u)))
 
     # ── Clock Relations (SDC-060..063) ─────────────────────────────────────────
     try:
@@ -599,12 +653,19 @@ def check_sdc(text: str, context=None) -> CheckResult:
         rel_result = analyze_clock_relations(text)
         for m in rel_result.mismatches:
             if m.severity == "warning":
-                issues.append(Issue("warning", m.code, m.msg))
+                # P1-1: SDC-060/061 mismatch findings map to the set_clock_groups
+                # command that declares the pair — resolve its source line when
+                # the declaration exists, else 0 (unknown).
+                ln = _group_line(logical, m.clock_a, m.clock_b)
+                issues.append(Issue("warning", m.code, m.msg, line=ln))
         # Aggregate info-level relation findings (pairs lacking an explicit
-        # set_clock_groups declaration). These are advisory and can number in the
-        # hundreds for designs with many clocks; the full pair-by-pair detail is
-        # still available in the Clock Relations tab and its matrix.
-        rel_info = [m for m in rel_result.mismatches if m.severity == "info"]
+        # set_clock_groups declaration — SDC-062 — plus SDC-063 verify-intentional
+        # advisories). These are advisory and can number in the hundreds for
+        # designs with many clocks; the full pair-by-pair detail is still
+        # available in the Clock Relations tab and its matrix. P1-2: the engine
+        # now exposes these as explicit collections, so the aggregation reads
+        # the real collections instead of re-deriving them from `mismatches`.
+        rel_info = list(rel_result.missing_constraints) + list(rel_result.advisories)
         if rel_info:
             code = sorted({m.code for m in rel_info})[0]
             sample = rel_info[0]
@@ -641,9 +702,11 @@ def check_sdc(text: str, context=None) -> CheckResult:
     if not ideal_network and clocks:
         info.append(InfoItem("SDC-110", "No set_ideal_network — mark reset/scan_en as ideal."))
     if len(false_paths) > 10:
-        info.append(InfoItem("SDC-111", f'{len(false_paths)} set_false_path commands — audit each one is genuinely a false path.'))
+        info.append(InfoItem("SDC-111", f'{len(false_paths)} set_false_path commands — audit each one is genuinely a false path.',
+                             line=_cmd_line(logical, false_paths[0])))
     if len(mc_paths) > 8:
-        info.append(InfoItem("SDC-112", f'{len(mc_paths)} set_multicycle_path commands — document each one.'))
+        info.append(InfoItem("SDC-112", f'{len(mc_paths)} set_multicycle_path commands — document each one.',
+                             line=_cmd_line(logical, mc_paths[0])))
     if not dont_use:
         info.append(InfoItem("SDC-113", "No set_dont_use — consider excluding weak/problematic cells."))
     if not oper_cond:
@@ -657,9 +720,11 @@ def check_sdc(text: str, context=None) -> CheckResult:
     if not clk_gating_chk:
         info.append(InfoItem("SDC-118", "No set_clock_gating_check — needed if design uses clock gating cells."))
     if disable_timing:
-        info.append(InfoItem("SDC-119", f'{len(disable_timing)} set_disable_timing found — verify each is intentional.'))
+        info.append(InfoItem("SDC-119", f'{len(disable_timing)} set_disable_timing found — verify each is intentional.',
+                             line=_cmd_line(logical, disable_timing[0])))
     if min_delay:
-        info.append(InfoItem("SDC-120", f'{len(min_delay)} set_min_delay — verify no conflicts with hold constraints.'))
+        info.append(InfoItem("SDC-120", f'{len(min_delay)} set_min_delay — verify no conflicts with hold constraints.',
+                             line=_cmd_line(logical, min_delay[0])))
     if not wire_load_mode and not wire_load_model:
         info.append(InfoItem("SDC-121", "No wire load constraints — needed for flows without extracted RC."))
     if not max_area:
@@ -672,7 +737,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
         info.append(InfoItem("SDC-125", "set_voltage found but no create_voltage_area."))
     if virtual_clocks:
         info.append(InfoItem("SDC-126",
-            f'{len(virtual_clocks)} virtual clock(s) detected — ensure set_input_delay/set_output_delay references them correctly.'))
+            f'{len(virtual_clocks)} virtual clock(s) detected — ensure set_input_delay/set_output_delay references them correctly.',
+            line=_cmd_line(logical, virtual_clocks[0])))
 
     # ── MMC info items (SDC-130..132) ──────────────────────────────────────
     if oper_cond:

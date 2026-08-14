@@ -51,7 +51,7 @@ st.set_page_config(
     page_title="Ṛta | Constraint Intelligence",
     page_icon="◆",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 # ── Ṛta Theme ─────────────────────────────────────────────────────────────────────
@@ -165,12 +165,22 @@ if "editing_corner_idx" not in st.session_state:
 if "analyzer_result" not in st.session_state:
     st.session_state.analyzer_result = None
 if "app_view" not in st.session_state:
-    st.session_state.app_view = "features"
+    st.session_state.app_view = "home"
 
 # ── Header ────────────────────────────────────────────────────────────────────────
 render_header()
 
+# ── Back navigation (visible even with the sidebar collapsed) ────────────────
+if st.session_state.app_view != "home":
+    if st.button("← Back to Home", key="back_home", use_container_width=False):
+        st.session_state.app_view = "home"
+        st.rerun()
+
 # ── View switcher ───────────────────────────────────────────────────────────────
+if st.session_state.app_view == "home":
+    from ui.view_home import render as render_home
+    render_home()
+    st.stop()
 if st.session_state.app_view == "test_drive":
     from ui.tab_test_drive import render as render_test_drive
     render_test_drive()
@@ -181,20 +191,28 @@ elif st.session_state.app_view == "feedback":
     st.stop()
 
 # ── Feature Tabs ────────────────────────────────────────────────────────────────
-tab_checker, tab_generator, tab_linter, tab_converter, tab_mmc_mgr, tab_mmc_gen, tab_analyzer, tab_clock_rel, tab_coverage, tab_interactions, tab_readiness, tab_rules_ref = st.tabs([
-    "🛡 Checker",
-    "⚙️ Generator",
-    "📝 Linter",
-    "🔄 Converter",
-    "🔲 Corner Mgr",
-    "📦 MMC SDC",
-    "🔍 Diff",
-    "🕐 Clock",
-    "📊 Coverage",
-    "🔗 Interactions",
-    "✅ Readiness",
-    "📋 Rules",
-])
+# Allow catalog cards to jump to a specific tab: apply the pending tab
+# selection, then render the tabs with a key so Streamlit honors it.
+if "_jump_tab" in st.session_state:
+    st.session_state["feature_tabs"] = st.session_state.pop("_jump_tab")
+
+tab_checker, tab_generator, tab_linter, tab_converter, tab_mmc_mgr, tab_mmc_gen, tab_analyzer, tab_clock_rel, tab_coverage, tab_interactions, tab_readiness, tab_rules_ref = st.tabs(
+    [
+        "🛡 Checker",
+        "⚙️ Generator",
+        "📝 Linter",
+        "🔄 Converter",
+        "🔲 Corner Mgr",
+        "📦 MMC SDC",
+        "🔍 Diff",
+        "🕐 Clock",
+        "📊 Coverage",
+        "🔗 Interactions",
+        "✅ Readiness",
+        "📋 Rules",
+    ],
+    key="feature_tabs",
+)
 
 
 # ════════════════════════════════════════════════════════════════════════════

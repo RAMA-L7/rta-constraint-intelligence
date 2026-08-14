@@ -186,11 +186,11 @@
         </div>
         <div>
           <code class="block">
-<span class="c-cmd">sdc-tools check</span> design.sdc <span class="c-cmd">--baseline</span> base.json <span class="c-cmd">--gate</span> STRICT
+<span class="c-cmd">rta check</span> design.sdc <span class="c-cmd">--baseline</span> base.json <span class="c-cmd">--gate</span> STRICT
 <span class="c-dim"># exit 0 → gate passed · 1 → regression · 2 → invalid · 3 → engine</span>
 
 <span class="c-dim"># GitHub Actions is one option; any CI can call the CLI</span>
-- <span class="c-cmd">run:</span> sdc-tools check <span class="c-cmd">$SDC</span> --baseline base.json --gate STRICT
+- <span class="c-cmd">run:</span> rta check <span class="c-cmd">$SDC</span> --baseline base.json --gate STRICT
           </code>
         </div>
       </div>
@@ -220,7 +220,7 @@
     <h2 class="display-2">See the pipeline on a real SDC</h2>
     <p class="lede" style="max-width:52ch;margin:14px auto 26px">The workspace runs the same deterministic backend the CLI uses — findings, clocks, coverage and readiness from one analysis.</p>
     <div class="hero-ctas" style="justify-content:center">
-      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `sdc-tools web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
+      <a class="btn btn--primary btn--lg" href="http://localhost:8501/" title="Run `rta web` to start the workspace (default port 8501)">Launch Ṛta <span class="mono">↗</span></a>
       <a class="btn btn--outline btn--lg" href="capabilities.html">Explore capabilities</a>
     </div>
   </div>

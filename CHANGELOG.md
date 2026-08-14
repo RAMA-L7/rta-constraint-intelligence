@@ -14,8 +14,39 @@ All notable changes to Ṛta (formerly SDC Tools) are documented here.
   the terminal. Prints the release notes for the latest versions (notes
   ship inside the wheel, so it works offline), tells you when your
   installed version is behind and shows the exact upgrade command, and
-  `--all` prints the full changelog. Registry: 826 tests (2 new CLI
+  `--all` prints the full changelog. Registry: 840 tests (2 new CLI
   tests).
+
+### Fixed — P1 corrections (VLSI Engineering Acceptance sprint)
+
+- **Consistent source locations (P1-1):** every checker finding that maps to
+  a concrete SDC command now carries a reliable `line` in CLI text, JSON, and
+  the API. Absence findings (e.g. no `set_propagated_clock`) stay at line 0
+  rather than fabricating a location. No rule IDs, severities, or messages
+  changed.
+- **Clock-relations consistency (P1-2 + P1-7):** the engine now separates
+  `mismatches` (SDC-060-style warnings) from `missing_constraints` (SDC-062
+  missing clock-group constraints, labelled **Missing Constraints** in the
+  CLI). `stats.mismatches` always equals `len(mismatches)` and
+  `stats.missing` equals `len(missing_constraints)` in both CLI JSON and the
+  API — the contradiction (0 vs 18) is gone.
+- **Generator never emits broken SDC (P1-3):** generating without an
+  operating condition no longer emits a malformed `set_operating_conditions
+  -max` line — the section is omitted entirely. Generated SDC passes its own
+  linter and checker.
+- **Coverage CLI trust disclosure (P1-4):** `rta coverage` now prints
+  "Coverage is NOT correctness" and the JSON exposes a structured
+  `trust.coverage_is_not_correctness` field.
+- **WebUI SDC-only coverage (P1-5):** the Coverage page now shows the
+  SDC-only 39-category score, present/total, category breakdown, and missing
+  categories when no netlist is supplied, with the "Coverage is NOT
+  correctness" callout and the design-aware distinction preserved.
+- **API empty-input validation (P1-6):** `/api/analyze`, `/api/lint`, and
+  `/api/convert` return HTTP 400 with a structured error for missing, empty,
+  or whitespace-only SDC instead of `ok: true` with an empty analysis.
+
+  Test count: **887 pytest tests** (29 files) — 23 new P1 regression tests in
+  `rta/tests/test_p1_corrections.py`.
 
 ## [1.5.7] — 2026-08-13
 

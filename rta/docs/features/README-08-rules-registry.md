@@ -1,6 +1,6 @@
 # Feature 8: Rules Registry
 
-> **Module:** `rules_registry.py` · **CLI:** `sdc-tools rules` · **UI:** Rule Reference (Checker tab sidebar) · **Codes:** All SDC-NNN, CHG-XXX-NNN
+> **Module:** `rules_registry.py` · **CLI:** `rta rules` · **UI:** Rule Reference (Checker tab sidebar) · **Codes:** All SDC-NNN, CHG-XXX-NNN
 
 ---
 
@@ -107,7 +107,7 @@ User sees code in tool output:
     [SDC-060] Clocks CLKA/CLKB marked -asynchronous...
                 │
                 ▼
-CLI: sdc-tools rules show SDC-060
+CLI: rta rules show SDC-060
                 │
                 ▼
 ┌──────────────────────────────────────────┐
@@ -151,27 +151,27 @@ Output:
 
 ```bash
 # List ALL rules
-sdc-tools rules list
+rta rules list
 
 # List rules from a specific module
-sdc-tools rules list --module checker
-sdc-tools rules list --module constraint_diff
+rta rules list --module checker
+rta rules list --module constraint_diff
 
 # Filter by severity
-sdc-tools rules list --severity error
-sdc-tools rules list --severity fatal
+rta rules list --severity error
+rta rules list --severity fatal
 
 # Search by keyword
-sdc-tools rules list --search derate
-sdc-tools rules list --search clock
+rta rules list --search derate
+rta rules list --search clock
 
 # Single rule details
-sdc-tools rules show SDC-060
-sdc-tools rules show CHG-FP-001
+rta rules show SDC-060
+rta rules show CHG-FP-001
 
 # JSON output
-sdc-tools rules list --json
-sdc-tools rules show SDC-001 --json
+rta rules list --json
+rta rules show SDC-001 --json
 ```
 
 ## Python API

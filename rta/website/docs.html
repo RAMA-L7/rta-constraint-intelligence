@@ -53,22 +53,22 @@
             <p class="eyebrow">Getting started · Installation</p>
             <h3 class="display-3">Install from source</h3>
             <code class="block">
-<span class="c-cmd">git clone</span> https://github.com/RAMA-L7/sdc-tools.git
-<span class="c-cmd">cd</span> sdc-tools
+<span class="c-cmd">git clone</span> https://github.com/RAMA-L7/rta-constraint-intelligence.git
+<span class="c-cmd">cd</span> rta
 <span class="c-cmd">python -m venv</span> .venv &amp;&amp; <span class="c-cmd">source</span> .venv/bin/activate
 <span class="c-cmd">pip install -e</span> ".[web]"
             </code>
-            <p style="font-size:14px;color:var(--text-secondary);margin-top:10px">Requires Python 3.10+ · Docker image also available · <a href="https://github.com/RAMA-L7/sdc-tools#install-from-source" target="_blank" rel="noopener">Full install guide ↗</a></p>
+            <p style="font-size:14px;color:var(--text-secondary);margin-top:10px">Requires Python 3.10+ · Docker image also available · <a href="https://github.com/RAMA-L7/rta-constraint-intelligence#install-from-source" target="_blank" rel="noopener">Full install guide ↗</a></p>
           </div>
 
           <div id="first" class="reveal">
             <p class="eyebrow">Getting started · First validation</p>
             <h3 class="display-3">Check a constraint set</h3>
             <code class="block">
-<span class="c-cmd">sdc-tools check</span> rta/examples/samples/example.sdc
-<span class="c-cmd">sdc-tools check</span> design.sdc --json          <span class="c-dim"># machine-readable</span>
-<span class="c-cmd">sdc-tools check</span> design.sdc --netlist top.v  <span class="c-dim"># design-aware</span>
-<span class="c-cmd">sdc-tools web</span>                                <span class="c-dim"># workspace UI</span>
+<span class="c-cmd">rta check</span> rta/examples/samples/example.sdc
+<span class="c-cmd">rta check</span> design.sdc --json          <span class="c-dim"># machine-readable</span>
+<span class="c-cmd">rta check</span> design.sdc --netlist top.v  <span class="c-dim"># design-aware</span>
+<span class="c-cmd">rta web</span>                                <span class="c-dim"># workspace UI</span>
             </code>
           </div>
 
@@ -133,7 +133,7 @@
   <div class="container center">
     <h2 class="display-2">Docs live in the repository</h2>
     <div class="hero-ctas" style="justify-content:center;margin-top:24px">
-      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/sdc-tools/tree/main/docs" target="_blank" rel="noopener">Open the docs <span class="mono">↗</span></a>
+      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/docs" target="_blank" rel="noopener">Open the docs <span class="mono">↗</span></a>
       <a class="btn btn--outline btn--lg" href="release.html">Release v1.3.0</a>
     </div>
   </div>

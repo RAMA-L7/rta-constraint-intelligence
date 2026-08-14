@@ -5,11 +5,11 @@
   "release_status": "RC_READY_WITH_KNOWN_LIMITATIONS",
   "license": "MIT",
   "python_requirement": ">=3.10",
-  "test_count": 826,
-  "test_files": 26,
+  "test_count": 887,
+  "test_files": 29,
   "test_files_detail": {
     "test_batch_runner.py": 7,
-    "test_branding.py": 52,
+    "test_branding.py": 53,
     "test_checker.py": 96,
     "test_cli.py": 56,
     "test_clock_relations.py": 15,
@@ -24,15 +24,18 @@
     "test_finding_identity.py": 30,
     "test_generator.py": 31,
     "test_linter.py": 17,
+    "test_p1_corrections.py": 23,
+    "test_parity_defect_classes.py": 23,
     "test_policy_engine.py": 34,
     "test_readiness_diff.py": 37,
     "test_regressions.py": 26,
     "test_reporter.py": 26,
     "test_rules_registry.py": 20,
-    "test_sdc_preprocess.py": 70,
+    "test_sdc_preprocess.py": 78,
     "test_snapshot_v2.py": 17,
     "test_support_boundary.py": 27,
     "test_tcl_resolver.py": 30,
+    "test_test_drive_parity.py": 6,
     "test_wildcard_analyzer.py": 26
   },
   "rule_count": 119,
@@ -50,5 +53,5 @@
   "golden_runner_count": 9,
   "benchmark_suites": 42,
   "phase_count": 15,
-  "evidence_updated": "2026-08-13"
+  "evidence_updated": "2026-08-15"
 }

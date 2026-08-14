@@ -36,7 +36,7 @@
         <span class="badge badge--muted"><span class="sq"></span>Python 3.10 · Windows · bash</span>
       </div>
       <div class="stats-band" style="margin-top:0">
-        <div class="stat"><div class="stat-num">826<span class="suffix">/826</span></div><div class="stat-label">pytest</div></div>
+        <div class="stat"><div class="stat-num">887<span class="suffix">/887</span></div><div class="stat-label">pytest</div></div>
         <div class="stat"><div class="stat-num">9<span class="suffix">/9</span></div><div class="stat-label">golden runners</div></div>
         <div class="stat"><div class="stat-num">42<span class="suffix">/42</span></div><div class="stat-label">benchmark suites</div></div>
         <div class="stat"><div class="stat-num">17<span class="suffix">/17</span></div><div class="stat-label">clean-room</div></div>
@@ -75,7 +75,7 @@
     <div class="space-y">
       <div class="callout callout--success reveal"><span class="co-icon">✓</span><span><b>Production hardening (Phase 13–14)</b> — structured finding identity, snapshot schema v2 + v1 compat, security fixes (stored-XSS), packaging fix (wheel now ships all UI modules), exit-code contract.</span></div>
       <div class="callout callout--success reveal"><span class="co-icon">✓</span><span><b>Premium workspace (Phase 15–16)</b> — design system, grouped navigation, Clock Intelligence (inventory/hierarchy/matrix), Coverage bus evidence, Readiness dimension rail, Diff change review.</span></div>
-      <div class="callout callout--info reveal"><span class="co-icon">◈</span><span><b>Full history</b> — see <a href="https://github.com/RAMA-L7/sdc-tools/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md ↗</a></span></div>
+      <div class="callout callout--info reveal"><span class="co-icon">◈</span><span><b>Full history</b> — see <a href="https://github.com/RAMA-L7/rta-constraint-intelligence/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md ↗</a></span></div>
     </div>
   </div>
 </section>
@@ -148,12 +148,12 @@
       </div>
       <div class="reveal reveal-delay-1">
         <code class="block">
-<span class="c-cmd">git clone</span> https://github.com/RAMA-L7/sdc-tools.git
-<span class="c-cmd">cd</span> sdc-tools
+<span class="c-cmd">git clone</span> https://github.com/RAMA-L7/rta-constraint-intelligence.git
+<span class="c-cmd">cd</span> rta
 <span class="c-cmd">python -m venv</span> .venv &amp;&amp; <span class="c-cmd">source</span> .venv/bin/activate
 <span class="c-cmd">pip install -e</span> ".[web]"
-<span class="c-cmd">sdc-tools check</span> rta/examples/samples/example.sdc
-<span class="c-cmd">sdc-tools web</span>   <span class="c-dim"># workspace</span>
+<span class="c-cmd">rta check</span> rta/examples/samples/example.sdc
+<span class="c-cmd">rta web</span>   <span class="c-dim"># workspace</span>
         </code>
       </div>
     </div>
@@ -164,7 +164,7 @@
   <div class="container center">
     <h2 class="display-2">Verify the release yourself</h2>
     <div class="hero-ctas" style="justify-content:center;margin-top:24px">
-      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/sdc-tools" target="_blank" rel="noopener">Get v1.3.0 <span class="mono">↗</span></a>
+      <a class="btn btn--primary btn--lg" href="https://github.com/RAMA-L7/rta-constraint-intelligence" target="_blank" rel="noopener">Get v1.3.0 <span class="mono">↗</span></a>
       <a class="btn btn--outline btn--lg" href="benchmarks.html">Release evidence</a>
       <a class="btn btn--ghost btn--lg" href="trust.html">Trust Center</a>
     </div>
