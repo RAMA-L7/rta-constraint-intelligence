@@ -19,6 +19,11 @@ RELEASE_NOTES: dict[str, list[str]] = {
         "line, coverage CLI discloses 'coverage is NOT correctness', the webui shows "
         "SDC-only category coverage, and the API rejects empty/missing SDC with "
         "HTTP 400 for analyze/lint/convert.",
+        "Workspace UX rebuild: the tool now opens on a capability home with all "
+        "19 features visible as cards (no More Tools), each with its own entry "
+        "point; Quick Actions / global Import / Settings menus removed; sidebar "
+        "is minimal with a full-app dark mode toggle; catalog cards are "
+        "equal-height in a row-major grid; back navigation everywhere.",
     ],
     "1.5.7": [
         "rst_n (and reset_n / arst_n) reset trees are now detected by "

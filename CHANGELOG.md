@@ -17,6 +17,26 @@ All notable changes to Ṛta (formerly SDC Tools) are documented here.
   `--all` prints the full changelog. Registry: 840 tests (2 new CLI
   tests).
 
+### Added — workspace UX rebuild (Phase E) + visual foundation (Phase F)
+
+- **Tool home** — the tool opens on a capability home, not a results
+  dashboard: positioning line, beginner CTAs (Test Drive / Validate), the
+  full 19-capability catalog in business-site order, and the standing trust
+  line.
+- **Feature-first catalog** — all capabilities visible as cards (no "More
+  Tools"), each with its own entry point; URL targets (CI · Reports · Trust ·
+  Documentation) open via real buttons.
+- **Navigation cleanup** — Quick Actions / global Import / Settings menus
+  removed; sidebar is minimal (Home · Test Drive · Feedback · dark mode ·
+  What's New); visible "← Back to Home" on every non-home view.
+- **Dark mode** — sidebar toggle applies a full app-wide dark palette
+  (background, cards, inputs, tables, buttons) and reliably returns to light.
+- **Visual design foundation** — design tokens (shadows, focus ring,
+  accent), typography scale with tabular engineering values, card/panel/
+  button system, segmented tab rail, mono input surfaces, crisp tables.
+- **Catalog grid** — true row-major 3-per-row layout; every card in a row is
+  equal-height with bottom-aligned "Open" buttons.
+
 ### Fixed — P1 corrections (VLSI Engineering Acceptance sprint)
 
 - **Consistent source locations (P1-1):** every checker finding that maps to
