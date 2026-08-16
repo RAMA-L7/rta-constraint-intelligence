@@ -70,7 +70,30 @@ SAMPLE_SDCS = {
     "📝 Malformed SDC": "samples/edge_case_malformed.sdc",
     "📭 Empty SDC": "samples/edge_case_empty.sdc",
     "🔬 Edge Values": "samples/edge_case_extreme_values.sdc",
+    # Realistic two-clock block with a matching netlist — the design-aware
+    # tier (SDC-055..059, SDC-064..066) is only demonstrable with a netlist,
+    # and this sample is the one that teaches the validate -> diff -> gate
+    # -> report workflow (see engineer_test_kit/18_test_drive).
+    "🔬 DMA Engine Block (realistic, 2 clocks)": "engineer_test_kit/18_test_drive/dma_engine.sdc",
 }
+
+# Companion netlist for samples that ship one (design-aware analysis). Keyed
+# by the SAMPLE_SDCS display name.
+SAMPLE_NETLISTS = {
+    "🔬 DMA Engine Block (realistic, 2 clocks)": "engineer_test_kit/18_test_drive/dma_engine_top.v",
+}
+
+# Baseline readiness snapshot for the realistic sample (saved from the
+# known-good V1 revision), so the CI-gate step of the workflow can run
+# out of the box in the Test Drive.
+SAMPLE_BASELINES = {
+    "🔬 DMA Engine Block (realistic, 2 clocks)": "engineer_test_kit/18_test_drive/baseline.json",
+}
+
+
+def _repo_path(rel: str) -> str:
+    """Resolve a repository-relative path from this module (4 dirname levels)."""
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), rel)
 
 
 def get_sample_sdc(name: str) -> tuple:
@@ -80,12 +103,34 @@ def get_sample_sdc(name: str) -> tuple:
     """
     # 4 dirname() levels: legacy/streamlit/ui/feedback.py -> repo root; the
     # samples/ tree lives at the repository root (unchanged by the Phase 9 move).
-    path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), SAMPLE_SDCS.get(name, ""))
+    path = _repo_path(SAMPLE_SDCS.get(name, ""))
     try:
         with open(path, "r", encoding="utf-8") as f:
             return f.read(), os.path.basename(path)
     except (FileNotFoundError, IOError):
         return None, None
+
+
+def get_sample_netlist(name: str) -> tuple:
+    """Load a companion netlist for a sample, if one ships with it.
+
+    Returns (text, filename) or (None, None) when the sample has no netlist.
+    """
+    rel = SAMPLE_NETLISTS.get(name, "")
+    if not rel:
+        return None, None
+    path = _repo_path(rel)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read(), os.path.basename(path)
+    except (FileNotFoundError, IOError):
+        return None, None
+
+
+def get_sample_baseline(name: str) -> str:
+    """Path of a companion readiness baseline for a sample, or "" if none."""
+    rel = SAMPLE_BASELINES.get(name, "")
+    return _repo_path(rel) if rel else ""
 
 
 def feedback_widget(

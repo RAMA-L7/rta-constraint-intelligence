@@ -177,6 +177,54 @@ rta report clock-relations 03_clock_relations/dual_port_async.sdc -o 17_report/r
 rta report coverage 04_coverage/partial_bus.sdc -o 17_report/report_coverage.html
 ```
 
+### 18_test_drive — realistic two-clock block (validate → diff → gate → report)
+A believable DMA-engine block (`dma_engine_top`, AHB slave + stream engine,
+`clk_ahb` + `clk_periph` primaries + `clk_div2` generated clock). This is the
+workflow teaching set: V1 is the known-good baseline, V2 is an engineer's
+change that **dropped the `stream_out` output delay** and left the new
+peripheral-domain exception undocumented.
+
+Files: `dma_engine.sdc` (V2, current), `dma_engine_v1.sdc` (baseline),
+`dma_engine_top.v` (netlist), `baseline.json` (V1 readiness snapshot).
+
+```
+# 1. Validate the current state (design-aware)
+rta check engineer_test_kit/18_test_drive/dma_engine.sdc \
+  --netlist engineer_test_kit/18_test_drive/dma_engine_top.v --top dma_engine_top
+#    -> SDC-059 + SDC-065: stream_out has no output delay (the regression)
+#    -> SDC-020 x2: false paths need confirmation
+
+# 2. Clock relations: the peripheral-domain group is missing
+rta analyze clock-relations engineer_test_kit/18_test_drive/dma_engine.sdc
+#    -> SDC-062 x3 missing constraints (clk_ahb/clk_periph among them)
+
+# 3. Diff: what changed vs the reviewed baseline
+rta diff engineer_test_kit/18_test_drive/dma_engine_v1.sdc \
+  engineer_test_kit/18_test_drive/dma_engine.sdc
+#    -> CHG-GEN-002 removed set_output_delay stream_out
+#    -> CHG-GEN-003 clock group lost clk_periph
+
+# 4. CI gate: the regression must be blocked
+rta check engineer_test_kit/18_test_drive/dma_engine.sdc \
+  --netlist engineer_test_kit/18_test_drive/dma_engine_top.v --top dma_engine_top \
+  --baseline engineer_test_kit/18_test_drive/baseline.json --gate STRICT
+#    -> FAIL (exit 1): new unconstrained output port vs baseline
+rta check engineer_test_kit/18_test_drive/dma_engine_v1.sdc \
+  --netlist engineer_test_kit/18_test_drive/dma_engine_top.v --top dma_engine_top \
+  --baseline engineer_test_kit/18_test_drive/baseline.json --gate STRICT
+#    -> PASS (exit 0)
+
+# 5. Report
+rta report check engineer_test_kit/18_test_drive/dma_engine.sdc \
+  --netlist engineer_test_kit/18_test_drive/dma_engine_top.v --top dma_engine_top \
+  --baseline engineer_test_kit/18_test_drive/baseline.json --gate STRICT \
+  -o engineer_test_kit/18_test_drive/report.html
+```
+
+Expected (verified, v1.5.8): V2 validate = 0 errors / 4 warnings; V1 gate
+STRICT = PASS (exit 0); V2 gate STRICT = FAIL (exit 1) with the unconstrained
+`stream_out` listed as the regression.
+
 ## Engine fixes surfaced by this kit (v1.5.6 -> next)
 
 1. **Reset-tree detection missed `rst_n` pins.** `design_context._pin_role`

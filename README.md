@@ -111,6 +111,8 @@ rta whats-new --all    # full changelog from the terminal
 Works offline after install (the notes ship inside the wheel). If your
 installed version is behind, it tells you the exact upgrade command.
 
+> ⚡ **In a hurry?** [**Ṛta in 5 minutes**](docs/features/README-15-five-minute-workflow.md) — from “I have an SDC” to “this regression is blocked in CI”, on a real shipped sample.
+>
 > 📖 **New to the CLI?** Read the complete [**Ṛta CLI User Guide — Every Feature**](docs/features/README-11-cli-user-guide.md): installation, all 12 commands, exit codes, CI gates, netlist-aware checks, and a tested workflow.
 
 Ṛta ships with **887 pytest tests** across the engine, covering deterministic

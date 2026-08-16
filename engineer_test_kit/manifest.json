@@ -175,6 +175,28 @@
         "rta report coverage 04_coverage/partial_bus.sdc -o 17_report/report_coverage.html"
       ],
       "expected": {"html_reports": 4}
+    },
+    {
+      "id": "18_test_drive",
+      "feature": "realistic two-clock block workflow (validate -> diff -> gate -> report)",
+      "files": ["dma_engine.sdc", "dma_engine_v1.sdc", "dma_engine_top.v", "baseline.json"],
+      "commands": [
+        "rta check 18_test_drive/dma_engine.sdc --netlist 18_test_drive/dma_engine_top.v --top dma_engine_top",
+        "rta analyze clock-relations 18_test_drive/dma_engine.sdc",
+        "rta diff 18_test_drive/dma_engine_v1.sdc 18_test_drive/dma_engine.sdc",
+        "rta check 18_test_drive/dma_engine.sdc --netlist 18_test_drive/dma_engine_top.v --top dma_engine_top --baseline 18_test_drive/baseline.json --gate STRICT",
+        "rta check 18_test_drive/dma_engine_v1.sdc --netlist 18_test_drive/dma_engine_top.v --top dma_engine_top --baseline 18_test_drive/baseline.json --gate STRICT",
+        "rta report check 18_test_drive/dma_engine.sdc --netlist 18_test_drive/dma_engine_top.v --top dma_engine_top --baseline 18_test_drive/baseline.json --gate STRICT -o 18_test_drive/report.html"
+      ],
+      "expected": {
+        "v2_errors": 0,
+        "v2_warnings": 4,
+        "v2_codes": ["SDC-059", "SDC-065", "SDC-020"],
+        "missing_constraints": ["SDC-062"],
+        "diff": ["CHG-GEN-002", "CHG-GEN-003"],
+        "gate_v1_strict": "PASS exit 0",
+        "gate_v2_strict": "FAIL exit 1"
+      }
     }
   ]
 }

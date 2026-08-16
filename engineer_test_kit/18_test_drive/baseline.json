@@ -1,0 +1,224 @@
+{
+  "schema_version": 2,
+  "identity_version": 1,
+  "tool_version": "1.5.8",
+  "source_name": "engineer_test_kit/18_test_drive/dma_engine_v1.sdc",
+  "created": "",
+  "capabilities": {
+    "structured_identity": true,
+    "identity_version": 1,
+    "fingerprint_version": 2,
+    "design_aware": true,
+    "interactions": true,
+    "coverage": true,
+    "readiness": true,
+    "readiness_diff": true,
+    "custom_policies": true
+  },
+  "analysis": {
+    "mode": "DESIGN_AWARE",
+    "top_module": "dma_engine_top",
+    "design_fingerprint": "066802ec6654673d",
+    "fingerprint_version": 2,
+    "design_counts": {
+      "modules": 3,
+      "ports": 15,
+      "instances": 2,
+      "nets": 16,
+      "pins": 20
+    },
+    "commands_found": 20,
+    "engine_failed": false
+  },
+  "readiness": {
+    "overall": "REVIEW_REQUIRED",
+    "mode": "DESIGN_AWARE",
+    "dimensions": {
+      "COVERAGE": "READY",
+      "DESIGN_CONTEXT": "READY",
+      "CLOCKS": "READY",
+      "I/O": "READY",
+      "EXCEPTIONS": "REVIEW_REQUIRED",
+      "CONSISTENCY": "READY",
+      "ANALYSIS_TRUST": "READY"
+    }
+  },
+  "findings": [
+    {
+      "code": "SDC-020",
+      "severity": "warning",
+      "msg": "set_false_path from [get_ports rst_n] to [all_registers] — confirm this is a genuine false path.",
+      "line": 53,
+      "line2": 0,
+      "full_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "set_false_path",
+        "rst_n",
+        "all_registers",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "warning"
+      ],
+      "base_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "set_false_path",
+        "rst_n",
+        "all_registers",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "legacy_full_id": [
+        "SDC-020",
+        "warning",
+        "set_false_path from [get_ports rst_n] to [all_registers] — confirm this is a genuine false path."
+      ],
+      "legacy_base_id": [
+        "SDC-020",
+        "set_false_path from [get_ports rst_n] to [all_registers] — confirm this is a genuine false path."
+      ],
+      "identity": {
+        "identity_version": 1,
+        "rule_id": "SDC-020",
+        "finding_type": "EXCEPTION",
+        "command": "set_false_path",
+        "primary_object": "rst_n",
+        "secondary_object": "all_registers",
+        "clock": "",
+        "value": "",
+        "mode": "",
+        "edge": "",
+        "setup_hold": "",
+        "interaction_type": "",
+        "endpoint_signature": "",
+        "strength": "STRUCTURED",
+        "context": "DESIGN_AWARE"
+      },
+      "identity_strength": "STRUCTURED",
+      "tier": "REVIEW_REQUIRED"
+    },
+    {
+      "code": "SDC-020",
+      "severity": "warning",
+      "msg": "set_false_path from [get_ports dma_req] to [get_ports dma_ack] — confirm this is a genuine false path.",
+      "line": 57,
+      "line2": 0,
+      "full_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "set_false_path",
+        "dma_req",
+        "dma_ack",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "warning"
+      ],
+      "base_id": [
+        1,
+        "SDC-020",
+        "EXCEPTION",
+        "set_false_path",
+        "dma_req",
+        "dma_ack",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "legacy_full_id": [
+        "SDC-020",
+        "warning",
+        "set_false_path from [get_ports dma_req] to [get_ports dma_ack] — confirm this is a genuine false path."
+      ],
+      "legacy_base_id": [
+        "SDC-020",
+        "set_false_path from [get_ports dma_req] to [get_ports dma_ack] — confirm this is a genuine false path."
+      ],
+      "identity": {
+        "identity_version": 1,
+        "rule_id": "SDC-020",
+        "finding_type": "EXCEPTION",
+        "command": "set_false_path",
+        "primary_object": "dma_req",
+        "secondary_object": "dma_ack",
+        "clock": "",
+        "value": "",
+        "mode": "",
+        "edge": "",
+        "setup_hold": "",
+        "interaction_type": "",
+        "endpoint_signature": "",
+        "strength": "STRUCTURED",
+        "context": "DESIGN_AWARE"
+      },
+      "identity_strength": "STRUCTURED",
+      "tier": "REVIEW_REQUIRED"
+    }
+  ],
+  "coverage": {
+    "inputs": {
+      "clk_ahb": "EXEMPT",
+      "clk_periph": "EXEMPT",
+      "rst_n": "EXEMPT",
+      "ahb_addr": "CONSTRAINED",
+      "ahb_wdata": "CONSTRAINED",
+      "ahb_write": "CONSTRAINED",
+      "ahb_sel": "EXEMPT",
+      "dma_req": "CONSTRAINED",
+      "stream_in": "CONSTRAINED",
+      "scan_en": "EXEMPT",
+      "test_mode": "EXEMPT"
+    },
+    "outputs": {
+      "ahb_rdata": "CONSTRAINED",
+      "dma_ack": "CONSTRAINED",
+      "stream_out": "CONSTRAINED",
+      "irq": "CONSTRAINED"
+    }
+  },
+  "scope": {
+    "status": "NOT_VALIDATED",
+    "constructs": {
+      "create_clock": "FULL",
+      "create_generated_clock": "FULL",
+      "set_case_analysis": "FULL",
+      "set_clock_groups": "FULL",
+      "set_clock_transition": "FULL",
+      "set_clock_uncertainty": "FULL",
+      "set_false_path": "FULL",
+      "set_input_delay": "FULL",
+      "set_output_delay": "FULL",
+      "set_propagated_clock": "FULL",
+      "set_sdc_version": "FULL",
+      "set_units": "FULL"
+    }
+  },
+  "interactions": [],
+  "migration": {
+    "original_schema_version": 2,
+    "current_schema_version": 2,
+    "migration_status": "NATIVE"
+  }
+}
