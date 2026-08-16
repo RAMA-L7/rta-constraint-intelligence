@@ -196,6 +196,37 @@ rta check design.sdc --format csv > results.csv
 rta check design.sdc --format markdown > report.md
 ```
 
+### 🤖 CI Quality Gates
+
+`rta check --gate` is a deterministic **merge gate**: exit code `0` = pass,
+`1` = gate failed, `2` = invalid input, `3` = engine failure. Gate merges on
+constraint-quality regressions — the same standard for everyone.
+
+```bash
+# Save a readiness baseline once (commit it to the repo):
+rta check design.sdc --save-baseline baseline.json
+
+# In CI, block merges that regress readiness:
+rta check design.sdc --baseline baseline.json --gate STRICT
+```
+
+Add it to any pipeline in one step with the shipped GitHub Action
+([`.github/actions/rta-gate`](.github/actions/rta-gate/action.yml)):
+
+```yaml
+- uses: ./.github/actions/rta-gate
+  with:
+    sdc: constraints/my_block.sdc
+    baseline: baseline.json
+    gate: STRICT
+```
+
+**CI PASS ≠ timing pass** — the gate checks for disallowed
+constraint-readiness regressions under the selected policy, not STA signoff.
+See [**docs/features/README-14-ci-gate.md**](docs/features/README-14-ci-gate.md)
+for the full exit-code contract, policy matrix (BLOCKERS_ONLY /
+NO_READINESS_REGRESSION / STRICT / CUSTOM), and CUSTOM policy schema.
+
 ## 📝 Lint & Format SDC
 
 ```bash

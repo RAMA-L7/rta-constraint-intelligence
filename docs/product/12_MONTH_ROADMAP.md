@@ -33,10 +33,12 @@ docs, demo, and the CI contract are solid before any outreach.
 - Publish current release to PyPI (v1.5.8+); verify `pip install
   rta-constraint-intelligence` end-to-end (fresh env, no `[web]` needed for
   CLI).
-- One-place **exit-code + gate-policy contract** doc (P2-10); fix exit-code
-  2 collision (P2-3).
-- **GitHub Action** wrapping `rta check`/`diff`/`analyze gate` with JSON +
-  JUnit output.
+- One-place **exit-code + gate-policy contract** doc — **DONE**
+  (`docs/features/README-14-ci-gate.md`, P2-10); fix exit-code 2 collision
+  (P2-3).
+- **GitHub Action** for the CI gate with JSON + JUnit output — **DONE in-repo**
+  (`.github/actions/rta-gate`, CI self-test green); publish a versioned
+  release tag for external adoption.
 - **Test Drive realistic sample** with netlist (P2-6); **whats-new** in the
   tool (P2-8).
 - "Run on your SDC in 5 minutes" guide; README/site install path verified.

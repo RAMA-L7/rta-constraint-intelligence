@@ -62,7 +62,7 @@ canonical names below.
 |---|---|---|---|---|---|
 | 1 | Validate (checker) | **Wedge + differentiation** | **KEEP / STRENGTHEN** | Lead capability; the 5-minute entry loop | Actionable messages + speed on real SDCs are the top two investments |
 | 2 | Diff | **Retention + differentiation** | **KEEP / STRENGTHEN** | The "why you keep using Ṛta" loop | Semantic diff + why-it-matters is rare; strengthen the review guidance surface |
-| 3 | CI gate | **Retention + differentiation** | **KEEP / STRENGTHEN** | Team adoption loop; the differentiator | Ship the GitHub Action; fix P2-3 exit-code semantics; P2-10 contract doc |
+| 3 | CI gate | **Retention + differentiation** | **KEEP / STRENGTHEN** | Team adoption loop; the differentiator | GitHub Action shipped in-repo (`.github/actions/rta-gate`); publish versioned tag; fix P2-3 exit-code semantics; P2-10 contract doc done (`README-14-ci-gate.md`) |
 | 4 | Readiness | **Retention + trust** | **MAINTAIN** | Handoff artifact | Keep the honest WHY + disclosures; never a signoff claim |
 | 5 | Reports | **Trust + retention** | **KEEP / STRENGTHEN** | Shareable evidence | HTML/JSON from real analysis; P2-7 download bundle is a nice-to-have |
 | 6 | Rules (registry) | **Trust** | **MAINTAIN** | Depth-of-engineering proof | Already searchable; keep registry as source of truth |

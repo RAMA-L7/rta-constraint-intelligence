@@ -111,13 +111,45 @@ rta check samples/minimal_sdc.sdc;     echo $?    # prints 0
 
 ### CI quality gate
 
+`--gate` turns `rta check` into a merge gate: the exit code becomes the CI
+verdict. It is **never enabled by default** — without `--gate`, exit code is
+`0` (no errors) or `1` (errors).
+
 ```bash
-rta check my_block.sdc --gate STRICT
+# 1. Save a readiness baseline once (the known-good state):
+rta check my_block.sdc --save-baseline baseline.json
+
+# 2. In CI, compare every change against it:
+rta check my_block.sdc --baseline baseline.json --gate STRICT
 # --gate choices: BLOCKERS_ONLY | NO_READINESS_REGRESSION | STRICT | CUSTOM
-# 0 = pass, 1 = gate blocked, 2 = gate error
 ```
 
-A gate policy can be supplied from YAML with `--gate-policy policy.yaml`.
+**Exit-code contract (when `--gate` is requested):**
+
+| Code | Meaning |
+|------|---------|
+| `0` | gate **PASS** — merge allowed |
+| `1` | gate **FAIL** — merge blocked (regression / blocker found) |
+| `2` | **invalid invocation/input** — e.g. baseline-dependent policy without `--baseline`, `CUSTOM` without `--gate-policy`, missing file |
+| `3` | **analysis engine failure** (SDC-140) — a gate can never report PASS on incomplete evidence |
+
+**Policy matrix:**
+
+| Policy | Requires baseline | Fails when |
+|--------|:---:|-----------|
+| `BLOCKERS_ONLY` | no | current readiness is `BLOCKED` |
+| `NO_READINESS_REGRESSION` | yes | revision introduces a blocking or review regression vs baseline |
+| `STRICT` | yes | blocking/review regression **or** current readiness `BLOCKED` |
+| `CUSTOM` | yes (policy-defined) | declarative YAML/JSON policy (`--gate-policy policy.yaml`) |
+
+A CUSTOM policy is supplied from YAML with `--gate-policy policy.yaml` (see
+[README-14-ci-gate.md](README-14-ci-gate.md) for the schema). Machine-readable
+output works with the gate: `--json` (verdict in `readiness_diff.gate`) and
+`--junit` (CI dashboards).
+
+> **Trust boundary:** `CI PASS ≠ timing pass`. The gate only checks for
+disallowed constraint-readiness regressions under the selected policy — it is
+pre-STA constraint intelligence, not a timing signoff.
 
 ### Design-aware checking (optional netlist)
 

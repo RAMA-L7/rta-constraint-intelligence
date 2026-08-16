@@ -1,0 +1,128 @@
+name: 'Ṛta CI Quality Gate'
+description: >-
+  Gate SDC changes on Ṛta constraint-quality rules. Runs the deterministic
+  `rta check` engine with a readiness baseline and a gate policy, exports the
+  exit code and verdict, and uploads JSON + JUnit results. Exit codes:
+  0 = pass, 1 = gate failed, 2 = invalid input, 3 = engine failure.
+branding:
+  icon: 'shield'
+  color: 'green'
+
+inputs:
+  sdc:
+    description: 'Path to the SDC file to validate (repository-relative).'
+    required: true
+  baseline:
+    description: >-
+      Path to a readiness baseline snapshot JSON (created with
+      `rta check --save-baseline`). Required for NO_READINESS_REGRESSION and
+      STRICT policies.
+    required: false
+    default: ''
+  gate:
+    description: >-
+      Gate policy: BLOCKERS_ONLY | NO_READINESS_REGRESSION | STRICT | CUSTOM.
+      BLOCKERS_ONLY works without a baseline; the other three require one.
+    required: false
+    default: 'STRICT'
+  gate-policy:
+    description: 'Path to a CUSTOM gate-policy file (required when gate=CUSTOM).'
+    required: false
+    default: ''
+  netlist:
+    description: 'Optional Verilog netlist path for design-aware validation.'
+    required: false
+    default: ''
+  top:
+    description: 'Top module name (required if the netlist has multiple candidates).'
+    required: false
+    default: ''
+  install-source:
+    description: >-
+      Where to install Ṛta from: 'pypi' (published release) or 'local'
+      (pip install . from the checkout, for testing unreleased code).
+    required: false
+    default: 'pypi'
+  rta-version:
+    description: 'Exact Ṛta version to install from PyPI (default: latest).'
+    required: false
+    default: ''
+  python-version:
+    description: 'Python version for the gate runner.'
+    required: false
+    default: '3.11'
+  json-output:
+    description: 'Path to write the machine-readable JSON result.'
+    required: false
+    default: 'rta-gate-result.json'
+  junit-output:
+    description: 'Path to write the JUnit XML result (CI dashboards).'
+    required: false
+    default: 'rta-gate-junit.xml'
+
+outputs:
+  exit-code:
+    description: 'Gate exit code: 0 = pass, 1 = gate failed, 2 = invalid input, 3 = engine failure.'
+    value: ${{ steps.gate.outputs.exit-code }}
+  gate-result:
+    description: 'Human-readable gate verdict (PASS or FAIL).'
+    value: ${{ steps.gate.outputs.gate-result }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install Ṛta
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        if [ "${{ inputs.install-source }}" = "local" ]; then
+          pip install .
+        elif [ -n "${{ inputs.rta-version }}" ]; then
+          pip install "rta-constraint-intelligence==${{ inputs.rta-version }}"
+        else
+          pip install rta-constraint-intelligence
+        fi
+
+    - name: Run Ṛta CI gate
+      id: gate
+      shell: bash
+      run: |
+        set +e
+        ARGS=(check "${{ inputs.sdc }}" --gate "${{ inputs.gate }}")
+        [ -n "${{ inputs.baseline }}" ] && ARGS+=(--baseline "${{ inputs.baseline }}")
+        [ -n "${{ inputs.gate-policy }}" ] && ARGS+=(--gate-policy "${{ inputs.gate-policy }}")
+        [ -n "${{ inputs.netlist }}" ] && ARGS+=(--netlist "${{ inputs.netlist }}")
+        [ -n "${{ inputs.top }}" ] && ARGS+=(--top "${{ inputs.top }}")
+
+        # JSON result (machine-readable verdict + findings + readiness diff).
+        rta "${ARGS[@]}" --json --output "${{ inputs.json-output }}"
+        CODE=$?
+        echo "exit-code=$CODE" >> "$GITHUB_OUTPUT"
+        if [ "$CODE" -eq 0 ]; then
+          echo "gate-result=PASS" >> "$GITHUB_OUTPUT"
+        else
+          echo "gate-result=FAIL" >> "$GITHUB_OUTPUT"
+        fi
+
+        # JUnit result for CI dashboards (same deterministic run).
+        if [ "${{ inputs.junit-output }}" != "" ]; then
+          rta "${ARGS[@]}" --junit --output "${{ inputs.junit-output }}" >/dev/null 2>&1
+        fi
+
+        # Propagate the gate exit code so the job fails on a blocked merge.
+        exit "$CODE"
+
+    - name: Upload Ṛta gate results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: rta-gate-results
+        path: |
+          ${{ inputs.json-output }}
+          ${{ inputs.junit-output }}
+        if-no-files-found: ignore

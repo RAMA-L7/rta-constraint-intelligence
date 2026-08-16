@@ -272,9 +272,10 @@ uses these labels.
 |---|---|---|
 | Deterministic engine, 119 rules, CLI (13 commands), API, Streamlit tool, business site, Dockerfile, GitHub CI (tests) + Pages | **EXISTS NOW** | `FUNCTIONAL_BASELINE.md` |
 | PyPI release cadence (latest release publish) | **NEXT TO SHIP** | `PLAN_A_PRIMARY.md` §6 |
-| GitHub Action for the CI gate | **NEXT TO SHIP** (not built) | `PLAN_A_PRIMARY.md` §6, `12_MONTH_ROADMAP.md` Phase 1 |
+| GitHub Action for the CI gate | **EXISTS NOW** (in-repo, `.github/actions/rta-gate`; CI self-test green) — versioned release tag + external adoption still pending | `12_MONTH_ROADMAP.md` Phase 1 |
 | Realistic Test Drive sample with netlist (P2-6) | **NEXT TO SHIP** (tracked P2) | `VLSI_ENGINEERING_ACCEPTANCE_REPORT.md` P2-6 |
-| whats-new in the tool (P2-8) · one-place exit-code contract (P2-10) | **NEXT TO SHIP** (tracked P2) | acceptance report P2-8/P2-10 |
+| whats-new in the tool (P2-8) | **NEXT TO SHIP** (tracked P2) | acceptance report P2-8 |
+| One-place exit-code contract (P2-10) | **DONE** — `docs/features/README-14-ci-gate.md` | `VLSI_ENGINEERING_ACCEPTANCE_REPORT.md` P2-10 |
 | Benchmark/evidence platform (public rerunnable surface) | **FUTURE / GATED** (corpus exists; the platform surface does not) | `PLAN_C_EXPANSION.md` C3 |
 | Constraint regression/health intelligence | **FUTURE / GATED** | `PLAN_C_EXPANSION.md` C1 |
 | Subsystem / cross-block intelligence | **FUTURE / GATED** (charter V2) | `PLAN_C_EXPANSION.md` C2 |

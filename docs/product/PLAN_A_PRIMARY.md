@@ -88,8 +88,8 @@ All are distribution/evidence/polish — **no engine changes**.
 | # | Item | Why it matters | Effort |
 |---|---|---|---|
 | 1 | **Publish current release to PyPI** (v1.5.8+) | `pip install rta-constraint-intelligence` must deliver the newest engine; PyPI is the adoption front door | Small |
-| 2 | **GitHub Action for the CI gate** | Turns the strongest engine asset into a one-line team workflow; the differentiator becomes usable | Medium |
-| 3 | **One-place exit-code + gate-policy contract (P2-10)** | Trust + usability; CI users need the contract in one place | Small |
+| 2 | **GitHub Action for the CI gate** | Turns the strongest engine asset into a one-line team workflow; the differentiator becomes usable | **DONE in-repo** (`.github/actions/rta-gate`, CI self-test green) — publish a versioned release tag |
+| 3 | **One-place exit-code + gate-policy contract (P2-10)** | Trust + usability; CI users need the contract in one place | **DONE** — `docs/features/README-14-ci-gate.md` |
 | 4 | **Realistic Test Drive sample + netlist (P2-6)** | Best demo asset; shows the design-aware tier honestly | Small |
 | 5 | **whats-new in the tool (P2-8)** | Users see progress; release cadence becomes visible | Small |
 | 6 | **Fix exit-code 2 collision (P2-3)** | CI scripts must distinguish "invalid invocation" from "gate blocked" | Small |

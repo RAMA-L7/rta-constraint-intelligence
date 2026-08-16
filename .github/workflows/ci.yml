@@ -41,6 +41,56 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
 
+      - name: Run CI gate exit-code verification
+        # Standalone script proving the documented CI gate exit-code contract
+        # (0 = pass, 1 = gate failed, 2 = invalid input, 3 = engine failure)
+        # with real SDC fixtures and the exact commands the GitHub Action runs.
+        run: |
+          python tests/run_ci_gate_verification.py
+        env:
+          PYTHONIOENCODING: utf-8
+
+  gate:
+    # Real repository test of the Ṛta CI Quality Gate action
+    # (.github/actions/rta-gate): runs the actual composite action against the
+    # engineer_test_kit/14_baseline_gate fixture with a fresh baseline. The
+    # action must exit 0 (PASS) here; the verification script below also
+    # proves the FAIL (1) and invalid-input (2) paths with the same commands.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Regenerate fixture baseline (current engine)
+        run: |
+          python cli.py check engineer_test_kit/14_baseline_gate/apb_uart.sdc \
+            --netlist engineer_test_kit/14_baseline_gate/apb_uart_netlist.v \
+            --top apb_uart_top \
+            --save-baseline engineer_test_kit/14_baseline_gate/baseline.json
+
+      - name: Run Ṛta CI gate (STRICT, real fixture)
+        id: gate
+        uses: ./.github/actions/rta-gate
+        with:
+          sdc: engineer_test_kit/14_baseline_gate/apb_uart.sdc
+          netlist: engineer_test_kit/14_baseline_gate/apb_uart_netlist.v
+          top: apb_uart_top
+          baseline: engineer_test_kit/14_baseline_gate/baseline.json
+          gate: STRICT
+          install-source: local
+
+      - name: Verify gate verdict
+        run: |
+          test "${{ steps.gate.outputs.exit-code }}" = "0"
+          test "${{ steps.gate.outputs.gate-result }}" = "PASS"
+          test -s rta-gate-result.json
+          test -s rta-gate-junit.xml
+          echo "gate exit-code=${{ steps.gate.outputs.exit-code }} result=${{ steps.gate.outputs.gate-result }}"
+
   lint:
     runs-on: ubuntu-latest
     steps:

@@ -99,7 +99,7 @@ Notes:
 | Validation runs | CLI `check`/`batch` runs; tool Validate executions | Volumes tell us demand |
 | Exported reports / downloads | Report downloads; `rta report` usage; `feedback.json` | Proof-sharing behavior |
 | CLI adoption | PyPI installs, `rta --version` telemetry (opt-in), issue reports | The Plan B signal |
-| CI adoption | GitHub Action installs (measure once the Action ships — NEXT TO SHIP); gate runs; exit-code results in the wild | The retention signal |
+| CI adoption | GitHub Action installs (Action exists in-repo at `.github/actions/rta-gate`; measure installs once a versioned release tag is published); gate runs; exit-code results in the wild | The retention signal |
 | Business→tool conversion | Site analytics → "Launch the App" / pip clicks → first run | Funnel for the site |
 | Feature usage distribution | Tool sessions per capability; CLI subcommand mix | Feeds G2/G3 |
 | Feedback themes | `feedback.json` + issues; ≥5 distinct users for a theme | Qualitative but counted |
