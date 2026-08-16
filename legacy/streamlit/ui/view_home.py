@@ -12,14 +12,17 @@ from .components import TAB_INDEX, BUSINESS_URL, DOCS_URL
 
 
 # ── Capability catalog ────────────────────────────────────────────────────────
-# Order matches the business site (rta/business-site/index.html): analysis
-# capabilities first, then engineering tools, then output/knowledge surfaces.
-# Each card: title, icon, what, input, does, get, next, target.
+# Canonical Phase E grouping (PRODUCT_WORKSPACE_ARCHITECTURE_V2.md §2):
+#   CORE    Validate · Generator · Linter · Converter
+#   ANALYZE Clock · Coverage · Design Context · Conflicts · Readiness · Diff
+#   ADVANCED Corners/MMC · Test Drive · Rules · CI
+#   OUTPUT & KNOWLEDGE Reports · Trust · Documentation · Feedback
+# Each card: title, code (monogram tile), what, input, does, get, next, target.
 # target is ("tab", key) | ("view", name) | ("url", url)
 CATALOG = [
-    ("Analysis capabilities", [
+    ("Core", [
         {
-            "title": "SDC Validation", "icon": "🛡",
+            "title": "SDC Validation", "code": "SD",
             "what": "Check an SDC for structural and constraint issues before STA.",
             "input": "SDC required · netlist optional",
             "does": "Runs the deterministic rule engine — parse, TCL resolve, all 119 rules.",
@@ -28,63 +31,7 @@ CATALOG = [
             "target": ("tab", "validate"),
         },
         {
-            "title": "Clock Intelligence", "icon": "🕐",
-            "what": "Inventory clocks and their relationships.",
-            "input": "SDC required",
-            "does": "Resolves primary/generated/virtual clocks, relations, groups, hierarchies.",
-            "get": "Clock inventory + relationship matrix with mismatches and missing constraints.",
-            "next": "Review Coverage · Conflicts · Readiness.",
-            "target": ("tab", "clock"),
-        },
-        {
-            "title": "Design Context", "icon": "🧬",
-            "what": "Cross-check SDC objects against a real netlist.",
-            "input": "SDC + netlist (netlist-aware mode)",
-            "does": "Structural reference resolution for get_ports/get_pins/get_cells.",
-            "get": "Unresolved references and design-aware findings — inside Validate.",
-            "next": "Upload a netlist in Validate.",
-            "target": ("tab", "validate"),
-        },
-        {
-            "title": "Constraint Coverage", "icon": "📊",
-            "what": "Measure which constraint categories are covered.",
-            "input": "SDC required · netlist optional (design-aware)",
-            "does": "39-category gap analysis plus netlist-aware port coverage when supplied.",
-            "get": "Score, present/total, missing categories. Coverage is NOT correctness.",
-            "next": "Review missing constraints · Validate.",
-            "target": ("tab", "coverage"),
-        },
-        {
-            "title": "Constraint Interactions", "icon": "🔗",
-            "what": "Detect duplicate, overriding, and contradictory constraints.",
-            "input": "SDC required",
-            "does": "Interaction analysis across the whole command set.",
-            "get": "What conflicts, where, why it matters, and what to review.",
-            "next": "All findings · Readiness.",
-            "target": ("tab", "interactions"),
-        },
-        {
-            "title": "Readiness", "icon": "✅",
-            "what": "Aggregate checker evidence into a constraint-readiness verdict.",
-            "input": "SDC required · netlist optional",
-            "does": "7-dimension evaluation (Clocks, I/O, Exceptions, Coverage, Consistency, Trust, Context).",
-            "get": "BLOCKED / REVIEW_REQUIRED / READY with reasons.",
-            "next": "Review blockers · Report.",
-            "target": ("tab", "readiness"),
-        },
-        {
-            "title": "CI Quality Gates", "icon": "🤖",
-            "what": "Gate merges on lint-clean constraints — the same standard for everyone.",
-            "input": "SDC + policy in your pipeline",
-            "does": "Deterministic gate with exit codes and machine-readable output.",
-            "get": "PASS/FAIL gate result. CI PASS ≠ timing pass.",
-            "next": "See the CI guide.",
-            "target": ("url", BUSINESS_URL + "features/ci.html"),
-        },
-    ]),
-    ("Engineering tools", [
-        {
-            "title": "Generator", "icon": "⚙️",
+            "title": "Generator", "code": "GN",
             "what": "Generate a clean, lint-valid SDC from design parameters.",
             "input": "Generation parameters only — no SDC needed",
             "does": "Builds clocks, I/O delays, exceptions, derates, and corner-aware output.",
@@ -93,7 +40,7 @@ CATALOG = [
             "target": ("tab", "generator"),
         },
         {
-            "title": "Linter", "icon": "📝",
+            "title": "Linter", "code": "LN",
             "what": "Format, reorganize, and clean up SDC files.",
             "input": "SDC required",
             "does": "Normalizes whitespace/ordering, detects structural issues, offers fixes.",
@@ -102,7 +49,7 @@ CATALOG = [
             "target": ("tab", "linter"),
         },
         {
-            "title": "Converter", "icon": "🔄",
+            "title": "Converter", "code": "CN",
             "what": "Convert SDC to JSON/YAML and back with full data preservation.",
             "input": "SDC required · target format",
             "does": "Structured lossless conversion of clocks, delays, exceptions, groups.",
@@ -110,8 +57,55 @@ CATALOG = [
             "next": "Download output.",
             "target": ("tab", "converter"),
         },
+    ]),
+    ("Analyze", [
         {
-            "title": "Diff", "icon": "🔍",
+            "title": "Clock Intelligence", "code": "CK",
+            "what": "Inventory clocks and their relationships.",
+            "input": "SDC required",
+            "does": "Resolves primary/generated/virtual clocks, relations, groups, hierarchies.",
+            "get": "Clock inventory + relationship matrix with mismatches and missing constraints.",
+            "next": "Review Coverage · Conflicts · Readiness.",
+            "target": ("tab", "clock"),
+        },
+        {
+            "title": "Constraint Coverage", "code": "CV",
+            "what": "Measure which constraint categories are covered.",
+            "input": "SDC required · netlist optional (design-aware)",
+            "does": "39-category gap analysis plus netlist-aware port coverage when supplied.",
+            "get": "Score, present/total, missing categories. Coverage is NOT correctness.",
+            "next": "Review missing constraints · Validate.",
+            "target": ("tab", "coverage"),
+        },
+        {
+            "title": "Design Context", "code": "DX",
+            "what": "Cross-check SDC objects against a real netlist.",
+            "input": "SDC + netlist (netlist-aware mode)",
+            "does": "Structural reference resolution for get_ports/get_pins/get_cells.",
+            "get": "Unresolved references and design-aware findings — inside Validate.",
+            "next": "Upload a netlist in Validate.",
+            "target": ("tab", "validate"),
+        },
+        {
+            "title": "Constraint Interactions", "code": "IX",
+            "what": "Detect duplicate, overriding, and contradictory constraints.",
+            "input": "SDC required",
+            "does": "Interaction analysis across the whole command set.",
+            "get": "What conflicts, where, why it matters, and what to review.",
+            "next": "All findings · Readiness.",
+            "target": ("tab", "interactions"),
+        },
+        {
+            "title": "Readiness", "code": "RD",
+            "what": "Aggregate checker evidence into a constraint-readiness verdict.",
+            "input": "SDC required · netlist optional",
+            "does": "7-dimension evaluation (Clocks, I/O, Exceptions, Coverage, Consistency, Trust, Context).",
+            "get": "BLOCKED / REVIEW_REQUIRED / READY with reasons.",
+            "next": "Review blockers · Report.",
+            "target": ("tab", "readiness"),
+        },
+        {
+            "title": "Diff", "code": "DF",
             "what": "Semantic diff between two SDC versions.",
             "input": "Version A SDC + Version B SDC",
             "does": "Compares clocks, periods, delays, exceptions, groups — additions/removals/modifications.",
@@ -119,8 +113,10 @@ CATALOG = [
             "next": "Open V2 in Validate · Review changes.",
             "target": ("tab", "diff"),
         },
+    ]),
+    ("Advanced", [
         {
-            "title": "Corners / MMC", "icon": "🔲",
+            "title": "Corners / MMC", "code": "MM",
             "what": "Manage PVT corners and generate multi-corner SDCs.",
             "input": "Corner preset selection · design · clock",
             "does": "Validates corner parameters, builds the corner matrix, generates per-corner SDCs.",
@@ -129,7 +125,16 @@ CATALOG = [
             "target": ("tab", "corners"),
         },
         {
-            "title": "Rules Reference", "icon": "📋",
+            "title": "Test Drive", "code": "TD",
+            "what": "Run a known sample through the real Ṛta pipeline.",
+            "input": "Sample choice only — no upload needed",
+            "does": "Checker, linter, coverage, clocks, converter run on the real backend.",
+            "get": "Real result summary — findings, coverage, clocks, readiness.",
+            "next": "Open findings · clocks · coverage.",
+            "target": ("view", "test_drive"),
+        },
+        {
+            "title": "Rules Reference", "code": "RU",
             "what": "Browse the full SDC rule reference.",
             "input": "None to browse · SDC to execute",
             "does": "Searchable registry of all rules with severity and documentation.",
@@ -138,18 +143,18 @@ CATALOG = [
             "target": ("tab", "rules"),
         },
         {
-            "title": "Test Drive", "icon": "🧪",
-            "what": "Run a known sample through the real Ṛta pipeline.",
-            "input": "Sample choice only — no upload needed",
-            "does": "Checker, linter, coverage, clocks, converter run on the real backend.",
-            "get": "Real result summary — findings, coverage, clocks, readiness.",
-            "next": "Open findings · clocks · coverage.",
-            "target": ("view", "test_drive"),
+            "title": "CI Quality Gates", "code": "CI",
+            "what": "Gate merges on lint-clean constraints — the same standard for everyone.",
+            "input": "SDC + policy in your pipeline",
+            "does": "Deterministic gate with exit codes and machine-readable output.",
+            "get": "PASS/FAIL gate result. CI PASS ≠ timing pass.",
+            "next": "See the CI guide.",
+            "target": ("url", BUSINESS_URL + "features/ci.html"),
         },
     ]),
     ("Output & Knowledge", [
         {
-            "title": "Reports", "icon": "📄",
+            "title": "Reports", "code": "RP",
             "what": "HTML/JSON reports generated from real analysis data.",
             "input": "An analysis (from Validate, Coverage, Diff, …)",
             "does": "Bundles findings, severity, clocks, coverage, readiness with trust disclosures.",
@@ -158,7 +163,7 @@ CATALOG = [
             "target": ("url", DOCS_URL),
         },
         {
-            "title": "Trust", "icon": "🛡️",
+            "title": "Trust", "code": "TR",
             "what": "What Ṛta guarantees — and what it does not.",
             "input": "None",
             "does": "Evidence-backed facts: deterministic, offline, no LLM; boundaries vs STA.",
@@ -167,7 +172,7 @@ CATALOG = [
             "target": ("url", BUSINESS_URL),
         },
         {
-            "title": "Documentation", "icon": "📚",
+            "title": "Documentation", "code": "DO",
             "what": "Guides, CLI reference, and examples.",
             "input": "None",
             "does": "I want to do X — where do I go (validate, generate, compare, run CI…).",
@@ -176,7 +181,7 @@ CATALOG = [
             "target": ("url", DOCS_URL),
         },
         {
-            "title": "Feedback", "icon": "💬",
+            "title": "Feedback", "code": "FB",
             "what": "Tell the team what to improve.",
             "input": "Rating + comment",
             "does": "Saves feedback to the public dashboard.",
@@ -203,26 +208,33 @@ def _navigate(target):
     st.rerun()
 
 
+def _input_chips(raw: str) -> str:
+    """Split an input string on '·' into styled chips."""
+    parts = [p.strip() for p in raw.split("·") if p.strip()]
+    return "".join(f'<span class="hc-chip">{p}</span>' for p in parts)
+
+
 def render():
     """Render the tool home: positioning, CTAs, catalog, trust line."""
     st.markdown(
         """
 <div class="home-hero">
-    <div class="hh-eyebrow">Capabilities</div>
-    <h2>What can I do with Ṛta?</h2>
-    <p>Ṛta is a deterministic constraint-intelligence workspace for block-level
-    digital design — validate, generate, and review SDC before STA.</p>
+    <div class="hh-eyebrow"><span class="hh-pip"></span>Ṛta Engineering Platform</div>
+    <h2>Constraint intelligence for block-level design.</h2>
+    <p>Validate, generate, lint, convert, and review SDC with a deterministic,
+    offline engine — 119 rules, no LLM. Know what's wrong, what's missing, and
+    what's covered before STA.</p>
 </div>
 """,
         unsafe_allow_html=True,
     )
 
     # ── Entry helpers (beginner path) ──────────────────────────────────────
-    c1, c2, c3 = st.columns([1, 1, 1])
-    if c1.button("🧪 Start with Test Drive", type="primary", use_container_width=True, key="home_testdrive"):
+    c1, c2, c3 = st.columns([1, 1, 1.35])
+    if c1.button("Start with Test Drive", type="secondary", use_container_width=True, key="home_testdrive"):
         st.session_state["app_view"] = "test_drive"
         st.rerun()
-    if c2.button("🛡 Validate an SDC", type="primary", use_container_width=True, key="home_validate"):
+    if c2.button("Validate an SDC", type="primary", use_container_width=True, key="home_validate"):
         st.session_state["_jump_tab"] = TAB_INDEX["validate"]
         st.session_state["app_view"] = "features"
         st.rerun()
@@ -230,8 +242,10 @@ def render():
 
     # ── Capability catalog ─────────────────────────────────────────────────
     for group, cards in CATALOG:
-        st.markdown(f'<div class="home-group"><div class="hg-label">{group}</div></div>',
-                    unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="home-group"><div class="hg-label">{group} <span class="hg-count">{len(cards)}</span></div></div>',
+            unsafe_allow_html=True,
+        )
         # True 3-per-row grid: chunk cards row-major so each row's cards are
         # equal height and the "Open →" buttons align (a single st.columns(3)
         # with i % 3 cycles cards into fixed columns = masonry, not a grid).
@@ -242,14 +256,20 @@ def render():
                     st.markdown(
                         f"""
 <div class="home-card">
-    <div class="hc-title">{card['icon']} {card['title']}</div>
-    <div class="hc-what">{card['what']}</div>
-    <div class="hc-meta">
-        <b>Input:</b> {card['input']}<br>
-        <b>Does:</b> {card['does']}<br>
-        <b>Get:</b> {card['get']}<br>
-        <b>Next:</b> {card['next']}
+    <div class="hc-top">
+        <span class="hc-tile">{card['code']}</span>
+        <span class="hc-title">{card['title']}</span>
     </div>
+    <div class="hc-what">{card['what']}</div>
+    <div class="hc-inputs">{_input_chips(card['input'])}</div>
+    <details class="hc-details">
+        <summary>More details</summary>
+        <div class="hc-meta">
+            <div class="hc-row"><b>Does</b> {card['does']}</div>
+            <div class="hc-row"><b>Get</b> {card['get']}</div>
+            <div class="hc-row"><b>Next</b> {card['next']}</div>
+        </div>
+    </details>
 </div>
 """,
                         unsafe_allow_html=True,

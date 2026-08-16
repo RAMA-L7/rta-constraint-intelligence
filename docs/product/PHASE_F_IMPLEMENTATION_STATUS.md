@@ -170,6 +170,181 @@ aligned (≤2px), 0 console errors, and the full pytest suite green
 (**1230 passed** — evidence manifest regenerated 887 → 889 and doc surfaces
 synced).
 
+## 5c. Targeted catalog visual refinement (follow-up request)
+
+A follow-up asked to make the catalog/home feel like a premium engineering
+product rather than a documentation prototype — a visual-hierarchy and
+information-density refinement only (`view_home.py` + `components.py`).
+
+**Capability cards — lower density, product-tool feel**
+- Cards now show: monogram tile + title, one-line purpose, input chips, and a
+  **Details disclosure** (progressive disclosure — "What it does · What you
+  get · Next steps" in a native `<details>` element). The dense four-line
+  Does/Get/Next block is no longer the first thing you see.
+- Input requirements rendered as quiet **chips** (split on "·") instead of a
+  bold "Input:" line.
+- Emoji icons replaced with **consistent monogram tiles** (2-letter codes:
+  SD / CK / DX / CV / IX / RD / CI / GN / LN / CN / DF / MM / RU / TD / RP /
+  TR / DO / FB) — one professional technical treatment across all 18 cards.
+
+**Visual hierarchy**
+- Hero upgraded: accent pip + uppercase eyebrow ("Ṛta Engineering Platform"),
+  larger title (30px/800), wider positioning line — platform entrance, not a
+  docs page.
+- Group labels now carry a quiet **count pill** (e.g. "Analysis capabilities
+  7") for scannability.
+- Trust line: accent left rule added, slight padding increase.
+
+**Sidebar de-emphasis**
+- Sidebar narrowed to **264px** (product area is the focus).
+- Brand block is now a plain compact wordmark (no card background), What's
+  New condensed to short bullets, sidebar buttons/emoji trimmed.
+
+**Verified (real browser, Selenium + computed styles)**
+- 18 cards + 18 monogram tiles + 18 Details disclosures render
+- Row 1 cards equal-height and aligned: tops 558/558/558, bottoms
+  749/749/749, "Open →" buttons 797/797/797 (≤1px)
+- Sidebar width 264px; hero renders
+- Dark mode: whole-app `rgb(12,12,13)`; light restores `rgb(255,255,255)`
+- Tile treatment verified (`rgb(236,253,243)` accent-soft)
+- **0 console errors**; catalog → Validate / Clock navigation works (AppTest,
+  zero exceptions)
+- Full pytest suite green (**1228 passed**; manifest 887 — temp verification
+  files removed so the branding parametrized scan is back to the stable count)
+
+## 5d. Final visual polish (follow-up request)
+
+A follow-up asked for the last premium pass on the catalog/home only —
+stronger value proposition, obvious four-group hierarchy, product-tool cards,
+and a quieter sidebar. Functional/IA/backend untouched
+(`view_home.py` + `components.py` only).
+
+**Product hierarchy — canonical four groups** (`view_home.py`)
+- Catalog regrouped to the Phase E canonical order:
+  **CORE** (Validate · Generator · Linter · Converter), **ANALYZE** (Clock ·
+  Coverage · Design Context · Interactions · Readiness · Diff), **ADVANCED**
+  (Corners/MMC · Test Drive · Rules · CI), **OUTPUT & KNOWLEDGE** (Reports ·
+  Trust · Documentation · Feedback).
+- Group headers now render with a quiet hairline rule + count pill (e.g.
+  `CORE 4`), so the four-group hierarchy reads at a glance.
+
+**Hero — clearer value proposition, less dead space**
+- Headline changed from a question to the engineering value prop:
+  *"Constraint intelligence for block-level design."* with a tighter
+  sub-line (119 rules · no LLM · know what's wrong/missing/covered before STA).
+- Vertical padding reduced (hero `10px` → `2px` top, group margin `34px` →
+  `24px`), so the capability grid appears sooner.
+- CTA row de-emoji'd and differentiated: **Validate an SDC** (primary) +
+  **Start with Test Drive** (secondary) + quiet caption.
+
+**Cards — selectable engineering tools** (`components.py`)
+- Hover now picks up the **Ṛta green**: accent-tinted border + lift, and the
+  monogram tile deepens its accent border (light + dark variants).
+- Tile gets a subtle inner top highlight (premium depth, flat base).
+- **Open actions styled as tool launchers**: outline buttons that fill with
+  the accent-soft green and turn green on hover (light + dark), matching the
+  tile/details accent language.
+- Details disclosure summary shortened to **"More details"** — the first
+  view is scannable; Does/Get/Next stay one click away.
+
+**Subtle premium depth**
+- App surface gets a faint **green radial wash behind the header area** only
+  (two soft tints, ~5% opacity — never behind result surfaces), with a dark
+  counterpart. No glow, no blur, no gradients elsewhere.
+
+**Sidebar de-emphasis**
+- Width narrowed `264px` → `250px`; content unchanged.
+
+**Verified (real browser, Selenium + computed styles)**
+- Group labels render: `CORE 4 / ANALYZE 6 / ADVANCED 4 / OUTPUT & KNOWLEDGE 4`
+- 18 cards; CTA labels clean (no emoji); hero value prop present
+- Row-1 cards pixel-aligned: tops 536.7/536.7/536.7, bottoms
+  727.7/727.7/727.7, Open buttons 735.7/735.7/735.7
+- Dark mode: app `rgb(12,12,13)`, tiles `rgb(74,222,128)`; light restores
+  `rgb(255,255,255)`
+- **0 console errors**; catalog → Validate navigation works (AppTest,
+  zero exceptions)
+- Full pytest suite green (**1228 passed**; manifest 887 — temp verification
+  files removed so the branding parametrized scan stays at the stable count)
+
+## 5e. Final catalog polish (follow-up request)
+
+Two refinements only — the approved CORE / ANALYZE / ADVANCED / OUTPUT &
+KNOWLEDGE hierarchy is untouched (`components.py` only; no group/name/
+description/route/input changes).
+
+**1. Card + Open action = one cohesive tool card**
+- The "Open … →" action is now the **card's footer**: flush under the card
+  (0.1px gap), full card width, shared side outline, card's bottom border
+  acting as the separator hairline, `border-radius` only on the footer's
+  bottom corners.
+- **Joint hover state** (CSS `:has`): hovering the card lights up its footer
+  button (green + accent-soft fill), and hovering the footer button lights
+  up the card border — the unit reacts as one interactive tool card.
+- Root cause of the old gap: Streamlit's default 16px flex `gap` between the
+  card element and the button element; set to `0` for catalog columns.
+
+**2. Quieter sidebar**
+- Width `250px` → **236px**; background blends with the app (`--rta-bg` /
+  `#0c0c0d` in dark, hairline border only); brand title 17px → 16px;
+  sidebar buttons 13px/6px → 12.5px/5px.
+
+**Verified (real browser, Selenium + computed styles)**
+- 18 cards; card-bottom → button-top gap **0.1px**, button width == card width
+- Card hover → button green (`rgba(21,128,61,1)`) + accent-soft fill;
+  button hover → card border green (`rgba(21,128,61,0.35)`)
+- Sidebar 236px; dark app `rgb(12,12,13)`; **0 console errors**
+- Full pytest suite green (**1228 passed**; manifest 887 — temp verification
+  files removed)
+
+## 5f. Final Open-button footer fix (follow-up request)
+
+A follow-up reported the footer actions, though attached, still read as
+separate buttons and made lower rows look uneven. Fixed the visual treatment
+only (`components.py`; no names / descriptions / grouping / routes / inputs /
+sidebar / hero / backend / IA changes).
+
+**One continuous outline (no double border / gap)**
+- Card: `border-bottom: none`, `border-radius: 14px 14px 0 0`, card shadow
+  removed. Footer: `border-top: none`, `border-radius: 0 0 14px 14px`,
+  depth moved to a soft bottom shadow on the footer. The unit now has a
+  single shared outline with an invisible seam (background change only) —
+  verified `0px / 0px` borders at the seam and a 0.06px gap.
+
+**Consistent footer height across ALL cards**
+- Root cause: `st.link_button` renders an `<a>` (URL cards: CI / Reports /
+  Trust / Documentation) while tab cards render `<button>`; the styling
+  targeted the `.stLinkButton` wrapper so links kept Streamlit defaults
+  (40px vs 47px). Now both `.stButton > button` and `.stLinkButton a` get
+  the identical box — verified **one height, 44px, across all 18 cards**.
+
+**Per-row vertical alignment**
+- Flex chain unchanged; verified every row's footers sit at the same Y
+  (footer bottoms aligned across Core / Analyze / Advanced / Output rows).
+
+**Joint hover lifts the WHOLE unit**
+- Old bug: only the card lifted on hover (`translateY(-2px)`), opening a gap
+  below it. Now the footer wrapper lifts with the card — verified card and
+  footer both shift exactly −2px and the seam stays closed.
+- Hover anywhere lights both: card → footer green; footer → card border green
+  (light + dark).
+
+**Quieter action zone, accessible focus**
+- Neutral panel surface + border at rest (no heavy fill); subtle Ṛta green
+  on hover; `:focus-visible` outline (2px accent + soft ring, light + dark).
+  Action text stays centered (flex centering).
+
+**Responsive**
+- Desktop 3-column unchanged; narrow viewport verified: cards stack 1-up at
+  x=16, footers attached (−0.1px), no horizontal overflow.
+
+**Verified (real browser, Selenium + computed styles)**
+- 18 cards; seam 0px/0px; footer heights `{44}` uniform; per-row Y aligned;
+  joint lift −2/−2; footer-hover card border green; focus outline 3px;
+  dark app `rgb(12,12,13)`; **0 console errors**
+- Full pytest suite green (**1228 passed**; manifest 887 — temp verification
+  files removed)
+
 ## 5. Remaining visual issues
 
 - Headless-Chrome full-page screenshots can catch Streamlit mid-render; no app

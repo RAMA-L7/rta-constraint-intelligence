@@ -55,7 +55,16 @@ h4 { font-size: 1rem; line-height: 1.3; }
 }
 
 /* Give the whole app a touch more breathing room, docs-style */
-.block-container { padding-top: 1.6rem; max-width: 1280px; }
+.block-container { padding-top: 1.4rem; max-width: 1280px; }
+
+/* Subtle premium depth — a faint green wash behind the header area only,
+   never behind result surfaces. Two soft radial tints, no hard edges. */
+[data-testid="stAppViewContainer"] {
+    background:
+        radial-gradient(1100px 440px at 16% -10%, rgba(21,128,61,0.055), transparent 62%),
+        radial-gradient(880px 400px at 94% -8%, rgba(21,128,61,0.04), transparent 55%),
+        var(--rta-bg);
+}
 
 /* ── Feature-page layout — consistent input panel + results ──── */
 [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] {
@@ -230,8 +239,8 @@ h4 { font-size: 1rem; line-height: 1.3; }
     border-color: var(--rta-border);
 }
 [data-testid="stSidebar"] .stButton > button {
-    font-size: 13px !important;
-    padding: 6px 10px !important;
+    font-size: 12.5px !important;
+    padding: 5px 10px !important;
     justify-content: flex-start !important;
     text-align: left !important;
 }
@@ -362,27 +371,29 @@ h4 { font-size: 1rem; line-height: 1.3; }
 .fatal-badge { background:#fef2f2; color:#7f1d1d; border:1px solid #fca5a5; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; }
 code { font-family: 'JetBrains Mono', monospace; background: var(--rta-panel); color: var(--rta-ink); padding:1px 6px; border-radius:4px; font-size:12px; border: 1px solid var(--rta-border); }
 
-/* ── Sidebar — quiet wordmark card instead of dark gradient ──── */
-[data-testid="stSidebar"] { background: var(--rta-panel); border-right: 1px solid var(--rta-border); }
-.sidebar-brand {
+/* ── Sidebar — quiet supporting rail, product area is the focus ─ */
+[data-testid="stSidebar"] {
     background: var(--rta-bg);
-    border: 1px solid var(--rta-border);
-    border-radius: 12px;
-    padding: 16px 18px;
+    border-right: 1px solid var(--rta-border);
+    width: 236px !important;
+    min-width: 236px !important;
+}
+[data-testid="stSidebar"] [data-testid="stSidebarContent"] { padding-top: 1.1rem; }
+.sidebar-brand {
+    padding: 2px 4px 12px 4px;
     color: var(--rta-ink);
-    margin-bottom: 12px;
-    box-shadow: var(--rta-shadow-sm);
+    margin-bottom: 8px;
 }
 .sidebar-brand h3 {
     color: var(--rta-ink);
     font-size: 16px;
     font-weight: 800;
-    margin: 0 0 4px 0;
+    margin: 0 0 2px 0;
     letter-spacing: -0.01em;
 }
 .sidebar-brand p {
     color: var(--rta-muted);
-    font-size: 12px;
+    font-size: 11.5px;
     margin: 0;
 }
 
@@ -572,28 +583,47 @@ hr { border: none; height: 1px; background: var(--rta-border); margin: 24px 0; }
 }
 
 /* ── Tool home / capability catalog ──────────────────────────── */
-.home-hero { padding: 6px 0 2px 0; }
+.home-hero { padding: 2px 0 0 0; }
 .home-hero .hh-eyebrow {
-    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11.5px; font-weight: 700;
     color: var(--rta-accent); text-transform: uppercase;
-    letter-spacing: 0.08em; margin-bottom: 8px;
+    letter-spacing: 0.11em; margin-bottom: 8px;
+}
+.home-hero .hh-pip {
+    width: 8px; height: 8px; border-radius: 2px;
+    background: var(--rta-accent);
+    box-shadow: 0 0 0 4px var(--rta-accent-soft);
 }
 .home-hero h2 {
-    font-size: 26px; font-weight: 800;
-    margin: 0 0 8px 0; letter-spacing: -0.02em;
-    color: var(--rta-ink);
+    font-size: 31px; font-weight: 800;
+    margin: 0 0 8px 0; letter-spacing: -0.028em;
+    color: var(--rta-ink); line-height: 1.12;
 }
-.home-hero p { font-size: 15px; color: var(--rta-ink-dim); margin: 0; max-width: 680px; line-height: 1.6; }
-.home-group { margin-top: 30px; }
+.home-hero p { font-size: 15px; color: var(--rta-ink-dim); margin: 0; max-width: 780px; line-height: 1.6; }
+.home-group { margin-top: 24px; }
 .home-group .hg-label {
-    font-size: 12.5px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.09em; color: var(--rta-muted); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--rta-ink-dim);
+    padding-bottom: 9px; margin-bottom: 14px;
+    border-bottom: 1px solid var(--rta-border);
+}
+.home-group .hg-count {
+    font-size: 10.5px; font-weight: 600;
+    background: var(--rta-panel);
+    border: 1px solid var(--rta-border);
+    border-radius: 20px; padding: 1px 9px;
+    color: var(--rta-muted);
+    letter-spacing: 0.03em;
 }
 /* Equal-height rows: columns stretch, card fills, button anchors bottom.
    Scoped via :has(.home-card) so only the catalog grid is affected —
    regular tool columns (upload rows, metric tiles) keep their layout. */
 [data-testid="stColumn"]:has(.home-card) { display: flex; flex-direction: column; }
-[data-testid="stColumn"]:has(.home-card) > div { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
+/* gap: 0 — Streamlit's default 16px flex gap would float the footer button
+   away from the card; the card+button must read as one unit. */
+[data-testid="stColumn"]:has(.home-card) > div { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; gap: 0; }
 /* The markdown wrapper chain grows so the card fills the row height… */
 [data-testid="stColumn"]:has(.home-card) > div > div:has(.home-card) { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
 [data-testid="stColumn"]:has(.home-card) > div > div:has(.home-card) > div { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
@@ -603,52 +633,162 @@ hr { border: none; height: 1px; background: var(--rta-border); margin: 24px 0; }
 /* …while the button wrapper keeps natural height; the button anchors bottom.
    URL cards use st.link_button (stLinkButton) — same treatment. */
 [data-testid="stColumn"]:has(.home-card) > div > div:has(.stButton),
-[data-testid="stColumn"]:has(.home-card) > div > div:has(.stLinkButton) { flex: 0 0 auto; display: flex; flex-direction: column; min-height: 0; }
+[data-testid="stColumn"]:has(.home-card) > div > div:has(.stLinkButton) { flex: 0 0 auto; display: flex; flex-direction: column; min-height: 0; margin: 0; padding: 0; }
 [data-testid="stColumn"]:has(.home-card) .stButton,
-[data-testid="stColumn"]:has(.home-card) .stLinkButton { margin-top: auto; padding-top: 8px; }
+[data-testid="stColumn"]:has(.home-card) .stLinkButton { margin-top: auto; padding-top: 0; }
+[data-testid="stColumn"]:has(.home-card) [data-testid="stMarkdown"] { margin: 0; }
+[data-testid="stColumn"]:has(.home-card) [data-testid="stMarkdownContainer"] { margin: 0; padding: 0; }
 [data-testid="stColumn"]:has(.home-card) [data-testid="stMarkdownContainer"] .home-card {
     flex: 1 1 auto;
-}
-[data-testid="stColumn"]:has(.home-card) .stButton {
-    margin-top: auto;
-    padding-top: 8px;
+    margin: 0;
 }
 .home-card {
     background: var(--rta-bg);
     border: 1px solid var(--rta-border);
-    border-radius: 14px;
-    padding: 18px 20px;
+    border-bottom: none;
+    border-radius: 14px 14px 0 0;
+    padding: 18px 20px 16px 20px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    box-shadow: var(--rta-shadow-sm);
-    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    transition: border-color .15s ease, transform .15s ease;
 }
 .home-card:hover {
-    border-color: var(--rta-accent);
-    box-shadow: var(--rta-shadow-md);
+    border-color: rgba(21, 128, 61, 0.35);
     transform: translateY(-2px);
 }
-.home-card .hc-meta { flex: 1; }
+.home-card .hc-top {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+}
+.home-card .hc-tile {
+    flex: 0 0 auto;
+    width: 38px; height: 38px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+    background: var(--rta-accent-soft);
+    border: 1px solid rgba(21, 128, 61, 0.22);
+    color: var(--rta-accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transition: background .15s ease, border-color .15s ease;
+}
+.home-card:hover .hc-tile {
+    background: var(--rta-accent-soft);
+    border-color: rgba(21, 128, 61, 0.45);
+}
 .home-card .hc-title {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 15px; font-weight: 700;
-    color: var(--rta-ink); margin-bottom: 6px;
+    font-size: 15.5px; font-weight: 700;
+    color: var(--rta-ink); letter-spacing: -0.01em;
 }
 .home-card .hc-what {
     font-size: 13px; color: var(--rta-ink-dim);
     line-height: 1.55; margin-bottom: 10px;
 }
-.home-card .hc-meta { font-size: 12px; color: var(--rta-muted); line-height: 1.75; }
-.home-card .hc-meta b { color: var(--rta-ink-dim); font-weight: 600; }
-.home-card .hc-next {
-    font-size: 12px; color: var(--rta-accent);
-    margin-top: 8px; font-weight: 500;
+.home-card .hc-inputs {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 10px;
 }
-.trust-line {
-    margin-top: 30px; padding: 12px 16px;
+.home-card .hc-chip {
+    display: inline-block;
+    font-size: 11px; font-weight: 600;
+    color: var(--rta-ink-dim);
     background: var(--rta-panel);
     border: 1px solid var(--rta-border);
+    border-radius: 20px;
+    padding: 2px 10px;
+    line-height: 1.6;
+}
+.home-card .hc-details { margin-top: auto; }
+.home-card .hc-details summary {
+    cursor: pointer;
+    font-size: 12px; font-weight: 600;
+    color: var(--rta-accent);
+    list-style: none;
+    display: flex; align-items: center; gap: 6px;
+    padding: 2px 0;
+}
+.home-card .hc-details summary::-webkit-details-marker { display: none; }
+.home-card .hc-details summary::before {
+    content: '▸';
+    font-size: 10px;
+    transition: transform .12s ease;
+}
+.home-card .hc-details[open] summary::before { transform: rotate(90deg); }
+.home-card .hc-details[open] summary { color: var(--rta-ink); }
+.home-card .hc-meta {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px dashed var(--rta-border-strong);
+    font-size: 12px; color: var(--rta-muted); line-height: 1.7;
+}
+.home-card .hc-row { margin-bottom: 6px; }
+.home-card .hc-row:last-child { margin-bottom: 0; }
+.home-card .hc-row b {
+    color: var(--rta-ink-dim); font-weight: 600;
+    display: inline-block; min-width: 34px;
+}
+
+/* The Open action is the card's ACTION ZONE — card + footer form one tool
+   unit with a single continuous outline (card bottom border and footer top
+   border are removed at the shared seam), one consistent footer height, and
+   a joint hover that lifts and lights the whole unit together. */
+[data-testid="stColumn"]:has(.home-card) .stButton > button,
+[data-testid="stColumn"]:has(.home-card) .stLinkButton a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 44px !important;
+    min-height: 0 !important;
+    padding: 0 14px !important;
+    border-radius: 0 0 14px 14px !important;
+    border: 1px solid var(--rta-border) !important;
+    border-top: none !important;
+    background: var(--rta-panel) !important;
+    color: var(--rta-ink) !important;
+    font-weight: 600 !important;
+    font-size: 13.5px !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    box-shadow: 0 1px 2px rgba(16,24,40,0.05), 0 5px 12px -4px rgba(16,24,40,0.10);
+    transition: border-color .15s ease, background .15s ease, color .15s ease,
+                box-shadow .15s ease !important;
+}
+/* Clear accessible focus state on the footer action. */
+[data-testid="stColumn"]:has(.home-card) .stButton > button:focus-visible,
+[data-testid="stColumn"]:has(.home-card) .stLinkButton a:focus-visible {
+    outline: 2px solid var(--rta-accent) !important;
+    outline-offset: -2px !important;
+    box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.22) !important;
+}
+/* Hovering anywhere on the unit lights it together… */
+[data-testid="stColumn"]:has(.home-card:hover) .stButton > button,
+[data-testid="stColumn"]:has(.home-card:hover) .stLinkButton a,
+[data-testid="stColumn"]:has(.stButton button:hover) .stButton > button,
+[data-testid="stColumn"]:has(.stLinkButton:hover) .stLinkButton a {
+    border-color: var(--rta-accent) !important;
+    background: var(--rta-accent-soft) !important;
+    color: var(--rta-accent) !important;
+    box-shadow: 0 2px 4px rgba(16,24,40,0.06), 0 10px 18px -8px rgba(16,24,40,0.14);
+}
+/* …and lifts the whole unit (card + footer) so they never separate. */
+[data-testid="stColumn"]:has(.home-card:hover) .stButton,
+[data-testid="stColumn"]:has(.home-card:hover) .stLinkButton,
+[data-testid="stColumn"]:has(.stButton button:hover) .stButton,
+[data-testid="stColumn"]:has(.stLinkButton:hover) .stLinkButton {
+    transform: translateY(-2px);
+}
+/* The card border follows the footer hover so the outline stays whole. */
+[data-testid="stColumn"]:has(.stButton button:hover) .home-card,
+[data-testid="stColumn"]:has(.stLinkButton:hover) .home-card {
+    border-color: rgba(21, 128, 61, 0.35);
+}
+.trust-line {
+    margin-top: 34px; padding: 14px 18px;
+    background: var(--rta-panel);
+    border: 1px solid var(--rta-border);
+    border-left: 3px solid var(--rta-accent);
     border-radius: 12px;
     font-size: 13px; color: var(--rta-ink-dim);
     line-height: 1.6;
@@ -730,8 +870,7 @@ hr { border: none; height: 1px; background: var(--rta-border); margin: 24px 0; }
 
     code { background: #131314; color: #93c5fd; border-color: #26262a; }
 
-    [data-testid="stSidebar"] { background: #0a0a0a; border-right-color: #26262a; }
-    .sidebar-brand { background: #131314; border-color: #26262a; }
+    [data-testid="stSidebar"] { background: #0c0c0d; border-right-color: #26262a; }
     .sidebar-brand h3 { color: #f5f5f4; }
 
     .progress-bar { background: #26262a; }
@@ -764,24 +903,68 @@ hr { border: none; height: 1px; background: var(--rta-border); margin: 24px 0; }
     .stButton > button[kind="secondary"]:hover { border-color: #f5f5f4 !important; }
     .stDownloadButton > button { border-color: #3f3f46 !important; }
 
-    .home-card { background: #131314; border-color: #26262a; box-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-    .home-card:hover { border-color: #3f3f46; box-shadow: 0 4px 10px -2px rgba(0,0,0,0.5); }
+    .home-card { background: #131314; border-color: #26262a; border-bottom: none; border-radius: 14px 14px 0 0; }
+    .home-card:hover { border-color: rgba(74, 222, 128, 0.45); }
 
     .home-hero h2 { color: #f5f5f4; }
     .home-hero p { color: #a8a29e; }
-    .home-group .hg-label { color: #78716c; }
-    .home-card { background: #131314; border-color: #26262a; }
-    .home-card:hover { border-color: #3f3f46; }
+    .home-group .hg-label { color: #a8a29e; }
+    .home-group .hg-count { background: #131314; border-color: #26262a; color: #78716c; }
+    .home-card .hc-tile { background: #0c0c0d; border-color: rgba(74, 222, 128, 0.35); color: #4ade80; box-shadow: inset 0 1px 0 rgba(255,255,255,0.07); }
+    .home-card:hover .hc-tile { border-color: rgba(74, 222, 128, 0.55); }
     .home-card .hc-title { color: #f5f5f4; }
     .home-card .hc-what { color: #a8a29e; }
+    .home-card .hc-chip { background: #0c0c0d; border-color: #26262a; color: #a8a29e; }
+    .home-card .hc-details summary { color: #4ade80; }
+    .home-card .hc-details[open] summary { color: #f5f5f4; }
+    .home-card .hc-meta { border-top-color: #3f3f46; }
     .home-card .hc-meta { color: #78716c; }
     .home-card .hc-meta b { color: #a8a29e; }
-    .home-card .hc-next { color: #4ade80; }
+    .home-card .hc-row b { color: #a8a29e; }
     .trust-line { background: #131314; border-color: #26262a; color: #a8a29e; }
     .trust-line b { color: #a8a29e; }
 
     [data-testid="stExpander"] { background: #131314 !important; border-color: #26262a !important; }
     [data-testid="stMetric"] { background: #131314; border-color: #26262a; }
+
+    [data-testid="stColumn"]:has(.home-card) .stButton > button,
+    [data-testid="stColumn"]:has(.home-card) .stLinkButton a {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        height: 44px !important;
+        min-height: 0 !important;
+        padding: 0 14px !important;
+        background: #101012 !important;
+        color: #f5f5f4 !important;
+        border-color: #26262a !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 5px 12px -4px rgba(0,0,0,0.5);
+    }
+    [data-testid="stColumn"]:has(.home-card) .stButton > button:focus-visible,
+    [data-testid="stColumn"]:has(.home-card) .stLinkButton a:focus-visible {
+        outline: 2px solid #4ade80 !important;
+        box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25) !important;
+    }
+    [data-testid="stColumn"]:has(.home-card:hover) .stButton > button,
+    [data-testid="stColumn"]:has(.home-card:hover) .stLinkButton a,
+    [data-testid="stColumn"]:has(.stButton button:hover) .stButton > button,
+    [data-testid="stColumn"]:has(.stLinkButton:hover) .stLinkButton a {
+        border-color: #4ade80 !important;
+        background: rgba(74, 222, 128, 0.10) !important;
+        color: #4ade80 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.4), 0 10px 18px -8px rgba(0,0,0,0.6);
+    }
+    [data-testid="stColumn"]:has(.home-card:hover) .stButton,
+    [data-testid="stColumn"]:has(.home-card:hover) .stLinkButton,
+    [data-testid="stColumn"]:has(.stButton button:hover) .stButton,
+    [data-testid="stColumn"]:has(.stLinkButton:hover) .stLinkButton {
+        transform: translateY(-2px);
+    }
+    [data-testid="stColumn"]:has(.stButton button:hover) .home-card,
+    [data-testid="stColumn"]:has(.stLinkButton:hover) .home-card {
+        border-color: rgba(74, 222, 128, 0.45);
+    }
 
     ::-webkit-scrollbar-track { background: #131314; }
     ::-webkit-scrollbar-thumb { background: #3f3f46; }
@@ -810,6 +993,12 @@ html[data-theme="dark"] .stApp,
 html[data-theme="dark"] .appview-container,
 html[data-theme="dark"] [data-testid="stAppViewContainer"] {
     background-color: #0c0c0d !important;
+}
+html[data-theme="dark"] [data-testid="stAppViewContainer"] {
+    background:
+        radial-gradient(1100px 440px at 16% -10%, rgba(74, 222, 128, 0.05), transparent 62%),
+        radial-gradient(880px 400px at 94% -8%, rgba(74, 222, 128, 0.035), transparent 55%),
+        #0c0c0d;
 }
 html[data-theme="dark"] [data-testid="stHeader"] {
     background-color: transparent !important;
@@ -987,20 +1176,20 @@ def render_sidebar():
 """, unsafe_allow_html=True)
 
         # ── Home ───────────────────────────────────────────────────────
-        if st.button("🏠 Home",
+        if st.button("Home",
                      use_container_width=True,
                      key="sidebar_home"):
             st.session_state.app_view = "home"
             st.rerun()
 
         # ── Quick actions ──────────────────────────────────────────────
-        if st.button("🧪 Test Drive",
+        if st.button("Test Drive",
                      use_container_width=True,
                      key="sidebar_testdrive"):
             st.session_state.app_view = "test_drive"
             st.rerun()
 
-        if st.button("💬 Feedback",
+        if st.button("Feedback",
                      use_container_width=True,
                      key="sidebar_feedback"):
             st.session_state.app_view = "feedback"
@@ -1008,7 +1197,7 @@ def render_sidebar():
 
         # ── Dark mode toggle ───────────────────────────────────────────
         dark = st.session_state.get("force_dark", False)
-        if st.button("🌙 Dark mode" if not dark else "☀️ Light mode",
+        if st.button("Dark mode" if not dark else "Light mode",
                      use_container_width=True,
                      key="sidebar_dark"):
             st.session_state["force_dark"] = not dark
@@ -1016,31 +1205,21 @@ def render_sidebar():
 
         st.markdown("---")
 
-        with st.expander("📋 What's New", expanded=False):
+        with st.expander("What's New", expanded=False):
             st.markdown(f"""
 **v{APP_VERSION}**
-- 🔗 Interactions — detects duplicate, overriding, and contradictory constraints
-  within a single SDC
-- ✅ Readiness — aggregates Checker evidence into a 7-dimension signoff-readiness
-  verdict (Clocks, I/O, Exceptions, Coverage, Consistency, Analysis Trust, Design Context)
-- 🧬 Netlist cross-checks upgraded — structural, connectivity-based resolution
-  (not name-matching) for get_ports/get_pins/get_cells, in Checker, Coverage, and
-  Clock Relations (block-level; full-chip planned)
+- Interactions — detects duplicate, overriding, and contradictory constraints
+- Readiness — 7-dimension constraint-quality verdict
+- Netlist cross-checks — structural reference resolution in Checker, Coverage, Clocks
 
 **v1.3.0**
-- 📝 Linter — Format & reorganize SDC files
-- 🔄 Converter — SDC ↔ JSON/YAML conversion
-- 📋 Rules Reference — Browse all SDC codes
-- 🧪 311 tests — Comprehensive test suite
+- Linter · Converter · Rules Reference
 
 **v1.2.0**
-- 🕐 Clock Relations — detect incorrect clock groups
-- 📊 Rule Reference — searchable code documentation
+- Clock Relations · Rule Reference
 
 **v1.1.0**
-- 🔍 Constraint Change Analyzer — semantic SDC diff
-- 📦 MMC SDC Generator — per-corner generation
-- 🔲 MMC Corner Manager — PVT corner presets
+- Semantic SDC diff · MMC generator · Corner Manager
 """)
 
         st.markdown("---")

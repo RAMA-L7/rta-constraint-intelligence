@@ -1819,6 +1819,12 @@ with tab_coverage:
                 unsafe_allow_html=True,
             )
 
+            # ── Trust disclosure — coverage is a gap analysis, not correctness ──
+            st.info(
+                "Coverage is NOT correctness — a high score means the constraint categories "
+                "are present, not that timing will pass. Verify each finding and run STA."
+            )
+
             # ── Summary metrics ─────────────────────────────────────────────
             mc1, mc2, mc3, mc4 = st.columns(4)
             mc1.metric("📊 Coverage", f"{score:.0f}%")
