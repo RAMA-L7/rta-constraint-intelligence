@@ -225,6 +225,44 @@ Expected (verified, v1.5.8): V2 validate = 0 errors / 4 warnings; V1 gate
 STRICT = PASS (exit 0); V2 gate STRICT = FAIL (exit 1) with the unconstrained
 `stream_out` listed as the regression.
 
+# 19_high_coverage — realistic 100%-coverage block fixture
+
+A production-style block SDC (`ahb_spi_ctrl.sdc`, AHB-slave SPI master
+controller) that exercises **every** constraint category Ṛta's coverage engine
+can recognize — **39/39 (100%)** — plus a matching netlist
+(`ahb_spi_ctrl_top.v`) and an earlier revision (`ahb_spi_ctrl_v1.sdc`, 32/39 =
+82.1%) for the diff demonstration.
+
+Run it:
+
+```bash
+# Full E2E (check + coverage + clock relations + readiness), design-aware
+rta analyze all engineer_test_kit/19_high_coverage/ahb_spi_ctrl.sdc \
+  --netlist engineer_test_kit/19_high_coverage/ahb_spi_ctrl_top.v --top ahb_spi_ctrl_top
+#    -> 0 errors / 0 warnings, coverage 100.0% (39/39), 4 clocks / 6 pairs
+
+# Coverage (SDC-only)
+rta coverage engineer_test_kit/19_high_coverage/ahb_spi_ctrl.sdc
+
+# Clock relations — all async pairs declared, 0 mismatches / 0 missing
+rta analyze clock-relations engineer_test_kit/19_high_coverage/ahb_spi_ctrl.sdc
+
+# Lint + convert
+rta lint --check engineer_test_kit/19_high_coverage/ahb_spi_ctrl.sdc
+rta convert engineer_test_kit/19_high_coverage/ahb_spi_ctrl.sdc -f json
+
+# Diff: V1 (82.1%) -> V2 (100%) shows the 8 added constraints
+rta diff engineer_test_kit/19_high_coverage/ahb_spi_ctrl_v1.sdc \
+  engineer_test_kit/19_high_coverage/ahb_spi_ctrl.sdc
+```
+
+Expected (verified, v1.5.8): coverage 100.0% (39/39); 0 errors / 0 warnings;
+4 clocks / 6 pairs / 0 mismatches / 0 missing; lint-clean; design-aware
+coverage shows all data ports constrained and all 6 exceptions resolved;
+diff V1→V2 reports 8 added constraints. See
+`docs/product/HIGH_COVERAGE_SDC_FIXTURE_REPORT.md` for the full category table
+and the independent validation.
+
 ## Engine fixes surfaced by this kit (v1.5.6 -> next)
 
 1. **Reset-tree detection missed `rst_n` pins.** `design_context._pin_role`

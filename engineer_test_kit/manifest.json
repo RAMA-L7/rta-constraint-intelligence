@@ -197,6 +197,32 @@
         "gate_v1_strict": "PASS exit 0",
         "gate_v2_strict": "FAIL exit 1"
       }
+    },
+    {
+      "id": "19_high_coverage",
+      "feature": "realistic high-coverage fixture (100% SDC constraint coverage)",
+      "files": ["ahb_spi_ctrl.sdc", "ahb_spi_ctrl_v1.sdc", "ahb_spi_ctrl_top.v"],
+      "commands": [
+        "rta analyze all 19_high_coverage/ahb_spi_ctrl.sdc --netlist 19_high_coverage/ahb_spi_ctrl_top.v --top ahb_spi_ctrl_top",
+        "rta coverage 19_high_coverage/ahb_spi_ctrl.sdc",
+        "rta analyze clock-relations 19_high_coverage/ahb_spi_ctrl.sdc",
+        "rta lint --check 19_high_coverage/ahb_spi_ctrl.sdc",
+        "rta convert 19_high_coverage/ahb_spi_ctrl.sdc -f json",
+        "rta diff 19_high_coverage/ahb_spi_ctrl_v1.sdc 19_high_coverage/ahb_spi_ctrl.sdc"
+      ],
+      "expected": {
+        "coverage": "100.0% (39/39)",
+        "errors": 0,
+        "warnings": 0,
+        "clocks": 4,
+        "clock_pairs": 6,
+        "clock_mismatches": 0,
+        "clock_missing": 0,
+        "v1_coverage": "82.1% (32/39)",
+        "diff_added": 8,
+        "lint_clean": true,
+        "design_aware": {"inputs_unconstrained": 0, "outputs_unconstrained": 0, "exceptions_resolved": 6, "empty_collection": 0}
+      }
     }
   ]
 }
