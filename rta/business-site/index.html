@@ -312,6 +312,36 @@
   </div>
 </section>
 
+<!-- ═══════════ AUDIO OVERVIEW ═══════════ -->
+<section class="section section--alt" id="audio" aria-label="Audio overview">
+  <div class="container">
+    <div class="section-head center">
+      <p class="eyebrow">Listen</p>
+      <h2 class="display-2 glow">Ṛta in two languages</h2>
+      <p class="lede">Hear what Ṛta does and why it matters — pick a language and press play.</p>
+    </div>
+
+    <div class="player-shell reveal-scale" id="audio-player">
+      <div class="lang-switch" role="tablist" aria-label="Audio language">
+        <button class="lang-btn is-active" type="button" data-lang="en" data-src="assets/audio/rta-english.m4a" data-title="English overview" role="tab" aria-selected="true">English</button>
+        <button class="lang-btn" type="button" data-lang="te" data-src="assets/audio/rta-telugu.m4a" data-title="తెలుగు ఓవర్‌వ్యూ" role="tab" aria-selected="false">తెలుగు</button>
+      </div>
+
+      <p id="audio-title" class="player-title">English overview</p>
+
+      <div class="player-controls">
+        <button id="audio-play" class="play-btn" type="button" aria-label="Play">
+          <svg id="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+          <svg id="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+        </button>
+        <span id="audio-cur" class="player-time mono">0:00</span>
+        <canvas id="audio-viz" aria-label="Seek within audio"></canvas>
+        <span id="audio-dur" class="player-time mono">0:00</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════ INSTALL ═══════════ -->
 <section class="section" id="install" aria-label="Install">
   <div class="container">

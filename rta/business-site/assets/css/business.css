@@ -580,3 +580,105 @@ table.spec tr:hover td { background: rgba(56,189,248,0.03); }
   .term-line { opacity: 1; }
   html { scroll-behavior: auto; }
 }
+
+
+/* ---- Audio overview player ---- */
+.player-shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--sp-6) var(--sp-6) var(--sp-5);
+  border-radius: var(--radius-l);
+  background: linear-gradient(160deg, rgba(56,189,248,0.07), rgba(129,140,248,0.05));
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 20px 60px rgba(2, 4, 9, 0.55);
+}
+
+.lang-switch {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: var(--sp-5);
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+}
+
+.lang-btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  padding: 8px 22px;
+  border-radius: 999px;
+  transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
+}
+.lang-btn:hover { color: var(--text-primary); }
+.lang-btn.is-active {
+  color: #04121E;
+  background: linear-gradient(120deg, #38BDF8, #818CF8);
+  box-shadow: 0 4px 18px rgba(56,189,248,0.35);
+}
+
+.player-title {
+  margin: 0 0 var(--sp-4);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+#audio-viz {
+  flex: 1;
+  min-width: 0;
+  height: 64px;
+  border-radius: var(--radius-s);
+  touch-action: none;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.play-btn {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  border-radius: 50%;
+  color: #04121E;
+  background: linear-gradient(120deg, #38BDF8, #818CF8);
+  border: none;
+  box-shadow: 0 6px 24px rgba(56,189,248,0.35);
+  transition: transform var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
+}
+.play-btn:hover { transform: scale(1.06); }
+.play-btn:active { transform: scale(0.97); }
+.play-btn.is-playing { animation: playPulse 1.8s var(--ease-inout) infinite; }
+
+@keyframes playPulse {
+  0%, 100% { box-shadow: 0 6px 24px rgba(56,189,248,0.30); }
+  50%      { box-shadow: 0 6px 34px rgba(129,140,248,0.55); }
+}
+
+.player-time {
+  flex: none;
+  min-width: 44px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 560px) {
+  .player-shell { padding: var(--sp-4); }
+  .player-controls { gap: var(--sp-2); }
+  #audio-viz { height: 48px; }
+}
