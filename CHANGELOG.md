@@ -2,6 +2,37 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.9] — 2026-08-23
+
+### Added
+
+- **MCP server** (`rta/api/mcp_server.py`, console script `rta-mcp`) —
+  expose the frozen deterministic backend as Model Context Protocol tools
+  over stdio (JSON-RPC 2.0, newline-delimited). Any MCP client
+  (OpenCode, Claude Desktop/Code, Cursor, …) can now call the engine
+  directly:
+  - Tools: `rta_analyze` (full pipeline incl. netlist context, baseline
+    diff, CI gate, custom rules), `rta_lint`, `rta_convert`,
+    `rta_generate`, `rta_snapshot`, `rta_diff`, `rta_corners`, `rta_rules`.
+  - Pure Python standard library — no new runtime dependencies, offline
+    capable, CI and clean-room safe (same contract as `api_server.py`).
+  - Thin adapter only: imports the JSON serialization layer from
+    `rta.api.api_server`; authority modules are never modified, engine
+    failures surface as MCP tool errors (`isError`) and can never fake a
+    PASS. Empty/missing SDC returns structured errors (P1-6 contract).
+  - Server version is derived from `rules_registry.APP_VERSION`
+    (single source of truth).
+- **Documentation**: new feature page
+  [`docs/features/README-16-mcp-server.md`](docs/features/README-16-mcp-server.md)
+  — client registration (OpenCode / Claude Desktop / Claude Code /
+  Cursor), tool catalog, example sessions, architecture and trust
+  boundary, troubleshooting.
+- **Documentation**: new exercises guide
+  [`docs/features/README-17-mcp-exercises.md`](docs/features/README-17-mcp-exercises.md)
+  — 11 hands-on exercises + a capstone workflow covering every MCP tool,
+  each built on the `samples/` files with "modify it" variants for
+  engineers' own designs.
+
 ## [1.5.8] — 2026-08-13
 
 ### Added

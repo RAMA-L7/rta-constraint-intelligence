@@ -56,6 +56,7 @@ feature inventory). "Entry point" = the surface the rebuild exposes.
 | Readiness (tiers + dimensions) | `constraint_readiness.py` | enhanced v1.3+ |
 | Constraint interactions (SDC-067..070) | `constraint_interactions.py` | enhanced |
 | `rta whats-new` | `rta/engine/meta/release_notes.py` | v1.5.8 |
+| MCP server (`rta-mcp`) — engine as AI-assistant tools (8 MCP tools) | `rta/api/mcp_server.py` (thin adapter over `rta/api/api_server.py` JSON layer) | v1.5.9 — stdlib-only stdio transport; docs: `docs/features/README-16-mcp-server.md` |
 
 ---
 

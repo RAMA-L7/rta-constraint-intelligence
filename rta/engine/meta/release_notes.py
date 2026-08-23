@@ -8,6 +8,16 @@ release (newest first).
 
 #: version -> list of bullet lines describing what changed in that release.
 RELEASE_NOTES: dict[str, list[str]] = {
+    "1.5.9": [
+        "MCP server (rta-mcp): use the full deterministic engine from "
+        "OpenCode, Claude Desktop/Code, Cursor, or any MCP client — 8 tools "
+        "(analyze, lint, convert, generate, snapshot, diff, corners, rules) "
+        "over stdio. Pure stdlib, offline capable, thin adapter over the "
+        "frozen backend; the engine can never fake a PASS.",
+        "New guides: docs/features/README-16-mcp-server.md (setup + tool "
+        "catalog) and README-17-mcp-exercises.md (11 hands-on exercises "
+        "for every tool using the samples/ files).",
+    ],
     "1.5.8": [
         "After writing any HTML report the CLI now prints how to open it: "
         "'start report.html' on Windows, 'open report.html' on macOS/Linux.",

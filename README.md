@@ -43,7 +43,19 @@
 
 ## 🆕 What's New
 
-### v1.5.7 (latest)
+### v1.5.9 (latest)
+
+- 🤖 **MCP server** (`rta/api/mcp_server.py`, console script `rta-mcp`) — use the
+  full deterministic Ṛta engine from OpenCode, Claude Desktop/Code, Cursor, or
+  any MCP-capable client. 8 tools: `rta_analyze`, `rta_lint`, `rta_convert`,
+  `rta_generate`, `rta_snapshot`, `rta_diff`, `rta_corners`, `rta_rules`.
+  Pure stdlib (no new runtime dependencies), offline capable, thin adapter
+  over the frozen backend — the engine can never fake a PASS. Full guide:
+  [MCP Server docs](docs/features/README-16-mcp-server.md) · hands-on
+  exercises for every tool:
+  [MCP Exercises](docs/features/README-17-mcp-exercises.md).
+
+### v1.5.7
 
 **Engine fixes (found by real-usage verification):**
 - **`rst_n` reset trees now detected by SDC-151/152/153.** The pin classifier previously recognized `rst`/`reset`/`rstn` but not `rst_n` — the most common reset naming in real designs — so the reset-tree checks silently never fired for most blocks. `_pin_role` now also matches `rst_n`, `reset_n`, `arst_n`.
@@ -129,7 +141,7 @@ docker run -it rta check sample.sdc                # CLI
 
 ---
 
-## 📋 Feature Overview (119 Rules · 15 Major Features)
+## 📋 Feature Overview (119 Rules · 16 Major Features)
 
 | # | Feature | Module | CLI Command | Description |
 |---|---------|--------|-------------|-------------|
@@ -148,6 +160,7 @@ docker run -it rta check sample.sdc                # CLI
 | 13 | [**Custom Rules Engine**](docs/features/README-07-custom-rules.md) | `rta/engine/rules/custom_rules.py` | `rta check --custom-rules` | YAML-based project-specific validation policies |
 | 14 | [**Rules Registry**](docs/features/README-08-rules-registry.md) | `rta/engine/rules/rules_registry.py` | `rta rules` | Centralized documentation of all 119 rule codes |
 | 15 | [**HTML Signoff Reports**](docs/features/README-09-reports.md) | `rta/engine/report/reporter.py` | `rta report` | Self-contained, zero-dependency HTML reports |
+| 16 | [**MCP Server**](docs/features/README-16-mcp-server.md) | `rta/api/mcp_server.py` | `rta-mcp` | Use the full engine from OpenCode / Claude / Cursor as native AI-assistant tools |
 
 Plus:
 - **Advanced constraint-intelligence rules (SDC-150…157)** — rationale linting, reset/CDC structural completeness, DFT/scan-mode coverage, and AOCV/POCV derate methodology (see [What's New](#-whats-new)).
@@ -476,6 +489,7 @@ rta-constraint-intelligence/    (clone dir)
 | `report` | HTML reports | `check`, `diff`, `clock-relations`, `coverage` |
 | `whats-new` | Release notes | `--all` (full changelog) |
 | `web` | Launch browser UI | (opens `http://localhost:8501`) |
+| `rta-mcp` | Start the MCP server (AI-assistant tools over stdio) | registered in your client config — see [MCP docs](docs/features/README-16-mcp-server.md) |
 
 ---
 

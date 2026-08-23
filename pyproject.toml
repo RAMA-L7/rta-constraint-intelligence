@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rta-constraint-intelligence"
-version = "1.5.8"
+version = "1.5.9"
 description = "Ṛta — deterministic SDC validation, generation, and pre-STA readiness review, with optional netlist-aware checking. No EDA tool required."
 readme = "README.md"
 license = "MIT"
@@ -45,6 +45,7 @@ all = ["streamlit>=1.35", "pre-commit>=3.0", "pytest>=7.0"]
 
 [project.scripts]
 rta = "cli:main"
+rta-mcp = "rta.api.mcp_server:serve"
 
 [tool.pytest.ini_options]
 # Only collect test_*.py files. tests/run_comprehensive_test.py is a standalone
