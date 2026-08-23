@@ -36,6 +36,7 @@
     ["Features", "index.html#features"],
     ["Platform", "index.html#platform"],
     ["Why á¹šta", "index.html#why"],
+    ["Listen", "index.html#audio"],
     ["Install", "index.html#install"],
     ["Rules", "features/rules.html"],
   ];
