@@ -1,9 +1,9 @@
-﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   á¹šta | Business Site JS
-   Shared chrome injection Â· glass nav scroll state Â· scroll reveals Â·
-   animated counters Â· hero terminal typing Â· install-copy buttons Â·
+/* ═══════════════════════════════════════════════════════════════════════════
+   Ṛta | Business Site JS
+   Shared chrome injection · glass nav scroll state · scroll reveals ·
+   animated counters · hero terminal typing · install-copy buttons ·
    lightbox-free page transitions
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
   "use strict";
@@ -21,7 +21,7 @@
     return BASE + path;
   }
 
-  /* â”€â”€ Live product facts (keep in sync with rta/evidence/manifest) â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Live product facts (keep in sync with rta/evidence/manifest) ─────── */
   var FACTS = {
     version: "1.5.8",
     rules: 119,
@@ -31,11 +31,11 @@
     app: "https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/",
   };
 
-  /* â”€â”€ Shared nav / footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Shared nav / footer ───────────────────────────────────────────────── */
   var NAV_LINKS = [
     ["Features", "index.html#features"],
     ["Platform", "index.html#platform"],
-    ["Why á¹šta", "index.html#why"],
+    ["Why Ṛta", "index.html#why"],
     ["Listen", "index.html#audio"],
     ["Install", "index.html#install"],
     ["Rules", "features/rules.html"],
@@ -67,7 +67,7 @@
 
   // Lockup logo in nav/footer; the square mark stays as the app icon / favicon.
   function brandImg(cls) {
-    return '<img class="' + (cls || "brand-img") + '" src="' + rel("assets/img/rta-lockup.png") + '" alt="á¹šta logo">';
+    return '<img class="' + (cls || "brand-img") + '" src="' + rel("assets/img/rta-lockup.png") + '" alt="Ṛta logo">';
   }
 
   function renderHeader() {
@@ -79,10 +79,10 @@
     el.innerHTML =
       '<div class="nav-wrap" id="nav-wrap">'
       + '<div class="container-wide nav">'
-      + '<a class="brand" href="' + rel("index.html") + '" aria-label="á¹šta home" title="á¹šta">' + brandImg() + "</a>"
-      + '<button class="nav-burger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">â˜°</button>'
+      + '<a class="brand" href="' + rel("index.html") + '" aria-label="Ṛta home" title="Ṛta">' + brandImg() + "</a>"
+      + '<button class="nav-burger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">☰</button>'
       + '<nav class="nav-links" id="nav-links">' + links
-      + '<a class="btn btn--primary btn--sm nav-cta" href="' + FACTS.app + '" target="_blank" rel="noopener">Launch App â†—</a>'
+      + '<a class="btn btn--primary btn--sm nav-cta" href="' + FACTS.app + '" target="_blank" rel="noopener">Launch App ↗</a>'
       + "</nav></div></div>";
     var burger = el.querySelector(".nav-burger");
     var navLinks = el.querySelector(".nav-links");
@@ -105,9 +105,9 @@
     el.innerHTML =
       '<div class="footer">'
       + '<div class="container">'
-      + '<div class="footer-grid">'      + '<div><a class="brand" href="' + rel("index.html") + '" title="á¹šta">' + brandImg("brand-img brand-img--lg") + "</a>"
+      + '<div class="footer-grid">'      + '<div><a class="brand" href="' + rel("index.html") + '" title="Ṛta">' + brandImg("brand-img brand-img--lg") + "</a>"
       +     '<p style="color:var(--text-secondary);font-size:13.5px;max-width:38ch;margin-top:14px">'
-      +     "á¹šta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.</p>"
+      +     "Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.</p>"
       +     '<div class="chip-row" style="margin-top:16px">'
       +       '<span class="badge badge--success"><span class="sq"></span>Deterministic</span>'
       +       '<span class="badge badge--accent"><span class="sq"></span>Offline-capable</span>'
@@ -116,12 +116,12 @@
       +   cols
       + "</div>"
       + '<div class="footer-bottom">'
-      +   '<span>á¹šta v' + FACTS.version + ' Â· MIT License</span>'
+      +   '<span>Ṛta v' + FACTS.version + ' · MIT License</span>'
       +   '<span>Validates SDC constraint quality, not an STA timing signoff tool.</span>'
       + "</div></div></div>";
   }
 
-  /* â”€â”€ Glass nav scroll state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Glass nav scroll state ───────────────────────────────────────────── */
   function initNavScroll() {
     var wrap = document.getElementById("nav-wrap");
     if (!wrap) return;
@@ -132,7 +132,7 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
-  /* â”€â”€ Scroll reveals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Scroll reveals ───────────────────────────────────────────────────── */
   function initReveals() {
     var els = document.querySelectorAll(".reveal, .reveal-scale, .reveal-left, .reveal-right, .reveal-zoom, .reveal-blur, .uline");
     if (REDUCED || !("IntersectionObserver" in window)) {
@@ -147,7 +147,7 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* â”€â”€ Animated counters â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Animated counters ────────────────────────────────────────────────── */
   function initCounters() {
     var els = document.querySelectorAll("[data-count]");
     if (!els.length) return;
@@ -173,16 +173,16 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* â”€â”€ Hero terminal typing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Hero terminal typing ─────────────────────────────────────────────── */
   var HERO_LINES = [
     '<span class="t-cmd">$ rta check design.sdc --netlist top.v --top soc_top</span>',
-    '<span class="t-dim">preprocess Â· 43 constraints Â· tcl vars resolved</span>',
-    '<span class="t-ok">âœ“ clocks: 4 (2 primary, 2 generated)</span>',
-    '<span class="t-ok">âœ“ references: 61/61 resolved against netlist</span>',
-    '<span class="t-dim">clock relations: 6 pairs Â· coverage: 94% inputs</span>',
-    '<span class="t-warn">â–² SDC-151  reset tree rst_n has no timing exception</span>',
-    '<span class="t-err">âœ— SDC-008  input delay 9.0ns â‰¥ clock period</span>',
-    '<span class="t-dim">readiness: REVIEW_REQUIRED Â· 2 errors Â· 1 warning</span>',
+    '<span class="t-dim">preprocess · 43 constraints · tcl vars resolved</span>',
+    '<span class="t-ok">✓ clocks: 4 (2 primary, 2 generated)</span>',
+    '<span class="t-ok">✓ references: 61/61 resolved against netlist</span>',
+    '<span class="t-dim">clock relations: 6 pairs · coverage: 94% inputs</span>',
+    '<span class="t-warn">▲ SDC-151  reset tree rst_n has no timing exception</span>',
+    '<span class="t-err">✗ SDC-008  input delay 9.0ns ≥ clock period</span>',
+    '<span class="t-dim">readiness: REVIEW_REQUIRED · 2 errors · 1 warning</span>',
     '<span class="t-acc">CONSTRAINT QUALITY ASSESSED - exit 1</span>',
   ];
 
@@ -237,14 +237,14 @@
     setTimeout(typeLine, 400);
   }
 
-  /* â”€â”€ Install-copy buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Install-copy buttons ─────────────────────────────────────────────── */
   function initInstallCopy() {
     document.querySelectorAll("[data-copy]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var text = btn.getAttribute("data-copy");
         function done() {
           btn.classList.add("copied");
-          btn.textContent = "Copied âœ“";
+          btn.textContent = "Copied ✓";
           setTimeout(function () {
             btn.classList.remove("copied");
             btn.textContent = "Copy";
@@ -265,7 +265,7 @@
     });
   }
 
-  /* â”€â”€ Page transition on internal links (progressive enhancement) â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* ── Page transition on internal links (progressive enhancement) ──────── */
   function initPageTransitions() {
     document.body.classList.add("page-enter");
     if (REDUCED || !("requestAnimationFrame" in window)) return;
@@ -283,7 +283,7 @@
     });
   }
 
-  /* â•â•â• Audio overview player: language switch + NotebookLM-style waveform â•â•â• */
+  /* ═══ Audio overview player: language switch + NotebookLM-style waveform ═══ */
   function initAudioPlayer() {
     var shell = document.getElementById("audio-player");
     if (!shell) return;
