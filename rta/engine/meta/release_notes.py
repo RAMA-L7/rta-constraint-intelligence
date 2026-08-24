@@ -8,6 +8,23 @@ release (newest first).
 
 #: version -> list of bullet lines describing what changed in that release.
 RELEASE_NOTES: dict[str, list[str]] = {
+    "1.5.10": [
+        "SDC-068 fix (external field feedback): value-first clock "
+        "uncertainty ('set_clock_uncertainty 0.08 -hold ...') is now "
+        "interpreted per analysis type — a setup and a hold uncertainty on "
+        "the same clock are separate constraints, no longer misreported as "
+        "an override. Same-type re-specification is still an override.",
+        "SDC-021 fix (external field feedback): multicycle setup/hold "
+        "pairing now canonicalizes endpoint expressions, so '[get_clocks "
+        "CLK_A]' and '[get_clocks {CLK_A}]' match (including bit-select "
+        "hierarchical names). Source/destination scope stays distinct; "
+        "reversed or different scopes never satisfy each other.",
+        "New external-feedback regression fixture "
+        "samples/external_feedback_regression.sdc with automated tests "
+        "capturing the reported patterns. Trust boundaries unchanged: "
+        "coverage != correctness, coverage != completeness, READY != "
+        "signoff.",
+    ],
     "1.5.9": [
         "MCP server (rta-mcp): use the full deterministic engine from "
         "OpenCode, Claude Desktop/Code, Cursor, or any MCP client — 8 tools "

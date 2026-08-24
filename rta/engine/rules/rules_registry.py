@@ -10,7 +10,7 @@ this module is the single documentation source for the UI reference table.
 from dataclasses import dataclass
 from typing import List, Dict, Optional
 
-APP_VERSION = "1.5.9"
+APP_VERSION = "1.5.10"
 
 
 @dataclass
@@ -111,9 +111,9 @@ _r("SDC-020", "warning", "Suspicious False Path",
    "", "checker")
 
 _r("SDC-021", "warning", "Multicycle Without Hold Fix",
-   "A multicycle -setup N path is missing the corresponding -hold (N-1) adjustment.",
+   "A multicycle -setup N path is missing any -hold adjustment on provably identical endpoints. The hold fix may be a separate command; endpoint expressions are canonicalized (brace forms, flag order, bit-select names) while source/destination scope stays distinct.",
    "Without the hold fix, the tool checks hold at the original 1-cycle boundary — causing false hold violations.",
-   "Add '-hold <N-1>' to match every '-setup N' multicycle path.",
+   "Add '-hold <N-1>' (same or separate command) matching every '-setup N' multicycle path.",
    "https://www.synopsys.com/glossary/what-is-sdc.html", "checker")
 
 _r("SDC-022", "warning", "Unrealistically Tight Uncertainty",
@@ -372,7 +372,7 @@ _r("SDC-067", "info", "Exact Duplicate Constraint",
    "", "constraint_interactions", "1.4.0")
 
 _r("SDC-068", "info", "Overridden Constraint",
-   "A later constraint with the same objects/clock/edge but a different value silently replaces an earlier one (no -add_delay).",
+   "A later constraint with the same objects/clock/edge and analysis type but a different value silently replaces an earlier one (no -add_delay). Analysis types (setup/hold, min/max, rise/fall) are distinct: a -hold uncertainty never overrides a -setup uncertainty.",
    "The earlier constraint is dead — if the override is unintentional, the intended timing value is silently lost.",
    "Verify the override is intentional, or use -add_delay if both values should accumulate.",
    "", "constraint_interactions", "1.4.0")

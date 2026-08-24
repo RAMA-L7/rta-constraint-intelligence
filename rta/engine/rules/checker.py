@@ -168,21 +168,82 @@ def _clock_ref(stmt: str, flag: str = "clock"):
     return [ref.strip()], False
 
 
+def _endpoint_ref(text: str, flag: str):
+    """Extract the full reference after ``-<flag> `` handling nested brackets.
+
+    Real-world hierarchical object names contain bit selects — e.g.
+    ``[get_clocks g_ca53_cpu[1].u_ca53_cpu/bap1_tck]`` — so a naive
+    ``\\[[^\\]]*\\]`` match truncates at the FIRST inner ``]``. This scanner
+    tracks bracket depth and returns either the complete balanced
+    ``[...]`` expression or the following whitespace-delimited token.
+    """
+    m = re.search(r'-' + flag + r'\s+', text)
+    if not m:
+        return None
+    i, n = m.end(), len(text)
+    while i < n and text[i].isspace():
+        i += 1
+    if i >= n:
+        return None
+    if text[i] == '[':
+        depth = 0
+        j = i
+        while j < n:
+            if text[j] == '[':
+                depth += 1
+            elif text[j] == ']':
+                depth -= 1
+                if depth == 0:
+                    return text[i:j + 1]
+            j += 1
+        return text[i:]   # unbalanced — take the rest (defensive)
+    j = i
+    while j < n and not text[j].isspace():
+        j += 1
+    return text[i:j]
+
+
+def _endpoint_key(ref: str) -> str:
+    """Canonical key for one exception endpoint reference.
+
+    '[get_clocks CLK_A]', '[get_clocks {CLK_A}]' and the bare token 'CLK_A'
+    all normalize to 'CLK_A'; multi-member collections normalize to their
+    sorted member list. Wildcard members stay verbatim so a wildcard can
+    never be claimed equal to a concrete name (conservative).
+    """
+    if ref.startswith('['):
+        inner = ref[1:-1].strip()
+        parts = inner.split(None, 1)
+        argstr = parts[1] if len(parts) > 1 else ""
+        names = []
+        for m in re.finditer(r'\{([^}]*)\}|(\S+)', argstr):
+            blob = m.group(1) if m.group(1) is not None else m.group(2)
+            names.extend(blob.split())
+        return ",".join(sorted(names))
+    return ref.strip()
+
+
 def _mcp_endpoint_sig(mc: str):
     """Return (kind, endpoint_sig) for a set_multicycle_path command.
 
     ``kind`` is 'setup' or 'hold' (or None if the command declares neither
     flag — a bare `set_multicycle_path 2` applies to setup). ``endpoint_sig``
-    is a whitespace-normalized ``-from ... -to ...`` signature, or None when
-    the command omits both -from and -to (global path). Two commands share a
-    fix relationship only when their endpoint signatures are identical.
+    is a canonical ``from -> to`` signature, or None when the command omits
+    both -from and -to (global path). Two commands share a fix relationship
+    only when their endpoint signatures are identical.
+
+    Canonicalization (external feedback, Case 3): equivalent collection forms
+    ('[get_clocks A]', '[get_clocks {A}]', bare 'A') map to the same key, and
+    flag order (-to before -from) is irrelevant because each side is keyed
+    independently. Source/destination scope is preserved by the '->'
+    separator, so a REVERSED -from/-to scope never matches.
     """
     kind = 'hold' if '-hold' in mc else ('setup' if '-setup' in mc else None)
-    f = re.search(r'-from\s+([^\s\[\]]+|\[[^\]]*\])', mc)
-    t = re.search(r'-to\s+([^\s\[\]]+|\[[^\]]*\])', mc)
+    f = _endpoint_ref(mc, 'from')
+    t = _endpoint_ref(mc, 'to')
     if not (f and t):
         return (kind, None) if kind else (None, None)
-    sig = re.sub(r'\s+', '', f.group(1) + t.group(1))
+    sig = _endpoint_key(f) + "->" + _endpoint_key(t)
     return (kind, sig) if kind else (None, sig)
 
 

@@ -2,6 +2,55 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.10] — 2026-08-24
+
+### Fixed
+
+- **SDC-068 — clock uncertainty setup/hold distinction** (external
+  engineer field feedback). Uncertainty constraints written in value-first
+  form (`set_clock_uncertainty 0.08 -hold [get_clocks {CLK_A}]`) were
+  incorrectly grouped as an override of each other. The interaction
+  analyzer now interprets value-first uncertainty according to its
+  analysis type, so a `-setup` and a `-hold` constraint on the same clock
+  are separate constraints and never reported as duplicates/overrides.
+  Same-type re-specification (two setups or two holds with different
+  values) is still correctly reported as an override.
+
+- **SDC-021 — multicycle endpoint matching** (external engineer field
+  feedback). Multicycle setup/hold pairing compared raw endpoint text, so
+  semantically equivalent expressions such as
+  `[get_clocks CLK_A]` and `[get_clocks {CLK_A}]`
+  did not match, producing a false "no -hold fix" warning even though the
+  hold correction existed elsewhere in the file. Endpoints are now
+  canonicalized (brace forms, bare tokens, flag order), including
+  hierarchical names containing bit selects (`u_core/clk[1]/…`). Source
+  and destination scope remain distinct: a hold on reversed or different
+  scope never satisfies a setup. SDC-021 remains an existence check on
+  provably identical endpoints; hold values are not judged.
+
+### Added
+
+- **External engineering feedback regression fixture**
+  `samples/external_feedback_regression.sdc` — a realistic multi-domain
+  subsystem SDC permanently capturing the externally reported patterns,
+  with semantic tests in `tests/test_external_feedback_fixture.py` and
+  unit regression tests in `tests/test_external_feedback_cases.py`.
+  This fixture proves correct handling of these specific patterns; it is
+  not proof of complete SDC validation.
+
+### Verified (already correct — no behavior change)
+
+- SDC-008 input-delay vs clock-period sanity check
+- SDC-027 `set_max_delay` without `-datapath_only` review warning
+- SDC-036 broad `set_disable_timing` review warning
+- SDC-150 undocumented timing-exception / case-analysis lint
+
+All six behaviors were additionally cross-checked on a second,
+structurally independent SDC architecture with deliberately varied syntax
+(18/18 checks passed). Standing trust boundaries are unchanged:
+coverage ≠ correctness, coverage ≠ completeness, READY ≠ signoff. No
+STA-equivalence or signoff claims are made.
+
 ## [1.5.9] — 2026-08-23
 
 ### Added

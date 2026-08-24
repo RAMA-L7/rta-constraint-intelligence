@@ -3,7 +3,7 @@
 > **Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.8-blue" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.5.10-blue" alt="Version">
   <img src="https://img.shields.io/badge/Python-3.10+-yellow" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-gray" alt="Platform">
@@ -43,7 +43,25 @@
 
 ## 🆕 What's New
 
-### v1.5.9 (latest)
+### v1.5.10 (latest)
+
+- 🔧 **SDC-068 fix** — value-first clock uncertainty (`set_clock_uncertainty
+  0.08 -hold [get_clocks {CLK_A}]`) is now interpreted per analysis type:
+  a `-setup` and a `-hold` uncertainty on the same clock are separate
+  constraints, no longer misreported as an override. Same-type
+  re-specification is still reported.
+- 🔧 **SDC-021 fix** — multicycle setup/hold pairing canonicalizes endpoint
+  expressions: `[get_clocks CLK_A]` and `[get_clocks {CLK_A}]` match
+  (including bit-select hierarchical names and varied flag order).
+  Source/destination scope stays distinct — reversed or different scopes
+  never satisfy each other.
+- 🧪 **External-feedback regression fixture**
+  [`samples/external_feedback_regression.sdc`](samples/external_feedback_regression.sdc)
+  with semantic + unit tests capturing real field-reported patterns.
+  Trust boundaries unchanged: coverage ≠ correctness, coverage ≠
+  completeness, READY ≠ signoff.
+
+### v1.5.9
 
 - 🤖 **MCP server** (`rta/api/mcp_server.py`, console script `rta-mcp`) — use the
   full deterministic Ṛta engine from OpenCode, Claude Desktop/Code, Cursor, or
@@ -87,7 +105,7 @@ Full details: `rta rules show SDC-150` … `rta rules show SDC-157`.
 ### Install from PyPI (recommended)
 ```bash
 pip install rta-constraint-intelligence
-rta --version        # Ṛta v1.5.8
+rta --version        # Ṛta v1.5.10
 ```
 
 ### Install from source

@@ -315,12 +315,32 @@ def _extract_uncertainty_record(cmd, idx: int) -> List[ConstraintRecord]:
                                          value=fv[sh], value_str=str(fv[sh]),
                                          raw=t))
     if not recs:
+        # Value-first selector form: 'set_clock_uncertainty 0.08 -hold [...]'
+        # (external feedback, Case 1). The value PRECEDES -setup/-hold, so
+        # _flag_values cannot pair them. Normalize to a per-analysis-type
+        # record exactly like the flag-value form so setup and hold
+        # uncertainties on the same clock are NEVER grouped as duplicates/
+        # overrides of each other.
         m = re.search(r'(?<![-\w])(' + _NUM + r')', t)
-        recs.append(ConstraintRecord(name, idx, cmd.start_line,
-                                     cmd.end_line, objects=objects,
-                                     rise_fall=rf, modes=modes,
-                                     value=float(m.group(1)) if m else None,
-                                     value_str=m.group(1) if m else "", raw=t))
+        val = float(m.group(1)) if m else None
+        has_setup = bool(re.search(r'-setup\b', t))
+        has_hold = bool(re.search(r'-hold\b', t))
+        if has_setup != has_hold:
+            sh = "setup" if has_setup else "hold"
+            recs.append(ConstraintRecord(name, idx, cmd.start_line,
+                                         cmd.end_line, objects=objects,
+                                         setup_hold=sh, rise_fall=rf,
+                                         modes=modes,
+                                         value=val,
+                                         value_str=str(val) if val is not None else "",
+                                         raw=t))
+        else:
+            recs.append(ConstraintRecord(name, idx, cmd.start_line,
+                                         cmd.end_line, objects=objects,
+                                         rise_fall=rf, modes=modes,
+                                         value=val,
+                                         value_str=str(val) if val is not None else "",
+                                         raw=t))
     return recs
 
 
