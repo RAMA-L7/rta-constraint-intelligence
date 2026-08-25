@@ -560,6 +560,29 @@ def _mk_finding(category: str, code: str, a: ConstraintRecord, b: ConstraintReco
         a.min_max or a.setup_hold or a.rise_fall,
         direction_preserved=(category == OVERRIDE),
     )
+    # Context-Aware Constraint Analysis: machine-readable relevant context.
+    # The analysis type is THE dimension that separates legal setup/hold
+    # pairs from true overrides — expose it explicitly instead of leaving it
+    # implicit in prose. Values are keyed to source lines (order-sensitive).
+    all_objects = objects_a | objects_b
+    if all_objects and not any(("*" in t or "?" in t) for t in all_objects):
+        obj_state = "RESOLVED"
+    elif all_objects:
+        obj_state = "AMBIGUOUS"
+    else:
+        obj_state = "NOT_AVAILABLE"
+    ctx = {
+        "command": a.command,
+        "category": category,
+        "analysis_type": a.setup_hold or a.min_max or a.rise_fall or "",
+        "analysis_type_state": ("RESOLVED"
+                                if (a.setup_hold or a.min_max or a.rise_fall)
+                                else "NOT_AVAILABLE"),
+        "object_state": obj_state,
+        "values_by_line": sorted(
+            [[ln, v] for ln, v in ((a.start_line, a.value_str),
+                                   (b.start_line, b.value_str))]),
+    }
     return {
         "category": category,
         "code": code,
@@ -572,6 +595,7 @@ def _mk_finding(category: str, code: str, a: ConstraintRecord, b: ConstraintReco
         "index1": a.index,
         "index2": b.index,
         "identity": ident.to_dict(),
+        "context": ctx,
     }
 
 
@@ -730,7 +754,7 @@ class InteractionAnalysis:
             "findings": [
                 {k: f[k] for k in ("category", "code", "severity", "msg",
                                    "line", "line2", "command", "confidence",
-                                   "identity") if k in f}
+                                   "identity", "context") if k in f}
                 for f in self.findings],
         }
 

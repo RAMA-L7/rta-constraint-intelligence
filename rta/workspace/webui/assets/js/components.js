@@ -136,6 +136,34 @@ export function findingRow(it) {
   </tr>`;
 }
 
+/* ── Evidence & context (Context-Aware Constraint Analysis) ─────────────── */
+/* Renders the machine-readable context block produced by the engine.
+   Presentation only: keys in stored order, honest "not available" for
+   null, no interpretation added. */
+export function contextStateBadge(value) {
+  const states = ["RESOLVED", "NOT_AVAILABLE", "NOT_SUPPORTED", "AMBIGUOUS", "NOT_VALIDATED"];
+  if (typeof value === "string" && states.includes(value)) {
+    return `<span class="mono" style="font-size:10.5px;padding:1px 6px;border-radius:8px;border:1px solid var(--border);color:var(--text-secondary);margin-left:6px">${esc(value)}</span>`;
+  }
+  return "";
+}
+
+export function evidenceContextHtml(ctx) {
+  if (!ctx || typeof ctx !== "object") return "";
+  const rows = Object.entries(ctx).map(([k, v]) => {
+    let label = k.replace(/_/g, " ").replace(/^./, ch => ch.toUpperCase());
+    let html;
+    if (v === null || v === undefined) html = `<span style="color:var(--text-muted)">not available</span>`;
+    else if (v === true) html = `yes`;
+    else if (v === false) html = `no`;
+    else if (Array.isArray(v)) html = esc(v.map(x => Array.isArray(x) ? `L${x[0]}→${x[1]}` : String(x)).join(", "));
+    else html = `${esc(String(v))}${contextStateBadge(v)}`;
+    return `<dt>${esc(label)}</dt><dd class="mono" style="font-size:11.5px">${html}</dd>`;
+  }).join("");
+  return `<div class="insp-section"><div class="insp-k">Evidence &amp; context</div><dl class="kv">${rows}</dl></div>`;
+}
+
+/* ── Finding detail ─────────────────────────────────────────────────────── */
 export function findingDetailHtml(it, rule) {
   const parts = [];
   parts.push(`<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">${statusBadge("severity", it.sev)}<span class="mono" style="color:var(--text-secondary)">${esc(it.code)}</span></div>`);
@@ -146,6 +174,7 @@ export function findingDetailHtml(it, rule) {
   if (it.loc) meta.push(["Location", it.loc]);
   if (it.line2) meta.push(["Provenance", `L${it.line} ↔ L${it.line2}`]);
   if (meta.length) parts.push(`<div class="insp-section"><div class="insp-k">Context</div>${kvList(meta)}</div>`);
+  parts.push(evidenceContextHtml(it.context));
   if (rule) {
     if (rule.short_name) parts.push(`<div class="insp-section"><div class="insp-k">Rule</div><div class="insp-v" style="font-weight:600">${esc(rule.short_name)}</div></div>`);
     if (rule.why_matters) parts.push(`<div class="insp-section"><div class="insp-k">Why it matters</div><div class="insp-v">${esc(rule.why_matters)}</div></div>`);

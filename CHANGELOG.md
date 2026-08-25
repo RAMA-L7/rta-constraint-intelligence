@@ -2,6 +2,37 @@
 
 All notable changes to Ṛta (formerly SDC Tools) are documented here.
 
+## [1.5.11] — 2026-08-24
+
+### Added — Context-Aware Constraint Analysis
+
+Ṛta findings now carry machine-readable **relevant context**: the timing,
+object, and design evidence the engine actually used, with explicit states
+(`RESOLVED` / `NOT_AVAILABLE` / `NOT_SUPPORTED` / `AMBIGUOUS` /
+`NOT_VALIDATED`) so consumers can see exactly where the evidence ends.
+Missing context is disclosed, never invented. No AI/LLM anywhere; all
+context is deterministically derived.
+
+**⚠ Machine-readable contract change (additive):** the CLI JSON output now
+includes a `"context"` key on every error/warning finding that has relevant
+context, interaction findings include `"context"`, and API issue objects
+include `"context"`. This is an additive change — existing consumers that
+ignore unknown keys are unaffected — but downstream parsers should be aware
+that new findings data is present. HTML reports additionally render an
+"Evidence:" line per contextual finding; the workspace UI shows an
+"Evidence & context" section per finding detail. Findings without relevant
+context have no `context` key/value (`null`), exactly as before.
+
+Context is populated for the externally validated findings:
+SDC-008 (delay/clock/period/ratio/resolution), SDC-021 (canonical endpoint
+keys, rule scope `IDENTICAL_ENDPOINTS_ONLY`, ambiguity state), SDC-027
+(datapath flag + endpoints), SDC-036 (affected object/scope/resolution),
+SDC-150 (documentation-proximity evidence), and interaction findings such as
+SDC-068 (explicit analysis type + values by line).
+
+Trust boundaries unchanged: coverage ≠ correctness, coverage ≠
+completeness, READY ≠ signoff. No STA-equivalence or signoff claims.
+
 ## [1.5.10] — 2026-08-24
 
 ### Fixed

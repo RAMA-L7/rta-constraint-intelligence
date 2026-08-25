@@ -40,6 +40,14 @@ The SDC Checker automates this review: it parses the SDC, runs 40+ semantic chec
 **Warnings:**
 - SDC-020: Suspicious false path (no async/scan keywords)
 - SDC-021: Multicycle without hold fix → false hold violations (hold fix may be a separate command; equivalent endpoint expressions are canonicalized, scope stays distinct)
+
+**Context-Aware Constraint Analysis:** key findings (SDC-008/021/027/036/150 and
+interaction findings such as SDC-068) carry a machine-readable `context` block in
+JSON/API output and an "Evidence" line in HTML reports. Context is built only from
+values the engine actually computed, with explicit states — RESOLVED /
+NOT_AVAILABLE / NOT_SUPPORTED / AMBIGUOUS / NOT_VALIDATED — so consumers can see
+exactly where the evidence ends. Absent context means no additional context was
+available; it is never invented.
 - SDC-024: Multiple clocks without `set_clock_groups` → CDC un-flagged
 - SDC-030: No `set_propagated_clock` → ideal clock is over-optimistic
 

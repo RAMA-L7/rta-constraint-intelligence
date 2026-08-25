@@ -64,6 +64,9 @@ class Finding:
     code: str
     msg: str
     line: int = 0
+    # Context-Aware Constraint Analysis: deterministic evidence about WHY the
+    # documentation check fired, from values computed during the scan only.
+    context: Optional[dict] = None
 
 
 def _strip_comment(line: str) -> str:
@@ -134,6 +137,13 @@ def rationale_findings(text: str) -> List[Finding]:
                 "'# async CDC — two-flop synchronizer, no timing path')."
             ),
             line=lineno,
+            context={
+                "command": kw,
+                "inline_comment": False,
+                "comment_within_proximity": False,
+                "proximity_lines_checked": PROXIMITY_LINES,
+                "min_comment_chars_required": MIN_COMMENT_CHARS,
+            },
         ))
 
     return findings

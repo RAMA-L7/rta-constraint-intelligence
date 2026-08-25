@@ -307,9 +307,13 @@ def cmd_check(args):
             "version": APP_VERSION,
             "file": args.file.name,
             "errors": [{"code": i.code, "msg": i.msg, "line": i.line,
-                         "line2": i.line2} for i in result.errors],
+                         "line2": i.line2,
+                         "context": getattr(i, "context", None)}
+                        for i in result.errors],
             "warnings": [{"code": i.code, "msg": i.msg, "line": i.line,
-                           "line2": i.line2} for i in result.warnings],
+                           "line2": i.line2,
+                           "context": getattr(i, "context", None)}
+                          for i in result.warnings],
             "info": [{"code": i.code, "msg": i.msg, "line": i.line} for i in result.info],
             "stats": result.stats,
             "summary": {

@@ -27,6 +27,13 @@ class Issue:
     # snapshot builders derive identity from the SDC command text at the
     # finding's line — never from the human-readable message.
     identity: dict = None
+    # Context-Aware Constraint Analysis: machine-readable relevant-context
+    # block for a finding, built ONLY from values the engine actually
+    # computed. States are explicit — RESOLVED / NOT_AVAILABLE /
+    # NOT_SUPPORTED / AMBIGUOUS / NOT_VALIDATED — so a consumer can see
+    # where evidence ends. Never populated with invented context; absent
+    # (None) means no additional context was available for this finding.
+    context: dict = None
 
 
 @dataclass
@@ -457,20 +464,37 @@ def check_sdc(text: str, context=None) -> CheckResult:
         names, net_dep = _clock_ref(id_, 'clock')
         ln = find_line(logical, id_.strip()[:40]) if id_ else 0
         ref_name = names[0] if names else None
+        # Relevant context (deterministic): only values computed above.
+        port_m = re.search(r'\[get_ports\s+([^\]]+)\]', id_)
+        ctx = {
+            "command": "set_input_delay",
+            "delay": val,
+            "source_port": port_m.group(1).strip() if port_m else None,
+            "referenced_clock": ref_name,
+            "clock_resolved": ("RESOLVED" if (ref_name in period_map)
+                               else "NOT_AVAILABLE" if not net_dep
+                               else "NOT_SUPPORTED"),
+            "netlist_available": ("YES" if context is not None else "NO"),
+        }
         if ref_name and ref_name in period_map:
+            ctx["clock_period"] = period_map[ref_name]
+            ctx["delay_to_period_ratio"] = round(val / period_map[ref_name], 4)
             if val >= period_map[ref_name]:
                 issues.append(Issue("error", "SDC-008",
                     f'set_input_delay {val}ns equals/exceeds clock {ref_name} period '
                     f'{period_map[ref_name]}ns — leaves no timing margin for input logic.',
-                    line=ln))
+                    line=ln, context=ctx))
         elif period_map and not (ref_name and ref_name not in period_map):
             # No usable -clock reference → fall back to the tightest period once.
             tgt_name = min(period_map, key=period_map.get)
+            ctx["clock_resolved"] = "NOT_AVAILABLE"
+            ctx["compared_against_clock"] = tgt_name
+            ctx["clock_period"] = period_map[tgt_name]
             if val >= period_map[tgt_name]:
                 issues.append(Issue("error", "SDC-008",
                     f'set_input_delay {val}ns equals/exceeds clock {tgt_name} period '
                     f'{period_map[tgt_name]}ns — leaves no timing margin for input logic.',
-                    line=ln))
+                    line=ln, context=ctx))
 
     for od in output_delay:
         val = _delay_value(od, 'set_output_delay')
@@ -570,9 +594,28 @@ def check_sdc(text: str, context=None) -> CheckResult:
         sig = _mcp_endpoint_sig(mc)
         if sig and sig[1] and sig[1] in _hold_sig_set:
             continue  # matching -hold fix on the same endpoints elsewhere
+        # Relevant context: canonical from/to keys, whether the raw syntax
+        # required canonicalization, and the documented rule scope.
+        f_ref = _endpoint_ref(mc, 'from')
+        t_ref = _endpoint_ref(mc, 'to')
+        raw_f = f_ref if f_ref is not None else ""
+        ctx = {
+            "command": "set_multicycle_path",
+            "setup_cycles": int(s_m.group(1)),
+            "from_key": _endpoint_key(f_ref) if f_ref else None,
+            "to_key": _endpoint_key(t_ref) if t_ref else None,
+            "endpoints_canonicalized": bool(
+                (f_ref and _endpoint_key(f_ref) != f_ref.strip())
+                or (t_ref and _endpoint_key(t_ref) != t_ref.strip())),
+            "hold_fix_found": False,
+            "hold_fix_search_scope": "IDENTICAL_ENDPOINTS_ONLY",
+            "endpoint_state": ("AMBIGUOUS"
+                               if any(ch in (raw_f + (t_ref or ""))
+                                      for ch in "*?") else "RESOLVED"),
+        }
         issues.append(Issue("warning", "SDC-021",
             f'Multicycle path -setup {s_m.group(1)} has no -hold fix. Add -hold {int(s_m.group(1))-1}.',
-            line=_cmd_line(logical, mc)))
+            line=_cmd_line(logical, mc), context=ctx))
 
     for u in clk_uncertainty:
         # Extract every -setup/-hold/-rise/-fall value plus a leading flagless
@@ -612,9 +655,18 @@ def check_sdc(text: str, context=None) -> CheckResult:
 
     for md in max_delay:
         if '-datapath_only' not in md:
+            f_ref = _endpoint_ref(md, 'from')
+            t_ref = _endpoint_ref(md, 'to')
             issues.append(Issue("warning", "SDC-027",
                 'set_max_delay without -datapath_only — hold constraints on same path may be violated.',
-                line=_cmd_line(logical, md)))
+                line=_cmd_line(logical, md),
+                context={
+                    "command": "set_max_delay",
+                    "datapath_only": False,
+                    "from_key": _endpoint_key(f_ref) if f_ref else None,
+                    "to_key": _endpoint_key(t_ref) if t_ref else None,
+                    "review_scope": "HOLD_INTERACTION",
+                }))
 
     if input_delay and not any('-min' in i for i in input_delay):
         issues.append(Issue("warning", "SDC-028",
@@ -654,9 +706,27 @@ def check_sdc(text: str, context=None) -> CheckResult:
             line=_cmd_line(logical, disable_timing[0])))
     for dt in disable_timing:
         if '-from' not in dt and '-to' not in dt:
+            # Relevant context: which object, whether the engine could
+            # resolve it against an available design model.
+            obj_m = re.search(r'\[(?:get_cells|get_ports|get_pins)\s+([^\]]+)\]', dt)
+            obj_name = obj_m.group(1).strip() if obj_m else None
+            if context is not None:
+                obj_state = "NOT_VALIDATED"   # resolver subset decides; broad
+                                              # disable itself is not resolved
+            else:
+                obj_state = "NOT_AVAILABLE"
             issues.append(Issue("warning", "SDC-036",
                 'set_disable_timing without -from/-to disables ALL arcs on cell — almost always wrong.',
-                line=_cmd_line(logical, dt)))
+                line=_cmd_line(logical, dt),
+                context={
+                    "command": "set_disable_timing",
+                    "affected_object": obj_name,
+                    "object_resolved": obj_state,
+                    "from_supplied": False,
+                    "to_supplied": False,
+                    "affected_scope": "ALL_ARCS",
+                    "netlist_available": ("YES" if context is not None else "NO"),
+                }))
 
     half_setup = [m for m in mc_paths if '-setup' in m and ('-rise_to' in m or '-fall_to' in m)]
     half_hold  = [m for m in mc_paths if '-hold'  in m and ('-rise_to' in m or '-fall_to' in m)]
@@ -860,7 +930,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
         for f in ia.findings:
             issues.append(Issue(f["severity"], f["code"], f["msg"],
                                 line=f["line"], line2=f["line2"],
-                                identity=f.get("identity")))
+                                identity=f.get("identity"),
+                                context=f.get("context")))
     except Exception as exc:
         info.append(InfoItem("SDC-140", f"Constraint-interaction analysis skipped: {exc}"))
 
@@ -873,7 +944,8 @@ def check_sdc(text: str, context=None) -> CheckResult:
     try:
         from rationale_lint import rationale_findings
         for f in rationale_findings(orig):
-            issues.append(Issue(f.sev, f.code, f.msg, line=f.line))
+            issues.append(Issue(f.sev, f.code, f.msg, line=f.line,
+                                context=f.context))
     except Exception as exc:  # never let rationale linting break the check
         info.append(InfoItem("SDC-140", f"Rationale-comment linting skipped: {exc}"))
 

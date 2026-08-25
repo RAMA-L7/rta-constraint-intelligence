@@ -101,6 +101,7 @@ def serialize_issues(issues) -> list:
             "line": int(getattr(it, "line", 0) or 0),
             "line2": int(getattr(it, "line2", 0) or 0),
             "identity": _jsonable(getattr(it, "identity", None)),
+            "context": _jsonable(getattr(it, "context", None)),
         })
     return out
 

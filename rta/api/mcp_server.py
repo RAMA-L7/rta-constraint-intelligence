@@ -55,7 +55,7 @@ PROTOCOL_VERSION = "2024-11-05"
 try:
     from rules_registry import APP_VERSION as SERVER_VERSION
 except Exception:  # pragma: no cover - defensive for partial installs
-    SERVER_VERSION = "1.5.10"
+    SERVER_VERSION = "1.5.11"
 
 
 # ═══════════════════════════════════════════════════════════════════════════

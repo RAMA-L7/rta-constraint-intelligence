@@ -141,6 +141,45 @@ def _badge(count: int, label: str, css: str) -> str:
     return f'<span class="badge badge-{css}">{count} {esc(label)}</span>'
 
 
+def _context_label(key: str) -> str:
+    """Deterministic human label for a context key."""
+    return key.replace("_", " ").capitalize()
+
+
+def _context_value_html(value) -> str:
+    """Render one context value honestly; never invent missing values."""
+    if value is None:
+        return '<span style="color:#6b7280">not available</span>'
+    if value is True:
+        return "yes"
+    if value is False:
+        return "no"
+    return esc(str(value))
+
+
+def _context_brief(ctx) -> str:
+    """Compact deterministic 'Evidence & context' line for a report row.
+
+    Renders the machine-readable context block produced by Context-Aware
+    Constraint Analysis. Pure presentation: keys appear in their stored
+    order, absent context yields an empty string.
+    """
+    if not ctx:
+        return ""
+    pairs = []
+    for key, value in ctx.items():
+        if isinstance(value, list):
+            # e.g. values_by_line [[line, value], ...] — render as pairs
+            inner = ", ".join(f"L{v[0]}→{v[1]}" if isinstance(v, list)
+                              else str(v) for v in value)
+            pairs.append(f"{_context_label(key)} → {esc(inner)}")
+        else:
+            pairs.append(f"{_context_label(key)} → {_context_value_html(value)}")
+    return ('<div style="color:#6b7280;font-size:11px;margin-top:3px">'
+            f'<b style="font-weight:600">Evidence:</b> {" &nbsp;·&nbsp; ".join(pairs)}'
+            "</div>")
+
+
 def _issue_rows(items, sev_class: str, sev_label: str) -> str:
     rows = ""
     for item in items:
@@ -156,10 +195,11 @@ def _issue_rows(items, sev_class: str, sev_label: str) -> str:
             loc = f"<span style='color:#6b7280;font-size:11px'>L{item.line}</span>"
         if getattr(item, "line2", 0):
             loc += f" <span style='color:#6b7280;font-size:11px'>↔ L{item.line2}</span>"
+        ctx_html = _context_brief(getattr(item, "context", None))
         rows += f"""<tr class="{sev_class}-row">
   <td><code>{code}</code></td>
   <td><span style="font-weight:600">{sev_label}</span></td>
-  <td>{msg}</td>
+  <td>{msg}{ctx_html}</td>
   <td>{loc} {tip}</td>
 </tr>\n"""
     return rows

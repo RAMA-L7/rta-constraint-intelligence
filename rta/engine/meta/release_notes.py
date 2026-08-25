@@ -8,6 +8,20 @@ release (newest first).
 
 #: version -> list of bullet lines describing what changed in that release.
 RELEASE_NOTES: dict[str, list[str]] = {
+    "1.5.11": [
+        "Context-Aware Constraint Analysis: key findings (SDC-008/021/027/"
+        "036/150 and interaction findings such as SDC-068) now carry "
+        "machine-readable relevant context with explicit states (RESOLVED / "
+        "NOT_AVAILABLE / NOT_SUPPORTED / AMBIGUOUS / NOT_VALIDATED). Missing "
+        "context is disclosed, never invented; no AI anywhere.",
+        "CONTRACT NOTE (additive): CLI JSON findings include a new 'context' "
+        "key, API issue objects include 'context', and HTML reports render an "
+        "'Evidence:' line per contextual finding. Existing consumers ignoring "
+        "unknown keys are unaffected.",
+        "The workspace UI shows an 'Evidence & context' section per finding "
+        "detail. Trust boundaries unchanged: coverage != correctness, "
+        "coverage != completeness, READY != signoff.",
+    ],
     "1.5.10": [
         "SDC-068 fix (external field feedback): value-first clock "
         "uncertainty ('set_clock_uncertainty 0.08 -hold ...') is now "

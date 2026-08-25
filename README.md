@@ -3,7 +3,7 @@
 > **Ṛta brings order to timing intent, transforming constraints into trusted engineering knowledge through deterministic precision.**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-1.5.10-blue" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.5.11-blue" alt="Version">
   <img src="https://img.shields.io/badge/Python-3.10+-yellow" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
   <img src="https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-gray" alt="Platform">
@@ -43,7 +43,18 @@
 
 ## 🆕 What's New
 
-### v1.5.10 (latest)
+### v1.5.11 (latest)
+
+- 🧭 **Context-Aware Constraint Analysis** — key findings now carry
+  machine-readable relevant context (resolved clocks, canonical endpoints,
+  rule scope, design-context availability) with explicit states
+  (`RESOLVED` / `NOT_AVAILABLE` / `NOT_SUPPORTED` / `AMBIGUOUS` /
+  `NOT_VALIDATED`). Missing context is disclosed, never invented.
+- ⚠️ **Additive JSON/API contract change**: findings include a new
+  `"context"` key; HTML reports render an "Evidence:" line per contextual
+  finding. Consumers ignoring unknown keys are unaffected.
+
+### v1.5.10
 
 - 🔧 **SDC-068 fix** — value-first clock uncertainty (`set_clock_uncertainty
   0.08 -hold [get_clocks {CLK_A}]`) is now interpreted per analysis type:
@@ -105,7 +116,7 @@ Full details: `rta rules show SDC-150` … `rta rules show SDC-157`.
 ### Install from PyPI (recommended)
 ```bash
 pip install rta-constraint-intelligence
-rta --version        # Ṛta v1.5.10
+rta --version        # Ṛta v1.5.11
 ```
 
 ### Install from source
