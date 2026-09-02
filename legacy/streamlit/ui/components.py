@@ -1059,7 +1059,7 @@ TAB_INDEX = {
     "interactions": 9, "readiness": 10, "rules": 11,
 }
 
-BUSINESS_URL = "https://rama-l7.github.io/rta-constraint-intelligence/rta/business-site/"
+BUSINESS_URL = "https://rama-l7.github.io/rta-constraint-intelligence/"
 DOCS_URL = "https://github.com/RAMA-L7/rta-constraint-intelligence/tree/main/rta/docs"
 
 # Sidebar capability rail — mirrors the business-site order. target is
