@@ -477,6 +477,120 @@
     draw(0);
   }
 
+/* ── Evidence plate viewer: a focused inspection surface for one diagram ───
+     Vanilla, no dependency, no toolbar. Loads the original SVG so the artwork
+     stays vector-sharp, scaled to fit the viewport with no scrolling. The
+     trigger is a real <button>, so keyboard activation and focus come from the
+     platform. Three ways out, always: close button, ESC, or the backdrop.
+
+     The overlay is attached to <html>, never <body>: the page-entry animation
+     leaves a transform on <body>, and a transformed ancestor becomes the
+     containing block for position:fixed descendants — which would drag the
+     overlay (and its close button) off-screen. */
+  function initPlateViewer() {
+    var figures = document.querySelectorAll(".plate");
+    if (!figures.length) return;
+
+    var box = document.createElement("div");
+    box.className = "plate-lightbox";
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-labelledby", "plate-viewer-title");
+    box.innerHTML =
+      '<div class="plate-lightbox-bar">' +
+        '<span class="plate-lightbox-title" id="plate-viewer-title"></span>' +
+        '<button type="button" class="plate-lightbox-close" data-plate-close aria-label="Close plate preview">&times;</button>' +
+      '</div>' +
+      '<div class="plate-lightbox-canvas"><img class="plate-lightbox-image" data-plate-image alt=""></div>';
+    document.documentElement.appendChild(box);
+
+    var titleEl = box.querySelector(".plate-lightbox-title");
+    var img = box.querySelector("[data-plate-image]");
+    var closeBtn = box.querySelector("[data-plate-close]");
+
+    var lastFocus = null;
+    var locked = null;
+
+    function open(trigger) {
+      var plateImg = trigger.querySelector("img");
+      if (!plateImg) return;
+      var tag = trigger.closest(".plate").querySelector(".plate-tag");
+
+      img.src = plateImg.getAttribute("src");
+      img.alt = plateImg.getAttribute("alt") || "";
+      // Title reuses the existing caption; no second block of copy.
+      titleEl.textContent = tag ? tag.textContent : (plateImg.getAttribute("alt") || "Evidence plate");
+
+      lastFocus = trigger;
+      box.classList.add("is-open");
+      // Lock scrolling with overflow:hidden rather than position:fixed on
+      // <body>. position:fixed would also re-anchor the overlay (see above)
+      // and needs manual scroll restoration to avoid drift. overflow:hidden
+      // keeps the current offset untouched, so nothing has to be restored.
+      if (!locked) {
+        locked = { y: window.pageYOffset || 0, html: document.documentElement.style.overflow, body: document.body.style.overflow };
+        document.documentElement.style.overflow = "hidden";
+        document.body.style.overflow = "hidden";
+      }
+      // The overlay fades in via visibility, so it is still unfocusable in
+      // the same tick it gains .is-open. Move focus on the next frame.
+      requestAnimationFrame(function () { closeBtn.focus(); });
+    }
+
+    function close() {
+      if (!box.classList.contains("is-open")) return;
+      box.classList.remove("is-open");
+      if (locked) {
+        document.documentElement.style.overflow = locked.html;
+        document.body.style.overflow = locked.body;
+        // Belt and braces: if anything did shift, put it back exactly.
+        if (window.pageYOffset !== locked.y) window.scrollTo(0, locked.y);
+        locked = null;
+      }
+      img.removeAttribute("src");
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+      lastFocus = null;
+    }
+
+    /* Wrap each plate's <img> in a labelled button, once. */
+    Array.prototype.forEach.call(figures, function (figure) {
+      var plateImg = figure.querySelector("img");
+      if (!plateImg || figure.querySelector(".plate-open")) return;
+      var tag = figure.querySelector(".plate-tag");
+      var name = tag ? tag.textContent.trim() : (plateImg.getAttribute("alt") || "evidence plate");
+
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "plate-open";
+      btn.setAttribute("aria-label", "View evidence plate larger: " + name);
+      btn.innerHTML =
+        '<span class="plate-hint" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>View larger</span>';
+
+      figure.insertBefore(btn, plateImg);
+      btn.appendChild(plateImg);
+      btn.addEventListener("click", function () { open(btn); });
+    });
+
+    /* Close via the button, or by clicking anywhere outside the diagram.
+       The canvas fills the viewport, so "outside the diagram" means the
+       canvas area around the image, not the overlay box itself. */
+    box.addEventListener("click", function (e) {
+      if (e.target.closest("[data-plate-close]")) { close(); return; }
+      if (e.target === box || e.target.classList.contains("plate-lightbox-canvas")) close();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (!box.classList.contains("is-open")) return;
+      if (e.key === "Escape" || e.key === "Esc") { e.preventDefault(); close(); return; }
+      if (e.key !== "Tab") return;
+      // One focusable control inside, so Tab is held here.
+      e.preventDefault();
+      closeBtn.focus();
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     renderHeader();
     renderFooter();
@@ -487,5 +601,6 @@
     initInstallCopy();
     initPageTransitions();
     initAudioPlayer();
+    initPlateViewer();
   });
 })();

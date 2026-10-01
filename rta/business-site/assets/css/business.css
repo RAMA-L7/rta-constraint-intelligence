@@ -620,7 +620,182 @@ table.spec tr:hover td { background: rgba(56,189,248,0.03); }
   .plate figcaption { padding: 10px 14px 12px; font-size: 0.8rem; }
 }
 
+/* ---- Evidence plate: click-to-view affordance ----
+   Scoped strictly to .plate so logos, icons and unrelated images are
+   untouched. The trigger is a real <button>, so Enter/Space activation,
+   focusability and button semantics come from the platform. */
+.plate-open {
+  display: block;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  line-height: 0;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.plate-open:focus { outline: none; }
+.plate-open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+/* Same restrained sheen the cards use, so the affordance reads as native. */
+.plate-open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(56,189,248,0.10) 46%, rgba(129,140,248,0.10) 54%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform var(--t-slow) var(--ease-out);
+}
+.plate-open:hover::after,
+.plate-open:focus-visible::after { transform: translateX(120%); }
 
+.plate-hint {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(4, 6, 11, 0.78);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+  pointer-events: none;
+}
+.plate-hint svg { width: 11px; height: 11px; flex: none; }
+.plate-open:hover .plate-hint,
+.plate-open:focus-visible .plate-hint { opacity: 1; transform: none; }
+/* No hover on touch: keep a low-key hint so the affordance is discoverable. */
+@media (hover: none) {
+  .plate-hint { opacity: 0.72; transform: none; }
+}
+
+/* ---- Evidence plate viewer: focused inspection surface ----
+   Laid out as a document canvas: a slim chrome bar holding the title and the
+   close control, and one full-bleed canvas below it that the diagram fits
+   into. The canvas is a grid item sized 1fr, so the plate's max-height can be
+   derived from the height actually left over - the image always fits with no
+   scrolling and no panning. */
+.plate-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  /* Fully opaque: at 0.96 the page's own headings still ghosted through on
+     small screens, which made the diagram hard to read. */
+  background: #02040a;
+  /* Only opacity animates. Transitioning `visibility` would keep the overlay
+     unfocusable for the whole fade, which silently breaks focus-on-open and
+     leaves keyboard users stranded on the page behind. */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--t-med) var(--ease-out);
+}
+.plate-lightbox.is-open { opacity: 1; visibility: visible; }
+
+.plate-lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  background: rgba(10, 15, 26, 0.7);
+}
+.plate-lightbox-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* In normal flow inside the bar, so it can never be covered by the SVG and
+   never needs viewport-relative positioning to stay reachable. */
+.plate-lightbox-close {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--text-primary);
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.plate-lightbox-close:hover {
+  color: #fff;
+  border-color: var(--border-glow);
+  background: rgba(56, 189, 248, 0.18);
+}
+.plate-lightbox-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.plate-lightbox-canvas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  min-height: 0;
+  overflow: hidden;
+}
+.plate-lightbox-image {
+  display: block;
+  width: auto;
+  height: auto;
+  /* Fit the canvas on both axes: 16:9 artwork is height-bound on a wide
+     desktop window and width-bound on a tall phone screen. Either way the
+     whole diagram is visible without scrolling or panning. */
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m);
+  background: linear-gradient(180deg, rgba(19, 28, 48, 0.85), rgba(10, 15, 26, 0.92));
+  box-shadow: 0 24px 70px -30px rgba(0, 0, 0, 0.9);
+}
+
+@media (max-width: 720px) {
+  .plate-lightbox-bar { padding: var(--sp-2) var(--sp-3); }
+  .plate-lightbox-title { font-size: 0.66rem; }
+  .plate-lightbox-canvas { padding: var(--sp-3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-lightbox,
+  .plate-open::after,
+  .plate-hint,
+  .plate-lightbox-close { transition: none; }
+}
 /* ---- Audio overview player ---- */
 .player-shell {
   max-width: 760px;
