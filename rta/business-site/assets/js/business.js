@@ -540,16 +540,24 @@
     function close() {
       if (!box.classList.contains("is-open")) return;
       box.classList.remove("is-open");
+      var restoreY = null;
       if (locked) {
         document.documentElement.style.overflow = locked.html;
         document.body.style.overflow = locked.body;
-        // Belt and braces: if anything did shift, put it back exactly.
-        if (window.pageYOffset !== locked.y) window.scrollTo(0, locked.y);
+        restoreY = locked.y;
         locked = null;
       }
       img.removeAttribute("src");
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
+      // Return focus without letting the browser scroll the trigger back into
+      // view, then re-assert the offset: on narrow screens the focus scroll
+      // could otherwise land after the unlock and leave the reader a few
+      // pixels from where they were.
+      if (lastFocus && lastFocus.focus) {
+        try { lastFocus.focus({ preventScroll: true }); }
+        catch (err) { lastFocus.focus(); }
+      }
       lastFocus = null;
+      if (restoreY !== null && window.pageYOffset !== restoreY) window.scrollTo(0, restoreY);
     }
 
     /* Wrap each plate's <img> in a labelled button, once. */
