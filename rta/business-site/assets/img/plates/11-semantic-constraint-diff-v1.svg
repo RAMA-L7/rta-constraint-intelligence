@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>Semantic constraint diff</title>
+  <desc>Change map between two constraint revisions, classified by meaning rather than
+        by line number.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stroke-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stroke-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1920" cy="1020" rx="1500" ry="760" fill="url(#pool)"/>
+
+  <rect x="460" y="496" width="2940" height="44" fill="url(#glassTop)"/>
+  <rect x="460" y="540" width="2940" height="1080" rx="16" fill="url(#glass)"/>
+  <rect x="460" y="540" width="2940" height="1080" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+  <rect x="460" y="540" width="2940" height="1080" rx="16" fill="url(#sheen)"/>
+
+  <text class="mono" x="520" y="606" font-size="22" letter-spacing="4" fill="#7DD3FC">CHANGE MAP</text>
+  <text class="mono" x="520" y="652" font-size="19" fill="#5A7089">baseline</text>
+  <text class="mono" x="3340" y="652" font-size="19" text-anchor="end" fill="#5A7089">revision</text>
+  <line x1="460" y1="676" x2="3400" y2="676" stroke="#38BDF8" stroke-opacity="0.16"/>
+
+  <!-- connector lines -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1000,760 L1990,760 L2880,760"      stroke="#FBBF24" stroke-opacity="0.65" stroke-width="3"/>
+    <path d="M1000,870 L1920,870 L2880,870"      stroke="#8A99B5" stroke-opacity="0.45" stroke-width="2.5"/>
+    <path d="M1000,980 L1920,980 L2880,980"      stroke="#8A99B5" stroke-opacity="0.45" stroke-width="2.5"/>
+    <path d="M1000,1090 L1300,1090 L1300,1230"    stroke="#F87171" stroke-opacity="0.65" stroke-width="3"/>
+    <path d="M1500,1200 L2880,1200"               stroke="#38BDF8" stroke-opacity="0.6" stroke-width="3" stroke-dasharray="16 10"/>
+    <path d="M1000,1310 L1920,1310 L2880,1310"    stroke="#8A99B5" stroke-opacity="0.45" stroke-width="2.5"/>
+  </g>
+
+  <!-- change-type tags -->
+  <g class="mono" font-size="18">
+    <rect x="1820" y="736" width="340" height="48" rx="24" fill="#020409" fill-opacity="0.85" stroke="#FBBF24" stroke-opacity="0.45"/>
+    <text class="mono" x="1990" y="767" font-size="18" text-anchor="middle" fill="#F7E3B0">CHANGED &#183; CHG-CK-006</text>
+
+    <rect x="1790" y="846" width="260" height="48" rx="24" fill="#020409" fill-opacity="0.85" stroke="#8A99B5" stroke-opacity="0.4"/>
+    <text class="mono" x="1920" y="877" font-size="18" text-anchor="middle" fill="#C3CEDB">UNCHANGED</text>
+
+    <rect x="1170" y="1150" width="260" height="48" rx="24" fill="#020409" fill-opacity="0.85" stroke="#F87171" stroke-opacity="0.45"/>
+    <text class="mono" x="1300" y="1181" font-size="18" text-anchor="middle" fill="#FECACA">REMOVED</text>
+
+    <rect x="2060" y="1176" width="220" height="48" rx="24" fill="#020409" fill-opacity="0.85" stroke="#38BDF8" stroke-opacity="0.5"/>
+    <text class="mono" x="2170" y="1207" font-size="18" text-anchor="middle" fill="#CFEFFF">NEW</text>
+  </g>
+
+  <!-- terminals -->
+  <g>
+    <circle cx="1300" cy="1230" r="17" fill="#020409" stroke="#F87171" stroke-width="2.5"/>
+    <line x1="1293" y1="1223" x2="1307" y2="1237" stroke="#F87171" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="1307" y1="1223" x2="1293" y2="1237" stroke="#F87171" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="1500" cy="1200" r="17" fill="#020409" stroke="#38BDF8" stroke-width="2.5" filter="url(#cyanGlow)"/>
+    <path d="M1500,1191 v18 M1491,1200 h18" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- baseline items -->
+  <g>
+    <rect x="520" y="720" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#FBBF24" stroke-opacity="0.4"/>
+    <text class="mono" x="550" y="768" font-size="20" fill="#F7E3B0">create_clock clk_core 2.000</text>
+
+    <rect x="520" y="830" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#8A99B5" stroke-opacity="0.28"/>
+    <text class="mono" x="550" y="878" font-size="20" fill="#C3CEDB">set_input_delay 0.400</text>
+
+    <rect x="520" y="940" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#8A99B5" stroke-opacity="0.28"/>
+    <text class="mono" x="550" y="988" font-size="20" fill="#C3CEDB">set_output_delay 0.350</text>
+
+    <rect x="520" y="1050" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#F87171" stroke-opacity="0.38"/>
+    <text class="mono" x="550" y="1098" font-size="20" fill="#FECACA">set_case_analysis 0</text>
+
+    <rect x="520" y="1160" width="480" height="80" rx="10" fill="none" stroke="#475569" stroke-opacity="0.35" stroke-dasharray="8 8"/>
+    <text class="mono" x="760" y="1208" font-size="19" text-anchor="middle" fill="#4E5A6B">not present</text>
+
+    <rect x="520" y="1270" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#8A99B5" stroke-opacity="0.28"/>
+    <text class="mono" x="550" y="1318" font-size="20" fill="#C3CEDB">set_false_path clk_slow</text>
+  </g>
+
+  <!-- revision items -->
+  <g>
+    <rect x="2880" y="720" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#FBBF24" stroke-opacity="0.4"/>
+    <text class="mono" x="2910" y="768" font-size="20" fill="#F7E3B0">create_clock clk_core 2.500</text>
+
+    <rect x="2880" y="830" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#8A99B5" stroke-opacity="0.28"/>
+    <text class="mono" x="2910" y="878" font-size="20" fill="#C3CEDB">set_input_delay 0.400</text>
+
+    <rect x="2880" y="940" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#8A99B5" stroke-opacity="0.28"/>
+    <text class="mono" x="2910" y="988" font-size="20" fill="#C3CEDB">set_output_delay 0.350</text>
+
+    <rect x="2880" y="1160" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#38BDF8" stroke-opacity="0.45"/>
+    <text class="mono" x="2910" y="1208" font-size="20" fill="#CFEFFF">set_case_analysis 1</text>
+
+    <rect x="2880" y="1270" width="480" height="80" rx="10" fill="#020409" fill-opacity="0.55" stroke="#8A99B5" stroke-opacity="0.28"/>
+    <text class="mono" x="2910" y="1318" font-size="20" fill="#C3CEDB">set_false_path clk_slow</text>
+  </g>
+
+  <!-- tally -->
+  <line x1="460" y1="1400" x2="3400" y2="1400" stroke="#38BDF8" stroke-opacity="0.16"/>
+  <text class="mono" x="520" y="1456" font-size="20" letter-spacing="3" fill="#5A7089">TALLY</text>
+  <text class="mono" x="520" y="1510" font-size="19" fill="#7C90A8">classified by meaning: a moved line is not a change</text>
+  <text class="mono" x="520" y="1548" font-size="19" fill="#7C90A8">if the constraint it expresses is the same one</text>
+  <text class="mono" x="520" y="1586" font-size="19" fill="#5A7089">3 findings, each with a CHG rule code</text>
+
+  <g>
+    <rect x="2000" y="1420" width="300" height="70" rx="35" fill="#38BDF8" fill-opacity="0.10" stroke="#38BDF8" stroke-opacity="0.4"/>
+    <text class="mono" x="2040" y="1463" font-size="20" fill="#CFEFFF">new</text>
+    <text class="hd" x="2260" y="1466" font-size="30" font-weight="500" text-anchor="end" fill="#38BDF8">01</text>
+
+    <rect x="2330" y="1420" width="300" height="70" rx="35" fill="#F87171" fill-opacity="0.09" stroke="#F87171" stroke-opacity="0.38"/>
+    <text class="mono" x="2370" y="1463" font-size="20" fill="#FECACA">removed</text>
+    <text class="hd" x="2590" y="1466" font-size="30" font-weight="500" text-anchor="end" fill="#F87171">01</text>
+
+    <rect x="2660" y="1420" width="300" height="70" rx="35" fill="#FBBF24" fill-opacity="0.09" stroke="#FBBF24" stroke-opacity="0.38"/>
+    <text class="mono" x="2700" y="1463" font-size="20" fill="#F7E3B0">changed</text>
+    <text class="hd" x="2920" y="1466" font-size="30" font-weight="500" text-anchor="end" fill="#FBBF24">01</text>
+
+    <rect x="2990" y="1420" width="370" height="70" rx="35" fill="#8A99B5" fill-opacity="0.08" stroke="#8A99B5" stroke-opacity="0.3"/>
+    <text class="mono" x="3030" y="1463" font-size="20" fill="#C3CEDB">unchanged</text>
+    <text class="hd" x="3320" y="1466" font-size="30" font-weight="500" text-anchor="end" fill="#8A99B5">03</text>
+  </g>
+
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

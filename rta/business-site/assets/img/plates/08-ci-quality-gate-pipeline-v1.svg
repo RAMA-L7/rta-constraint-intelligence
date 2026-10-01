@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>CI quality gate pipeline</title>
+  <desc>Constraint file through the check command and a selected gate policy to one of
+        four documented exit codes.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.15"/><stop offset="0.3" stop-color="#38BDF8" stop-opacity="0.9"/><stop offset="1" stop-color="#7DD3FC"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1920" cy="1120" rx="1560" ry="800" fill="url(#pool)"/>
+
+  <!-- four equal panels: 460/1215/1970/2725, each 675 wide -->
+  <line x1="500" y1="1120" x2="3340" y2="1120" stroke="#38BDF8" stroke-opacity="0.12" stroke-width="1.5" stroke-dasharray="2 16"/>
+
+  <!-- ===== PANEL 1 : CONSTRAINT FILE ===== -->
+  <g>
+    <rect x="460" y="496" width="675" height="124" fill="url(#glassTop)"/>
+    <rect x="460" y="620" width="675" height="900" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="620" width="675" height="900" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="620" width="675" height="900" rx="16" fill="url(#sheen)"/>
+    <circle cx="500" cy="530" r="5" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    <text class="mono" x="522" y="538" font-size="23" letter-spacing="4" fill="#7DD3FC">CONSTRAINT FILE</text>
+
+    <rect x="500" y="676" width="595" height="56" rx="8" fill="#38BDF8" fill-opacity="0.06" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="526" y="712" font-size="23" fill="#DCEBFA">constraints.sdc</text>
+
+    <g class="mono" font-size="21">
+      <text class="mono" x="500" y="792" font-size="21"><tspan fill="#7DD3FC">create_clock</tspan><tspan fill="#8A99B5"> -name clk_core</tspan></text>
+      <text class="mono" x="500" y="840" font-size="21"><tspan fill="#7DD3FC">create_clock</tspan><tspan fill="#8A99B5"> -name clk_slow</tspan></text>
+      <text class="mono" x="500" y="888" font-size="21"><tspan fill="#7DD3FC">set_input_delay</tspan><tspan fill="#8A99B5"> -clock clk_core</tspan></text>
+      <text class="mono" x="500" y="936" font-size="21"><tspan fill="#7DD3FC">set_output_delay</tspan><tspan fill="#8A99B5"> -clock clk_core</tspan></text>
+      <text class="mono" x="500" y="984" font-size="21"><tspan fill="#7DD3FC">set_clock_groups</tspan><tspan fill="#8A99B5"> -asynchronous</tspan></text>
+      <text class="mono" x="500" y="1032" font-size="21"><tspan fill="#7DD3FC">set_multicycle_path</tspan><tspan fill="#8A99B5"> 2 -setup</tspan></text>
+      <text class="mono" x="500" y="1080" font-size="21"><tspan fill="#7DD3FC">set_false_path</tspan><tspan fill="#8A99B5"> -from clk_slow</tspan></text>
+    </g>
+
+    <line x1="500" y1="1090" x2="1095" y2="1090" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="500" y="1146" font-size="20" fill="#5A7089">7 commands read</text>
+    <text class="mono" x="500" y="1196" font-size="20" fill="#5A7089">0 unsupported constructs</text>
+    <text class="mono" x="500" y="1246" font-size="20" fill="#5A7089">1 reference needs a netlist</text>
+
+    <line x1="500" y1="1286" x2="1095" y2="1286" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="500" y="1342" font-size="19" letter-spacing="3" fill="#5A7089">TRUST SCOPE</text>
+    <rect x="500" y="1372" width="330" height="52" rx="26" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.42"/>
+    <circle cx="534" cy="1398" r="8" fill="#8A99B5"/>
+    <text class="mono" x="560" y="1406" font-size="20" fill="#C3CEDB">NETLIST_REQUIRED</text>
+    <text class="mono" x="500" y="1466" font-size="19" fill="#5A7089">every construct is inside the</text>
+    <text class="mono" x="500" y="1502" font-size="19" fill="#5A7089">supported language</text>
+  </g>
+
+  <!-- ===== PANEL 2 : CHECK ===== -->
+  <g>
+    <rect x="1215" y="496" width="675" height="124" fill="url(#glassTop)"/>
+    <rect x="1215" y="620" width="675" height="900" rx="16" fill="url(#glass)"/>
+    <rect x="1215" y="620" width="675" height="900" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="1215" y="620" width="675" height="900" rx="16" fill="url(#sheen)"/>
+    <circle cx="1255" cy="530" r="5" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    <text class="mono" x="1277" y="538" font-size="23" letter-spacing="4" fill="#7DD3FC">CHECK</text>
+
+    <rect x="1255" y="676" width="595" height="316" rx="10" fill="#020409" fill-opacity="0.7" stroke="#38BDF8" stroke-opacity="0.2"/>
+    <g class="mono" font-size="20">
+      <text class="mono" x="1285" y="722" font-size="20"><tspan fill="#5EEAD4">$</tspan><tspan fill="#CFE3F5"> rta check constraints.sdc</tspan></text>
+      <text class="mono" x="1285" y="768" font-size="20" fill="#C4B5FD">    --baseline main.json</text>
+      <text class="mono" x="1285" y="814" font-size="20" fill="#C4B5FD">    --gate BLOCKERS_ONLY</text>
+      <text class="mono" x="1285" y="860" font-size="20" fill="#5A7089">    --format markdown</text>
+      <text class="mono" x="1285" y="906" font-size="20" fill="#5A7089">    --netlist design.v</text>
+      <text class="mono" x="1285" y="952" font-size="20"><tspan fill="#5EEAD4">$</tspan><tspan fill="#CFE3F5"> rta check --help</tspan></text>
+    </g>
+
+    <line x1="1255" y1="1030" x2="1850" y2="1030" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="1255" y="1090" font-size="20" fill="#5A7089">same file, same flags,</text>
+    <text class="mono" x="1255" y="1130" font-size="20" fill="#5A7089">same verdict on every run</text>
+    <rect x="1255" y="1180" width="280" height="58" rx="29" fill="#38BDF8" fill-opacity="0.12" stroke="#38BDF8" stroke-opacity="0.4"/>
+    <text class="mono" x="1395" y="1216" font-size="20" text-anchor="middle" fill="#CFEFFF">119 rules</text>
+    <rect x="1555" y="1180" width="280" height="58" rx="29" fill="#020409" fill-opacity="0.5" stroke="#38BDF8" stroke-opacity="0.28"/>
+    <text class="mono" x="1695" y="1216" font-size="20" text-anchor="middle" fill="#C3CEDB">887 tests</text>
+
+    <line x1="1255" y1="1286" x2="1850" y2="1286" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="1255" y="1342" font-size="20" fill="#5A7089">findings ranked by severity,</text>
+    <text class="mono" x="1255" y="1382" font-size="20" fill="#5A7089">each with a rule code</text>
+    <text class="mono" x="1255" y="1440" font-size="19" fill="#5A7089">no sampling, no model</text>
+    <text class="mono" x="1255" y="1476" font-size="19" fill="#5A7089">inference, no hidden state</text>
+  </g>
+
+  <!-- ===== PANEL 3 : POLICY ===== -->
+  <g>
+    <rect x="1970" y="496" width="675" height="124" fill="url(#glassTop)"/>
+    <rect x="1970" y="620" width="675" height="900" rx="16" fill="url(#glass)"/>
+    <rect x="1970" y="620" width="675" height="900" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="1970" y="620" width="675" height="900" rx="16" fill="url(#sheen)"/>
+    <circle cx="2010" cy="530" r="5" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    <text class="mono" x="2032" y="538" font-size="23" letter-spacing="4" fill="#7DD3FC">POLICY</text>
+
+    <g>
+      <rect x="2010" y="676" width="595" height="150" rx="12" fill="#38BDF8" fill-opacity="0.12" stroke="#38BDF8" stroke-opacity="0.5"/>
+      <circle cx="2056" cy="736" r="14" fill="#38BDF8" filter="url(#cyanGlow)"/>
+      <text class="mono" x="2090" y="730" font-size="21" fill="#CFEFFF">BLOCKERS_ONLY</text>
+      <text class="mono" x="2090" y="766" font-size="18" fill="#7C90A8">readiness is BLOCKED</text>
+
+      <rect x="2010" y="850" width="595" height="150" rx="12" fill="#020409" fill-opacity="0.35" stroke="#38BDF8" stroke-opacity="0.24"/>
+      <circle cx="2056" cy="910" r="14" fill="none" stroke="#475569" stroke-width="2.5"/>
+      <text class="mono" x="2090" y="904" font-size="20" fill="#C3CEDB">NO_READINESS_REGRESSION</text>
+      <text class="mono" x="2090" y="940" font-size="18" fill="#5A7089">dimension must not drop</text>
+
+      <rect x="2010" y="1024" width="595" height="150" rx="12" fill="#020409" fill-opacity="0.35" stroke="#38BDF8" stroke-opacity="0.24"/>
+      <circle cx="2056" cy="1084" r="14" fill="none" stroke="#475569" stroke-width="2.5"/>
+      <text class="mono" x="2090" y="1078" font-size="21" fill="#C3CEDB">STRICT</text>
+      <text class="mono" x="2090" y="1114" font-size="18" fill="#5A7089">any regression, or BLOCKED</text>
+
+      <rect x="2010" y="1198" width="595" height="150" rx="12" fill="#020409" fill-opacity="0.35" stroke="#38BDF8" stroke-opacity="0.24"/>
+      <circle cx="2056" cy="1258" r="14" fill="none" stroke="#475569" stroke-width="2.5"/>
+      <text class="mono" x="2090" y="1252" font-size="21" fill="#C3CEDB">CUSTOM</text>
+      <text class="mono" x="2090" y="1288" font-size="18" fill="#5A7089">declared rule set, --gate-policy</text>
+    </g>
+
+    <line x1="2010" y1="1370" x2="2605" y2="1370" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="2010" y="1424" font-size="20" fill="#5A7089">policy is part of the command</text>
+    <text class="mono" x="2010" y="1464" font-size="20" fill="#5A7089">line, so the verdict is</text>
+    <text class="mono" x="2010" y="1504" font-size="20" fill="#5A7089">reproducible</text>
+  </g>
+
+  <!-- ===== PANEL 4 : EXIT ===== -->
+  <g>
+    <rect x="2725" y="496" width="675" height="124" fill="url(#glassTop)"/>
+    <rect x="2725" y="620" width="675" height="900" rx="16" fill="url(#glass)"/>
+    <rect x="2725" y="620" width="675" height="900" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="2725" y="620" width="675" height="900" rx="16" fill="url(#sheen)"/>
+    <circle cx="2765" cy="530" r="5" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    <text class="mono" x="2787" y="538" font-size="23" letter-spacing="4" fill="#7DD3FC">EXIT</text>
+
+    <g>
+      <rect x="2765" y="676" width="595" height="180" rx="12" fill="#34D399" fill-opacity="0.08" stroke="#34D399" stroke-opacity="0.4"/>
+      <text class="mono" x="2795" y="726" font-size="20" fill="#D3F5EC">exit 0</text>
+      <text class="hd" x="2795" y="794" font-size="56" font-weight="500" fill="#34D399">0</text>
+      <text class="mono" x="2870" y="790" font-size="19" fill="#7C90A8">pass</text>
+      <text class="mono" x="2795" y="832" font-size="18" fill="#5A7089">readiness is not BLOCKED</text>
+
+      <rect x="2765" y="872" width="595" height="180" rx="12" fill="#FBBF24" fill-opacity="0.08" stroke="#FBBF24" stroke-opacity="0.4"/>
+      <text class="mono" x="2795" y="922" font-size="20" fill="#F7E3B0">exit 1</text>
+      <text class="hd" x="2795" y="990" font-size="56" font-weight="500" fill="#FBBF24">1</text>
+      <text class="mono" x="2870" y="986" font-size="19" fill="#7C90A8">blocked</text>
+      <text class="mono" x="2795" y="1028" font-size="18" fill="#5A7089">constraint readiness is BLOCKED</text>
+
+      <rect x="2765" y="1068" width="595" height="180" rx="12" fill="#F87171" fill-opacity="0.08" stroke="#F87171" stroke-opacity="0.4"/>
+      <text class="mono" x="2795" y="1118" font-size="20" fill="#FECACA">exit 2</text>
+      <text class="hd" x="2795" y="1186" font-size="56" font-weight="500" fill="#F87171">2</text>
+      <text class="mono" x="2870" y="1182" font-size="19" fill="#7C90A8">invalid</text>
+      <text class="mono" x="2795" y="1224" font-size="18" fill="#5A7089">input not analysable</text>
+
+      <rect x="2765" y="1264" width="595" height="180" rx="12" fill="#F43F5E" fill-opacity="0.08" stroke="#F43F5E" stroke-opacity="0.45"/>
+      <text class="mono" x="2795" y="1314" font-size="20" fill="#FFC7D0">exit 3</text>
+      <text class="hd" x="2795" y="1382" font-size="56" font-weight="500" fill="#F43F5E">3</text>
+      <text class="mono" x="2870" y="1378" font-size="19" fill="#7C90A8">failure</text>
+      <text class="mono" x="2795" y="1420" font-size="18" fill="#5A7089">engine did not complete</text>
+    </g>
+
+    <line x1="2765" y1="1470" x2="3360" y2="1470" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="2765" y="1512" font-size="20" fill="#5A7089">an engine failure never reports pass</text>
+  </g>
+
+  <!-- connectors -->
+  <g>
+    <line x1="1140" y1="1120" x2="1200" y2="1120" stroke="url(#arrowGrad)" stroke-width="4" stroke-linecap="round" filter="url(#cyanGlow)"/>
+    <path d="M1190,1106 L1214,1120 L1190,1134" fill="none" stroke="#BAE6FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#cyanGlow)"/>
+    <line x1="1895" y1="1120" x2="1955" y2="1120" stroke="url(#arrowGrad)" stroke-width="4" stroke-linecap="round" filter="url(#cyanGlow)"/>
+    <path d="M1945,1106 L1969,1120 L1945,1134" fill="none" stroke="#BAE6FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#cyanGlow)"/>
+    <line x1="2650" y1="1120" x2="2710" y2="1120" stroke="url(#arrowGrad)" stroke-width="4" stroke-linecap="round" filter="url(#cyanGlow)"/>
+    <path d="M2700,1106 L2724,1120 L2700,1134" fill="none" stroke="#BAE6FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#cyanGlow)"/>
+  </g>
+
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

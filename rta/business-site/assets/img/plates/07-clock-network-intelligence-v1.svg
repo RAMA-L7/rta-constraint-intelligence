@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>Clock network intelligence</title>
+  <desc>Clock hierarchy with classified relations and detected relation problems,
+        beside the clock inventory with per-clock trust status.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1400" cy="1060" rx="1250" ry="840" fill="url(#pool)"/>
+
+  <!-- ================= CLOCK NETWORK ================= -->
+  <g>
+    <rect x="460" y="496" width="1880" height="44" fill="url(#glassTop)"/>
+    <rect x="460" y="540" width="1880" height="1080" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="540" width="1880" height="1080" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="540" width="1880" height="1080" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="520" y="606" font-size="22" letter-spacing="4" fill="#7DD3FC">CLOCK NETWORK</text>
+    <text class="mono" x="2280" y="606" font-size="19" text-anchor="end" fill="#7C90A8">classified relations</text>
+    <line x1="460" y1="636" x2="2340" y2="636" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <!-- relation edges -->
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1340,770 L1340,800 L760,800 L760,890"   stroke="#38BDF8" stroke-opacity="0.65" stroke-width="3"/>
+      <path d="M1340,770 L1340,800 L1920,800 L1920,890" stroke="#38BDF8" stroke-opacity="0.65" stroke-width="3"/>
+      <path d="M760,1030 L760,1100 L1300,1100 L1300,1150"  stroke="#34D399" stroke-opacity="0.6" stroke-width="3"/>
+      <path d="M1920,1030 L1920,1140 L1380,1140 L1380,1150" stroke="#FBBF24" stroke-opacity="0.6" stroke-width="3" stroke-dasharray="16 10"/>
+      <path d="M1340,1290 L1340,1340 L760,1340 L760,1290"  stroke="#F87171" stroke-opacity="0.7" stroke-width="3.5"/>
+    </g>
+
+    <!-- relation labels -->
+    <g class="mono" font-size="18">
+      <rect x="640" y="756" width="300" height="44" rx="22" fill="#020409" fill-opacity="0.85" stroke="#38BDF8" stroke-opacity="0.4"/>
+      <text class="mono" x="790" y="785" font-size="18" text-anchor="middle" fill="#CFEFFF">async</text>
+      <rect x="1690" y="756" width="400" height="44" rx="22" fill="#020409" fill-opacity="0.85" stroke="#F87171" stroke-opacity="0.45"/>
+      <text class="mono" x="1770" y="785" font-size="18" text-anchor="middle" fill="#CFEFFF">async</text>
+      <text class="mono" x="1856" y="785" font-size="18" text-anchor="middle" fill="#F87171">SDC-060</text>
+      <rect x="820" y="1066" width="420" height="44" rx="22" fill="#020409" fill-opacity="0.85" stroke="#F87171" stroke-opacity="0.45"/>
+      <text class="mono" x="900" y="1095" font-size="18" text-anchor="middle" fill="#D3F5EC">logically_exclusive</text>
+      <text class="mono" x="1078" y="1095" font-size="18" text-anchor="middle" fill="#F87171">SDC-061</text>
+      <rect x="1520" y="1106" width="340" height="44" rx="22" fill="#020409" fill-opacity="0.85" stroke="#FBBF24" stroke-opacity="0.4"/>
+      <text class="mono" x="1690" y="1135" font-size="18" text-anchor="middle" fill="#F7E3B0">physically_exclusive</text>
+      <rect x="860" y="1312" width="400" height="48" rx="24" fill="#F87171" fill-opacity="0.14" stroke="#F87171" stroke-opacity="0.5"/>
+      <circle cx="894" cy="1336" r="8" fill="#F87171"/>
+      <text class="mono" x="916" y="1343" font-size="18" fill="#FECACA">exclusion type wrong &#183; SDC-063</text>
+    </g>
+
+    <!-- clock nodes -->
+    <g>
+      <circle cx="1340" cy="700" r="70" fill="#020409" fill-opacity="0.6" stroke="#38BDF8" stroke-width="3" filter="url(#cyanGlow)"/>
+      <path d="M1305,712 L1318,688 L1331,712 L1344,688 L1357,712 L1370,688" fill="none" stroke="#7DD3FC" stroke-width="3" stroke-linejoin="round"/>
+      <text class="mono" x="1340" y="846" font-size="24" text-anchor="middle" fill="#CFEFFF">clk_top</text>
+    </g>
+    <g>
+      <circle cx="760" cy="960" r="70" fill="#020409" fill-opacity="0.6" stroke="#38BDF8" stroke-opacity="0.7" stroke-width="3"/>
+      <path d="M725,972 L738,948 L751,972 L764,948 L777,972" fill="none" stroke="#7DD3FC" stroke-width="3" stroke-linejoin="round"/>
+      <text class="mono" x="760" y="1072" font-size="24" text-anchor="middle" fill="#CFEFFF">clk_core</text>
+    </g>
+    <g>
+      <circle cx="1920" cy="960" r="70" fill="#020409" fill-opacity="0.6" stroke="#38BDF8" stroke-opacity="0.7" stroke-width="3"/>
+      <path d="M1885,972 L1898,948 L1911,972 L1924,948 L1937,972" fill="none" stroke="#7DD3FC" stroke-width="3" stroke-linejoin="round"/>
+      <text class="mono" x="1920" y="1072" font-size="24" text-anchor="middle" fill="#CFEFFF">clk_slow</text>
+    </g>
+    <g>
+      <circle cx="1340" cy="1220" r="70" fill="#020409" fill-opacity="0.6" stroke="#FBBF24" stroke-opacity="0.6" stroke-width="3"/>
+      <path d="M1305,1232 L1318,1208 L1331,1232 L1344,1208 L1357,1232 L1370,1208" fill="none" stroke="#FDE68A" stroke-width="3" stroke-linejoin="round"/>
+      <text class="mono" x="1440" y="1232" font-size="24" fill="#F7E3B0">clk_periph</text>
+    </g>
+    <g>
+      <circle cx="760" cy="1220" r="70" fill="#020409" fill-opacity="0.6" stroke="#34D399" stroke-opacity="0.5" stroke-width="3"/>
+      <path d="M725,1232 L738,1208 L751,1232 L764,1208 L777,1232" fill="none" stroke="#A7F3D0" stroke-width="3" stroke-linejoin="round"/>
+      <text class="mono" x="760" y="1392" font-size="24" text-anchor="middle" fill="#D3F5EC">clk_test</text>
+    </g>
+
+    <line x1="460" y1="1440" x2="2340" y2="1440" stroke="#38BDF8" stroke-opacity="0.16"/>
+    <text class="mono" x="520" y="1492" font-size="20" letter-spacing="3" fill="#5A7089">RELATION PROBLEMS</text>
+    <g class="mono" font-size="19">
+      <rect x="520" y="1512" width="540" height="80" rx="10" fill="#F87171" fill-opacity="0.08" stroke="#F87171" stroke-opacity="0.35"/>
+      <text class="mono" x="550" y="1546" font-size="19" fill="#FECACA">SDC-060  async instead of</text>
+      <text class="mono" x="550" y="1574" font-size="19" fill="#FECACA">physically exclusive</text>
+      <rect x="1090" y="1512" width="540" height="80" rx="10" fill="#FBBF24" fill-opacity="0.08" stroke="#FBBF24" stroke-opacity="0.32"/>
+      <text class="mono" x="1120" y="1546" font-size="19" fill="#F7E3B0">SDC-061  exclusive but clocks</text>
+      <text class="mono" x="1120" y="1574" font-size="19" fill="#F7E3B0">are synchronous</text>
+      <rect x="1660" y="1512" width="620" height="80" rx="10" fill="#8A99B5" fill-opacity="0.07" stroke="#8A99B5" stroke-opacity="0.28"/>
+      <text class="mono" x="1690" y="1546" font-size="19" fill="#C3CEDB">SDC-063  wrong exclusion</text>
+      <text class="mono" x="1690" y="1574" font-size="19" fill="#C3CEDB">type for this pair</text>
+    </g>
+  </g>
+
+  <!-- ================= INVENTORY ================= -->
+  <g>
+    <rect x="2440" y="496" width="960" height="44" fill="url(#glassTop)"/>
+    <rect x="2440" y="540" width="960" height="1080" rx="16" fill="url(#glass)"/>
+    <rect x="2440" y="540" width="960" height="1080" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="2440" y="540" width="960" height="1080" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="2500" y="606" font-size="22" letter-spacing="4" fill="#7DD3FC">CLOCK INVENTORY</text>
+    <line x1="2440" y1="636" x2="3400" y2="636" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <g class="mono">
+      <text class="mono" x="2500" y="700" font-size="19" letter-spacing="3" fill="#5A7089">NAME</text>
+      <text class="mono" x="2900" y="700" font-size="19" text-anchor="middle" fill="#5A7089">PERIOD</text>
+      <text class="mono" x="3360" y="700" font-size="19" text-anchor="end" fill="#5A7089">TRUST</text>
+    </g>
+    <line x1="2500" y1="720" x2="3360" y2="720" stroke="#38BDF8" stroke-opacity="0.14"/>
+
+    <g class="mono" font-size="21">
+      <text class="mono" x="2500" y="782" font-size="21" fill="#CFE3F5">clk_top</text>
+      <text class="mono" x="2900" y="782" font-size="21" text-anchor="middle" fill="#FCD34D">20.00</text>
+      <rect x="3060" y="752" width="300" height="46" rx="23" fill="#38BDF8" fill-opacity="0.14" stroke="#38BDF8" stroke-opacity="0.45"/>
+      <text class="mono" x="3210" y="782" font-size="18" text-anchor="middle" fill="#CFEFFF">VALIDATED</text>
+      <line x1="2500" y1="820" x2="3360" y2="820" stroke="#38BDF8" stroke-opacity="0.10"/>
+
+      <text class="mono" x="2500" y="882" font-size="21" fill="#CFE3F5">clk_core</text>
+      <text class="mono" x="2900" y="882" font-size="21" text-anchor="middle" fill="#FCD34D">2.00</text>
+      <rect x="3060" y="852" width="300" height="46" rx="23" fill="#38BDF8" fill-opacity="0.14" stroke="#38BDF8" stroke-opacity="0.45"/>
+      <text class="mono" x="3210" y="882" font-size="18" text-anchor="middle" fill="#CFEFFF">VALIDATED</text>
+      <line x1="2500" y1="920" x2="3360" y2="920" stroke="#38BDF8" stroke-opacity="0.10"/>
+
+      <text class="mono" x="2500" y="982" font-size="21" fill="#CFE3F5">clk_slow</text>
+      <text class="mono" x="2900" y="982" font-size="21" text-anchor="middle" fill="#FCD34D">8.00</text>
+      <rect x="3060" y="952" width="300" height="46" rx="23" fill="#FBBF24" fill-opacity="0.12" stroke="#FBBF24" stroke-opacity="0.42"/>
+      <text class="mono" x="3210" y="982" font-size="16" text-anchor="middle" fill="#F7E3B0">PARTIALLY_VALIDATED</text>
+      <line x1="2500" y1="1020" x2="3360" y2="1020" stroke="#38BDF8" stroke-opacity="0.10"/>
+
+      <text class="mono" x="2500" y="1082" font-size="21" fill="#CFE3F5">clk_periph</text>
+      <text class="mono" x="2900" y="1082" font-size="21" text-anchor="middle" fill="#7C8CA3">n/a</text>
+      <rect x="3060" y="1052" width="300" height="46" rx="23" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.4"/>
+      <text class="mono" x="3210" y="1082" font-size="18" text-anchor="middle" fill="#C3CEDB">NETLIST_REQUIRED</text>
+      <line x1="2500" y1="1120" x2="3360" y2="1120" stroke="#38BDF8" stroke-opacity="0.10"/>
+
+      <text class="mono" x="2500" y="1182" font-size="21" fill="#CFE3F5">clk_test</text>
+      <text class="mono" x="2900" y="1182" font-size="21" text-anchor="middle" fill="#7C8CA3">n/a</text>
+      <rect x="3060" y="1152" width="300" height="46" rx="23" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.4"/>
+      <text class="mono" x="3210" y="1182" font-size="18" text-anchor="middle" fill="#C3CEDB">UNSUPPORTED</text>
+    </g>
+
+    <line x1="2440" y1="1240" x2="3400" y2="1240" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <g>
+      <rect x="2500" y="1270" width="860" height="300" rx="14" fill="#020409" fill-opacity="0.45" stroke="#38BDF8" stroke-opacity="0.18"/>
+      <text class="mono" x="2546" y="1330" font-size="20" letter-spacing="3" fill="#5A7089">DIMENSION VERDICT</text>
+      <text class="hd" x="2546" y="1400" font-size="46" font-weight="500" fill="#FBBF24">REVIEW_REQUIRED</text>
+      <line x1="2546" y1="1430" x2="3314" y2="1430" stroke="#38BDF8" stroke-opacity="0.18"/>
+      <text class="mono" x="2546" y="1474" font-size="19" fill="#7C90A8">2 clocks fully analyzed, 1 partially</text>
+      <text class="mono" x="2546" y="1510" font-size="19" fill="#7C90A8">1 needs design context, 1 unsupported</text>
+      <text class="mono" x="2546" y="1546" font-size="19" fill="#7C90A8">3 relation problems raised</text>
+    </g>
+  </g>
+
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

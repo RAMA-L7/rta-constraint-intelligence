@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>Batch constraint workflow</title>
+  <desc>A directory of constraint files swept in one pass, with per-file results and
+        aggregate counts.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stroke-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stroke-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1920" cy="1080" rx="1500" ry="800" fill="url(#pool)"/>
+
+  <!-- ===== DIRECTORY ===== -->
+  <g>
+    <rect x="460" y="500" width="2940" height="48" fill="url(#glassTop)"/>
+    <rect x="460" y="548" width="2940" height="500" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="548" width="2940" height="500" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="548" width="2940" height="500" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="520" y="612" font-size="22" letter-spacing="4" fill="#7DD3FC">constraints/</text>
+    <text class="mono" x="3340" y="612" font-size="19" text-anchor="end" fill="#7C90A8">8 files, one pass</text>
+    <line x1="460" y1="640" x2="3400" y2="640" stroke="#38BDF8" stroke-opacity="0.16"/>
+
+    <g>
+      <g>
+        <rect x="520" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#34D399" stroke-opacity="0.35"/>
+        <rect x="560" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M570,712 v26 M584,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="560" y="790" font-size="18" fill="#CFE3F5">io</text>
+        <text class="mono" x="560" y="820" font-size="18" fill="#CFE3F5">top.sdc</text>
+        <circle cx="790" cy="900" r="18" fill="#34D399" fill-opacity="0.18" stroke="#34D399" stroke-width="2.5"/>
+        <path d="M781,900 l6,7 l12,-14" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text class="mono" x="560" y="946" font-size="17" fill="#5A7089">0 findings</text>
+      </g>
+      <g>
+        <rect x="870" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#34D399" stroke-opacity="0.35"/>
+        <rect x="910" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M920,712 v26 M934,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="910" y="790" font-size="18" fill="#CFE3F5">mem</text>
+        <text class="mono" x="910" y="820" font-size="18" fill="#CFE3F5">ctrl.sdc</text>
+        <circle cx="1140" cy="900" r="18" fill="#34D399" fill-opacity="0.18" stroke="#34D399" stroke-width="2.5"/>
+        <path d="M1131,900 l6,7 l12,-14" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text class="mono" x="910" y="946" font-size="17" fill="#5A7089">0 findings</text>
+      </g>
+      <g>
+        <rect x="1220" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#FBBF24" stroke-opacity="0.38"/>
+        <rect x="1260" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M1270,712 v26 M1284,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="1260" y="790" font-size="18" fill="#CFE3F5">pll</text>
+        <text class="mono" x="1260" y="820" font-size="18" fill="#CFE3F5">modes.sdc</text>
+        <circle cx="1490" cy="900" r="18" fill="#FBBF24" fill-opacity="0.18" stroke="#FBBF24" stroke-width="2.5"/>
+        <text class="mono" x="1490" y="907" font-size="19" text-anchor="middle" fill="#F7E3B0">!</text>
+        <text class="mono" x="1260" y="946" font-size="17" fill="#5A7089">2 warnings</text>
+      </g>
+      <g>
+        <rect x="1570" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#F87171" stroke-opacity="0.40"/>
+        <rect x="1610" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M1620,712 v26 M1634,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="1610" y="790" font-size="18" fill="#CFE3F5">cdc</text>
+        <text class="mono" x="1610" y="820" font-size="18" fill="#CFE3F5">crossing.sdc</text>
+        <circle cx="1840" cy="900" r="18" fill="#F87171" fill-opacity="0.18" stroke="#F87171" stroke-width="2.5"/>
+        <path d="M1833,893 l14,14 M1847,893 l-14,14" stroke="#F87171" stroke-width="3" stroke-linecap="round"/>
+        <text class="mono" x="1610" y="946" font-size="17" fill="#5A7089">1 error</text>
+      </g>
+      <g>
+        <rect x="1920" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#34D399" stroke-opacity="0.35"/>
+        <rect x="1960" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M1970,712 v26 M1984,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="1960" y="790" font-size="18" fill="#CFE3F5">dft</text>
+        <text class="mono" x="1960" y="820" font-size="18" fill="#CFE3F5">scan.sdc</text>
+        <circle cx="2190" cy="900" r="18" fill="#34D399" fill-opacity="0.18" stroke="#34D399" stroke-width="2.5"/>
+        <path d="M2181,900 l6,7 l12,-14" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text class="mono" x="1960" y="946" font-size="17" fill="#5A7089">0 findings</text>
+      </g>
+      <g>
+        <rect x="2270" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#FBBF24" stroke-opacity="0.38"/>
+        <rect x="2310" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M2320,712 v26 M2334,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="2310" y="790" font-size="18" fill="#CFE3F5">pad</text>
+        <text class="mono" x="2310" y="820" font-size="18" fill="#CFE3F5">ring.sdc</text>
+        <circle cx="2540" cy="900" r="18" fill="#FBBF24" fill-opacity="0.18" stroke="#FBBF24" stroke-width="2.5"/>
+        <text class="mono" x="2540" y="907" font-size="19" text-anchor="middle" fill="#F7E3B0">!</text>
+        <text class="mono" x="2310" y="946" font-size="17" fill="#5A7089">1 warning</text>
+      </g>
+      <g>
+        <rect x="2620" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#F87171" stroke-opacity="0.40"/>
+        <rect x="2660" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M2670,712 v26 M2684,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="2660" y="790" font-size="18" fill="#CFE3F5">reset</text>
+        <text class="mono" x="2660" y="820" font-size="18" fill="#CFE3F5">tree.sdc</text>
+        <circle cx="2890" cy="900" r="18" fill="#F87171" fill-opacity="0.18" stroke="#F87171" stroke-width="2.5"/>
+        <path d="M2883,893 l14,14 M2897,893 l-14,14" stroke="#F87171" stroke-width="3" stroke-linecap="round"/>
+        <text class="mono" x="2660" y="946" font-size="17" fill="#5A7089">1 error</text>
+      </g>
+      <g>
+        <rect x="2970" y="676" width="320" height="300" rx="12" fill="#020409" fill-opacity="0.45" stroke="#38BDF8" stroke-opacity="0.38"/>
+        <rect x="3010" y="712" width="34" height="26" rx="4" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+        <path d="M3020,712 v26 M3034,712 v26" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+        <text class="mono" x="3010" y="790" font-size="18" fill="#CFE3F5">mux</text>
+        <text class="mono" x="3010" y="820" font-size="18" fill="#CFE3F5">bypass.sdc</text>
+        <circle cx="3240" cy="900" r="18" fill="#38BDF8" fill-opacity="0.18" stroke="#38BDF8" stroke-width="2.5" filter="url(#cyanGlow)"/>
+        <text class="mono" x="3240" y="907" font-size="19" text-anchor="middle" fill="#CFEFFF">i</text>
+        <text class="mono" x="3010" y="946" font-size="17" fill="#5A7089">netlist needed</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- sweep arrow -->
+  <g filter="url(#cyanGlow)">
+    <line x1="1920" y1="1064" x2="1920" y2="1120" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1904,1106 L1920,1132 L1936,1106" fill="none" stroke="#BAE6FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- ===== DASHBOARD ===== -->
+  <g>
+    <rect x="460" y="1140" width="2940" height="48" fill="url(#glassTop)"/>
+    <rect x="460" y="1188" width="2940" height="512" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="1188" width="2940" height="512" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="1188" width="2940" height="512" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="520" y="1252" font-size="22" letter-spacing="4" fill="#7DD3FC">RESULTS</text>
+    <line x1="460" y1="1280" x2="3400" y2="1280" stroke="#38BDF8" stroke-opacity="0.16"/>
+    <g class="mono" font-size="19" text-anchor="end">
+      <text class="mono" x="3340" y="1252" font-size="19" text-anchor="end" fill="#7C90A8">8 files &#183; <tspan fill="#F87171">2 errors</tspan> &#183; <tspan fill="#FBBF24">3 warnings</tspan> &#183; <tspan fill="#38BDF8">1 netlist</tspan> &#183; <tspan fill="#34D399">3 clean</tspan></text>
+    </g>
+    <g class="mono" font-size="18">
+      <text class="mono" x="520" y="1672" font-size="18" fill="#5A7089">119 rules applied to every file in the directory, in one pass, in a fixed order</text>
+    </g>
+
+
+    <g class="mono" font-size="19">
+      <text class="mono" x="520" y="1330" font-size="19" fill="#5A7089">FILE</text>
+      <text class="mono" x="1900" y="1330" font-size="19" text-anchor="middle" fill="#5A7089">ERRORS</text>
+      <text class="mono" x="2300" y="1330" font-size="19" text-anchor="middle" fill="#5A7089">WARNINGS</text>
+      <text class="mono" x="2700" y="1330" font-size="19" text-anchor="middle" fill="#5A7089">ADVISORIES</text>
+      <text class="mono" x="3340" y="1330" font-size="19" text-anchor="end" fill="#5A7089">VERDICT</text>
+    </g>
+    <line x1="520" y1="1350" x2="3340" y2="1350" stroke="#38BDF8" stroke-opacity="0.14"/>
+
+    <g class="mono" font-size="20">
+      <text class="mono" x="520" y="1400" font-size="20" fill="#CFE3F5">io_top.sdc</text>
+      <text class="mono" x="1900" y="1400" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="2300" y="1400" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="2700" y="1400" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="3340" y="1400" font-size="20" text-anchor="end" fill="#5EEAD4">READY</text>
+      <line x1="520" y1="1420" x2="3340" y2="1420" stroke="#38BDF8" stroke-opacity="0.08"/>
+
+      <text class="mono" x="520" y="1460" font-size="20" fill="#CFE3F5">mem_ctrl.sdc</text>
+      <text class="mono" x="1900" y="1460" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="2300" y="1460" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="2700" y="1460" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="3340" y="1460" font-size="20" text-anchor="end" fill="#5EEAD4">READY</text>
+      <line x1="520" y1="1480" x2="3340" y2="1480" stroke="#38BDF8" stroke-opacity="0.08"/>
+
+      <text class="mono" x="520" y="1520" font-size="20" fill="#CFE3F5">pll_modes.sdc</text>
+      <text class="mono" x="1900" y="1520" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="2300" y="1520" font-size="20" text-anchor="middle" fill="#FBBF24">2</text>
+      <text class="mono" x="2700" y="1520" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="3340" y="1520" font-size="20" text-anchor="end" fill="#FBBF24">REVIEW_REQUIRED</text>
+      <line x1="520" y1="1540" x2="3340" y2="1540" stroke="#38BDF8" stroke-opacity="0.08"/>
+
+      <text class="mono" x="520" y="1580" font-size="20" fill="#CFE3F5">cdc_crossing.sdc</text>
+      <text class="mono" x="1900" y="1580" font-size="20" text-anchor="middle" fill="#F87171">1</text>
+      <text class="mono" x="2300" y="1580" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="2700" y="1580" font-size="20" text-anchor="middle" fill="#5A7089">0</text>
+      <text class="mono" x="3340" y="1580" font-size="20" text-anchor="end" fill="#F87171">BLOCKED</text>
+      <line x1="520" y1="1600" x2="3340" y2="1600" stroke="#38BDF8" stroke-opacity="0.08"/>
+
+      <text class="mono" x="520" y="1640" font-size="20" fill="#5A7089">remaining 4 files</text>
+      <text class="mono" x="3340" y="1640" font-size="20" text-anchor="end" fill="#5A7089">mixed</text>
+    </g>
+  </g>
+<rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

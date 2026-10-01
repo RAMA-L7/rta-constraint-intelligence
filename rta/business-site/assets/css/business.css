@@ -582,6 +582,45 @@ table.spec tr:hover td { background: rgba(56,189,248,0.03); }
 }
 
 
+/* ---- Evidence plates (16:9 spec plates from landing-images) ---- */
+.plate {
+  margin: var(--sp-6) 0 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(19,28,48,0.85), rgba(10,15,26,0.92));
+  box-shadow: 0 24px 70px -30px rgba(0,0,0,0.8);
+}
+.plate img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.plate figcaption {
+  padding: 12px 20px 14px;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.plate figcaption b { color: var(--text-primary); font-weight: 600; }
+.plate figcaption .plate-tag {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+/* Full-bleed variant for the landing page. */
+.plate--wide { max-width: 100%; }
+@media (max-width: 720px) {
+  .plate { margin-top: var(--sp-5); border-radius: var(--radius-m); }
+  .plate figcaption { padding: 10px 14px 12px; font-size: 0.8rem; }
+}
+
+
 /* ---- Audio overview player ---- */
 .player-shell {
   max-width: 760px;

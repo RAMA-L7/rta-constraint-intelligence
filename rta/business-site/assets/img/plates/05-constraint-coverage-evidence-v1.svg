@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>Constraint coverage evidence</title>
+  <desc>Coverage broken down by constraint category, with the explicit statement that
+        coverage is not correctness.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V56" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1280" cy="1060" rx="1000" ry="800" fill="url(#pool)"/>
+  <ellipse cx="2800" cy="1060" rx="800" ry="760" fill="url(#pool)"/>
+
+  <!-- ================= DONUT PANEL ================= -->
+  <g>
+    <rect x="500" y="500" width="1600" height="1120" rx="16" fill="url(#glass)"/>
+    <rect x="500" y="500" width="1600" height="1120" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="500" y="500" width="1600" height="1120" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="560" y="566" font-size="22" letter-spacing="4" fill="#7DD3FC">COVERAGE BREAKDOWN</text>
+    <line x1="500" y1="596" x2="2100" y2="596" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <g fill="none" stroke-width="96" transform="rotate(-90 1300 980)">
+      <circle cx="1300" cy="980" r="380" stroke="#F87171" stroke-opacity="0.35" stroke-width="96"/>
+      <circle cx="1300" cy="980" r="380" stroke="#38BDF8" stroke-opacity="0.95" stroke-dasharray="367.3 2020.3" stroke-dashoffset="0"/>
+    </g>
+
+    <g text-anchor="middle">
+      <text class="mono" x="1300" y="900" font-size="24" letter-spacing="4" fill="#7C90A8">CONSTRAINED</text>
+      <text class="hd" x="1300" y="1040" font-size="120" font-weight="500" letter-spacing="-3" fill="#E8F4FF">15</text>
+      <text class="mono" x="1300" y="1094" font-size="22" fill="#7C90A8">per cent of 39 tracked items</text>
+      <line x1="1160" y1="1136" x2="1440" y2="1136" stroke="#38BDF8" stroke-opacity="0.25"/>
+      <text class="mono" x="1300" y="1184" font-size="20" fill="#5A7089">6 of 39 covered, 33 missing</text>
+    </g>
+
+    <!-- legend -->
+    <g class="mono" font-size="20">
+      <rect x="620" y="1400" width="520" height="56" rx="28" fill="#38BDF8" fill-opacity="0.12" stroke="#38BDF8" stroke-opacity="0.45"/>
+      <circle cx="658" cy="1428" r="8" fill="#38BDF8"/><text class="mono" x="682" y="1436" font-size="20" fill="#CFEFFF">covered &#183; 6 items</text>
+
+      <rect x="1180" y="1400" width="560" height="56" rx="28" fill="#F87171" fill-opacity="0.10" stroke="#F87171" stroke-opacity="0.4"/>
+      <circle cx="1218" cy="1428" r="8" fill="#F87171"/><text class="mono" x="1242" y="1436" font-size="20" fill="#FECACA">missing &#183; 33 items</text>
+
+      <text class="mono" x="1360" y="1520" font-size="19" text-anchor="middle" fill="#5A7089">6 groups, checked in a fixed order on every run</text>
+    </g>
+  </g>
+
+  <!-- ================= CATEGORY PANEL ================= -->
+  <g>
+    <rect x="2200" y="500" width="1200" height="1120" rx="16" fill="url(#glass)"/>
+    <rect x="2200" y="500" width="1200" height="1120" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="2200" y="500" width="1200" height="1120" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="2260" y="566" font-size="22" letter-spacing="4" fill="#7DD3FC">COVERAGE BY GROUP</text>
+    <line x1="2200" y1="596" x2="3400" y2="596" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <g class="mono" font-size="21">
+      <text class="mono" x="2260" y="660" font-size="21" fill="#CFE3F5">I/O Constraints</text>
+      <text class="mono" x="3360" y="660" font-size="21" text-anchor="end" fill="#38BDF8">33% &#183; 2/6</text>
+      <rect x="2260" y="678" width="1100" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.035"/>
+      <rect x="2260" y="678" width="363" height="12" rx="6" fill="#38BDF8"/>
+
+      <text class="mono" x="2260" y="748" font-size="21" fill="#CFE3F5">Timing Exceptions</text>
+      <text class="mono" x="3360" y="748" font-size="21" text-anchor="end" fill="#FBBF24">29% &#183; 2/7</text>
+      <rect x="2260" y="766" width="1100" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.035"/>
+      <rect x="2260" y="766" width="319" height="12" rx="6" fill="#FBBF24"/>
+
+      <text class="mono" x="2260" y="836" font-size="21" fill="#CFE3F5">Power / DFT</text>
+      <text class="mono" x="3360" y="836" font-size="21" text-anchor="end" fill="#FBBF24">17% &#183; 1/6</text>
+      <rect x="2260" y="854" width="1100" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.035"/>
+      <rect x="2260" y="854" width="187" height="12" rx="6" fill="#FBBF24"/>
+
+      <text class="mono" x="2260" y="924" font-size="21" fill="#CFE3F5">Clocks</text>
+      <text class="mono" x="3360" y="924" font-size="21" text-anchor="end" fill="#F87171">11% &#183; 1/9</text>
+      <rect x="2260" y="942" width="1100" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.035"/>
+      <rect x="2260" y="942" width="121" height="12" rx="6" fill="#F87171"/>
+
+      <text class="mono" x="2260" y="1012" font-size="21" fill="#CFE3F5">Design Rules</text>
+      <text class="mono" x="3360" y="1012" font-size="21" text-anchor="end" fill="#F87171">0% &#183; 0/6</text>
+      <rect x="2260" y="1030" width="1100" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.035"/>
+      <rect x="2260" y="1030" width="6" height="12" rx="3" fill="#F87171" fill-opacity="0.5"/>
+
+      <text class="mono" x="2260" y="1100" font-size="21" fill="#CFE3F5">AOCV / Derate</text>
+      <text class="mono" x="3360" y="1100" font-size="21" text-anchor="end" fill="#F87171">0% &#183; 0/5</text>
+      <rect x="2260" y="1118" width="1100" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.035"/>
+      <rect x="2260" y="1118" width="6" height="12" rx="3" fill="#F87171" fill-opacity="0.5"/>
+    </g>
+
+    <line x1="2200" y1="1180" x2="3400" y2="1180" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <!-- the explicit statement -->
+    <g>
+      <rect x="2260" y="1210" width="1100" height="350" rx="14" fill="#020409" fill-opacity="0.5" stroke="#38BDF8" stroke-opacity="0.22"/>
+      <text class="mono" x="2310" y="1272" font-size="20" letter-spacing="3" fill="#5A7089">READ THIS BEFORE THE NUMBER</text>
+      <text class="mono" x="2310" y="1350" font-size="44" fill="#E8F4FF">Coverage &#8800; correctness</text>
+      <line x1="2310" y1="1384" x2="3310" y2="1384" stroke="#38BDF8" stroke-opacity="0.20"/>
+      <text class="mono" x="2310" y="1434" font-size="19" fill="#7C90A8">A constrained port is not a correct constraint.</text>
+      <text class="mono" x="2310" y="1470" font-size="19" fill="#7C90A8">Coverage counts what was written. Correctness is a</text>
+      <text class="mono" x="2310" y="1506" font-size="19" fill="#7C90A8">separate claim, proven separately or not claimed at all.</text>
+    </g>
+  </g>
+
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

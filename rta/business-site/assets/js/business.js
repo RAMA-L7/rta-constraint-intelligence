@@ -23,9 +23,9 @@
 
   /* ── Live product facts (keep in sync with rta/evidence/manifest) ─────── */
   var FACTS = {
-    version: "1.5.11",
+    version: "1.5.12",
     rules: 119,
-    tests: 824,
+    tests: 930,
     suites: 42,
     runners: 9,
     app: "https://rta-constraint-intelligence-294wudzqxdnhluyqk6eskp.streamlit.app/",

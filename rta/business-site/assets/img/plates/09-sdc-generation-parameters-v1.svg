@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>SDC generation from parameters</title>
+  <desc>Command line parameters assembled by a mechanical generator into a complete
+        constraint file.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1920" cy="1080" rx="1500" ry="820" fill="url(#pool)"/>
+
+  <!-- ===== INPUTS ===== -->
+  <g>
+    <rect x="460" y="560" width="1000" height="60" fill="url(#glassTop)"/>
+    <rect x="460" y="620" width="1000" height="1000" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="620" width="1000" height="1000" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="620" width="1000" height="1000" rx="16" fill="url(#sheen)"/>
+    <circle cx="500" cy="530" r="5" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    <text class="mono" x="522" y="538" font-size="24" letter-spacing="4" fill="#7DD3FC">PARAMETERS</text>
+
+    <rect x="510" y="680" width="900" height="470" rx="10" fill="#020409" fill-opacity="0.7" stroke="#38BDF8" stroke-opacity="0.2"/>
+    <g class="mono" font-size="21">
+      <text class="mono" x="540" y="726" font-size="21"><tspan fill="#5EEAD4">$</tspan><tspan fill="#CFE3F5"> rta generate</tspan></text>
+      <text class="mono" x="540" y="776" font-size="21"><tspan fill="#C4B5FD">    --design </tspan><tspan fill="#E2E8F0">MY_CHIP</tspan></text>
+      <text class="mono" x="540" y="826" font-size="21"><tspan fill="#C4B5FD">    --clock </tspan><tspan fill="#E2E8F0">clk=10.0</tspan></text>
+      <text class="mono" x="540" y="876" font-size="21" fill="#C4B5FD">    --derate</text>
+      <text class="mono" x="540" y="926" font-size="21"><tspan fill="#C4B5FD">    --operating-condition </tspan><tspan fill="#E2E8F0">slow-slow</tspan></text>
+      <text class="mono" x="540" y="976" font-size="21"><tspan fill="#C4B5FD">    --output </tspan><tspan fill="#E2E8F0">MY_CHIP.sdc</tspan></text>
+      <text class="mono" x="540" y="1026" font-size="21" fill="#5A7089"># every value is explicit,</text>
+      <text class="mono" x="540" y="1060" font-size="21" fill="#5A7089"># defaults are declared, not inferred</text>
+    </g>
+
+    <line x1="510" y1="1110" x2="1410" y2="1110" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <g class="mono" font-size="20">
+      <text class="mono" x="510" y="1170" font-size="20" fill="#5A7089">5 flags read</text>
+      <text class="mono" x="510" y="1220" font-size="20" fill="#5A7089">0 interactive prompts</text>
+      <text class="mono" x="510" y="1270" font-size="20" fill="#5A7089">1 deterministic file</text>
+    </g>
+
+    <line x1="510" y1="1310" x2="1410" y2="1310" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="510" y="1366" font-size="19" letter-spacing="3" fill="#5A7089">GENERATOR SCOPE</text>
+    <g class="mono" font-size="19">
+      <circle cx="520" cy="1414" r="7" fill="#5A7089"/>
+      <text class="mono" x="544" y="1422" font-size="19" fill="#7C90A8">writes constraint structure</text>
+      <circle cx="520" cy="1464" r="7" fill="#5A7089"/>
+      <text class="mono" x="544" y="1472" font-size="19" fill="#7C90A8">derives no slack or delay</text>
+      <circle cx="520" cy="1514" r="7" fill="#5A7089"/>
+      <text class="mono" x="544" y="1522" font-size="19" fill="#7C90A8">runs no timing analysis</text>
+    </g>
+  </g>
+
+  <!-- ===== GENERATOR ===== -->
+  <g>
+    <rect x="1560" y="560" width="720" height="60" fill="url(#glassTop)"/>
+    <rect x="1560" y="620" width="720" height="1000" rx="16" fill="url(#glass)"/>
+    <rect x="1560" y="620" width="720" height="1000" rx="16" fill="none" stroke="url(#edge)" stroke-width="2.5"/>
+    <rect x="1560" y="620" width="720" height="1000" rx="16" fill="url(#sheen)"/>
+    <circle cx="1600" cy="530" r="5" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    <text class="mono" x="1622" y="538" font-size="24" letter-spacing="4" fill="#7DD3FC">GENERATOR</text>
+
+    <!-- concentric assembly rings -->
+    <g fill="none" transform="translate(1920 1080)">
+      <circle cx="0" cy="0" r="300" stroke="#38BDF8" stroke-opacity="0.16" stroke-width="2" stroke-dasharray="10 14"/>
+      <circle cx="0" cy="0" r="238" stroke="#38BDF8" stroke-opacity="0.26" stroke-width="2.5"/>
+      <circle cx="0" cy="0" r="176" stroke="#7DD3FC" stroke-opacity="0.32" stroke-width="2.5" stroke-dasharray="6 10"/>
+      <circle cx="0" cy="0" r="114" stroke="#38BDF8" stroke-opacity="0.55" stroke-width="3"/>
+      <circle cx="0" cy="0" r="52"  stroke="#BAE6FD" stroke-opacity="0.8" stroke-width="3" filter="url(#cyanGlow)"/>
+      <!-- radial spokes -->
+      <g stroke="#38BDF8" stroke-opacity="0.30" stroke-width="2">
+        <line x1="0" y1="-300" x2="0" y2="-238"/>
+        <line x1="212" y1="-212" x2="168" y2="-168"/>
+        <line x1="300" y1="0" x2="238" y2="0"/>
+        <line x1="212" y1="212" x2="168" y2="168"/>
+        <line x1="0" y1="300" x2="0" y2="238"/>
+        <line x1="-212" y1="212" x2="-168" y2="168"/>
+        <line x1="-300" y1="0" x2="-238" y2="0"/>
+        <line x1="-212" y1="-212" x2="-168" y2="-168"/>
+      </g>
+      <!-- assembly nodes on the inner ring -->
+      <g fill="#7DD3FC">
+        <circle cx="0" cy="-176" r="9"/><circle cx="124" cy="-124" r="9"/>
+        <circle cx="176" cy="0" r="9"/><circle cx="124" cy="124" r="9"/>
+        <circle cx="0" cy="176" r="9"/><circle cx="-124" cy="124" r="9"/>
+        <circle cx="-176" cy="0" r="9"/><circle cx="-124" cy="-124" r="9"/>
+      </g>
+    </g>
+    <text class="hd" x="1920" y="1096" font-size="34" font-weight="500" text-anchor="middle" fill="#E0F2FE">GEN</text>
+
+    <g class="mono" font-size="19" text-anchor="middle">
+      <text class="mono" x="1920" y="1450" font-size="19" fill="#5A7089">assembles components,</text>
+      <text class="mono" x="1920" y="1486" font-size="19" fill="#5A7089">never invents them</text>
+    </g>
+  </g>
+
+  <!-- ===== OUTPUT ===== -->
+  <g>
+    <rect x="2380" y="560" width="1020" height="60" fill="url(#glassTop)"/>
+    <rect x="2380" y="620" width="1020" height="1000" rx="16" fill="url(#glass)"/>
+    <rect x="2380" y="620" width="1020" height="1000" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="2380" y="620" width="1020" height="1000" rx="16" fill="url(#sheen)"/>
+    <circle cx="2420" cy="530" r="5" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    <text class="mono" x="2442" y="538" font-size="24" letter-spacing="4" fill="#7DD3FC">GENERATED FILE</text>
+
+    <rect x="2430" y="680" width="920" height="60" rx="8" fill="#38BDF8" fill-opacity="0.06" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <text class="mono" x="2460" y="718" font-size="24" fill="#DCEBFA">MY_CHIP.sdc</text>
+
+    <g class="mono" font-size="21">
+      <text class="mono" x="2430" y="800" font-size="21"><tspan fill="#7DD3FC">create_clock</tspan><tspan fill="#C4B5FD"> -name </tspan><tspan fill="#E2E8F0">clk</tspan><tspan fill="#C4B5FD"> -period </tspan><tspan fill="#FCD34D">10.000</tspan><tspan fill="#8A99B5"> [get_ports clk]</tspan></text>
+      <text class="mono" x="2430" y="850" font-size="21"><tspan fill="#7DD3FC">set_clock_uncertainty</tspan><tspan fill="#C4B5FD"> -setup </tspan><tspan fill="#FCD34D">0.15</tspan><tspan fill="#8A99B5"> [get_clocks clk]</tspan></text>
+      <text class="mono" x="2430" y="900" font-size="21"><tspan fill="#7DD3FC">set_input_delay</tspan><tspan fill="#C4B5FD"> -max </tspan><tspan fill="#FCD34D">1.2</tspan><tspan fill="#C4B5FD"> -clock </tspan><tspan fill="#E2E8F0">clk</tspan><tspan fill="#C4B5FD"> \</tspan></text>
+      <text class="mono" x="2430" y="950" font-size="21" fill="#8A99B5">  [remove_from_collection [all_inputs] [get_ports {clk}]]</text>
+      <text class="mono" x="2430" y="1000" font-size="21"><tspan fill="#7DD3FC">set_output_delay</tspan><tspan fill="#C4B5FD"> -max </tspan><tspan fill="#FCD34D">1.5</tspan><tspan fill="#C4B5FD"> -clock </tspan><tspan fill="#E2E8F0">clk</tspan><tspan fill="#8A99B5"> [all_outputs]</tspan></text>
+      <text class="mono" x="2430" y="1050" font-size="21"><tspan fill="#7DD3FC">set_max_fanout</tspan><tspan fill="#C4B5FD">     </tspan><tspan fill="#FCD34D">20</tspan><tspan fill="#8A99B5"> [all_inputs]</tspan></text>
+      <text class="mono" x="2430" y="1100" font-size="21"><tspan fill="#7DD3FC">set_operating_conditions</tspan><tspan fill="#C4B5FD"> -max </tspan><tspan fill="#E2E8F0">slow-slow</tspan></text>
+      <text class="mono" x="2430" y="1150" font-size="21"><tspan fill="#7DD3FC">set_timing_derate</tspan><tspan fill="#C4B5FD"> -late  -cell_delay </tspan><tspan fill="#FCD34D">0.92</tspan><tspan fill="#8A99B5">  [all_nets]</tspan></text>
+      <text class="mono" x="2430" y="1200" font-size="21"><tspan fill="#7DD3FC">set_timing_derate</tspan><tspan fill="#C4B5FD"> -early -cell_delay </tspan><tspan fill="#FCD34D">1.08</tspan><tspan fill="#8A99B5"> [all_nets]</tspan></text>
+    </g>
+
+    <line x1="2430" y1="1250" x2="3350" y2="1250" stroke="#38BDF8" stroke-opacity="0.18"/>
+    <g class="mono" font-size="20">
+      <text class="mono" x="2430" y="1310" font-size="20" fill="#5A7089">19 commands written &#183; 9 shown</text>
+      <text class="mono" x="2430" y="1360" font-size="20" fill="#5A7089">flag values and documented defaults,</text>
+      <text class="mono" x="2430" y="1400" font-size="20" fill="#5A7089">both written into the file</text>
+    </g>
+    <rect x="2430" y="1450" width="420" height="70" rx="35" fill="#34D399" fill-opacity="0.10" stroke="#34D399" stroke-opacity="0.4"/>
+    <circle cx="2470" cy="1485" r="12" fill="none" stroke="#34D399" stroke-width="2.5"/>
+    <path d="M2464,1485 l5,6 l10,-12" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="mono" x="2500" y="1493" font-size="20" fill="#D3F5EC">re-checkable on its own</text>
+  </g>
+
+  <!-- connectors -->
+  <g filter="url(#cyanGlow)">
+    <line x1="1460" y1="1080" x2="1542" y2="1080" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1532,1064 L1556,1080 L1532,1096" fill="none" stroke="#BAE6FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="2280" y1="1080" x2="2362" y2="1080" stroke="#38BDF8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M2352,1064 L2376,1080 L2352,1096" fill="none" stroke="#BAE6FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

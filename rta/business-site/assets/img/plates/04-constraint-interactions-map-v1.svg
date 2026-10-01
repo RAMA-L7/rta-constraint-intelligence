@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>Constraint interactions map</title>
+  <desc>Two constraint excerpts mapped to their semantic interactions: legal multiples,
+        possible overlaps, and definite contradictions.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1150" cy="1100" rx="1050" ry="820" fill="url(#pool)"/>
+  <ellipse cx="2600" cy="1100" rx="1050" ry="820" fill="url(#pool)"/>
+
+  <!-- ================= EXCERPT A ================= -->
+  <g>
+    <rect x="460" y="496" width="1100" height="44" fill="url(#glassTop)"/>
+    <rect x="460" y="540" width="1100" height="540" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="540" width="1100" height="540" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="540" width="1100" height="540" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="510" y="604" font-size="22" letter-spacing="4" fill="#7DD3FC">EXCERPT &#183; BASELINE</text>
+    <line x1="460" y1="632" x2="1560" y2="632" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <g class="mono">
+      <text class="mono" x="510" y="700" font-size="22"><tspan fill="#7DD3FC">create_clock</tspan><tspan fill="#C4B5FD"> -name </tspan><tspan fill="#E2E8F0">clk_core</tspan><tspan fill="#C4B5FD"> -period </tspan><tspan fill="#FCD34D">2.000</tspan></text>
+      <text class="mono" x="510" y="758" font-size="22"><tspan fill="#7DD3FC">create_clock</tspan><tspan fill="#C4B5FD"> -name </tspan><tspan fill="#E2E8F0">clk_slow</tspan><tspan fill="#C4B5FD"> -period </tspan><tspan fill="#FCD34D">8.000</tspan></text>
+      <text class="mono" x="510" y="826" font-size="22"><tspan fill="#FDE68A">set_multicycle_path</tspan><tspan fill="#C4B5FD"> 2 -setup -from </tspan><tspan fill="#8A99B5">[get_clocks clk_core]</tspan></text>
+      <text class="mono" x="510" y="864" font-size="22" fill="#8A99B5">  -to [get_clocks clk_slow]</text>
+      <text class="mono" x="510" y="932" font-size="22"><tspan fill="#7DD3FC">set_case_analysis</tspan><tspan fill="#C4B5FD"> 0 </tspan><tspan fill="#8A99B5">[get_ports mode]</tspan></text>
+      <text class="mono" x="510" y="1000" font-size="22"><tspan fill="#7DD3FC">set_false_path</tspan><tspan fill="#C4B5FD"> -from </tspan><tspan fill="#8A99B5">[get_clocks clk_slow]</tspan></text>
+    </g>
+    <text class="mono" x="510" y="1052" font-size="19" fill="#5A7089">2 clocks, no clock groups, no hold fix</text>
+  </g>
+
+  <!-- ================= EXCERPT B ================= -->
+  <g>
+    <rect x="460" y="1200" width="1100" height="44" fill="url(#glassTop)"/>
+    <rect x="460" y="1244" width="1100" height="496" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="1244" width="1100" height="496" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="1244" width="1100" height="496" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="510" y="1308" font-size="22" letter-spacing="4" fill="#7DD3FC">EXCERPT &#183; REVISION</text>
+    <line x1="460" y1="1336" x2="1560" y2="1336" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <g class="mono">
+      <text class="mono" x="510" y="1404" font-size="22"><tspan fill="#6EE7B7">set_multicycle_path</tspan><tspan fill="#C4B5FD"> 2 -setup -hold -from </tspan><tspan fill="#8A99B5">[get_clocks clk_core]</tspan></text>
+      <text class="mono" x="510" y="1442" font-size="22" fill="#8A99B5">  -to [get_clocks clk_slow]</text>
+      <text class="mono" x="510" y="1510" font-size="22"><tspan fill="#6EE7B7">set_clock_groups</tspan><tspan fill="#C4B5FD"> -asynchronous </tspan><tspan fill="#8A99B5">-group {clk_core} -group {clk_slow}</tspan></text>
+      <text class="mono" x="510" y="1588" font-size="22"><tspan fill="#7DD3FC">set_case_analysis</tspan><tspan fill="#C4B5FD"> 0 </tspan><tspan fill="#8A99B5">[get_ports mode]</tspan></text>
+      <text class="mono" x="510" y="1656" font-size="22"><tspan fill="#FDE68A">set_case_analysis</tspan><tspan fill="#C4B5FD"> 1 </tspan><tspan fill="#8A99B5">[get_ports mode]</tspan></text>
+    </g>
+    <text class="mono" x="510" y="1710" font-size="19" fill="#5A7089">hold fix and groups added, second case value added</text>
+  </g>
+
+  <!-- ================= INTERACTION MAP ================= -->
+  <g>
+    <rect x="1700" y="496" width="1700" height="44" fill="url(#glassTop)"/>
+    <rect x="1700" y="540" width="1700" height="1200" rx="16" fill="url(#glass)"/>
+    <rect x="1700" y="540" width="1700" height="1200" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="1700" y="540" width="1700" height="1200" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="1760" y="604" font-size="22" letter-spacing="4" fill="#7DD3FC">SEMANTIC INTERACTIONS</text>
+    <text class="mono" x="3340" y="604" font-size="19" text-anchor="end" fill="#7C90A8">baseline against revision</text>
+    <line x1="1700" y1="632" x2="3400" y2="632" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <text class="mono" x="1880" y="700" font-size="19" text-anchor="middle" fill="#5A7089">baseline</text>
+    <text class="mono" x="3220" y="700" font-size="19" text-anchor="middle" fill="#5A7089">revision</text>
+
+    <!-- node chips: baseline -->
+    <g>
+      <rect x="1760" y="726" width="240" height="80" rx="10" fill="#FDE68A" fill-opacity="0.10" stroke="#FBBF24" stroke-opacity="0.45"/>
+      <text class="mono" x="1880" y="762" font-size="19" text-anchor="middle" fill="#F7E3B0">mcp -setup</text>
+      <text class="mono" x="1880" y="788" font-size="17" text-anchor="middle" fill="#7C90A8">no -hold</text>
+
+      <rect x="1760" y="896" width="240" height="80" rx="10" fill="#FDE68A" fill-opacity="0.10" stroke="#FBBF24" stroke-opacity="0.45"/>
+      <text class="mono" x="1880" y="932" font-size="19" text-anchor="middle" fill="#F7E3B0">2 clocks</text>
+      <text class="mono" x="1880" y="958" font-size="17" text-anchor="middle" fill="#7C90A8">no groups</text>
+
+      <rect x="1760" y="1066" width="240" height="80" rx="10" fill="#7DD3FC" fill-opacity="0.10" stroke="#38BDF8" stroke-opacity="0.4"/>
+      <text class="mono" x="1880" y="1102" font-size="19" text-anchor="middle" fill="#CFEFFF">case 0</text>
+      <text class="mono" x="1880" y="1128" font-size="17" text-anchor="middle" fill="#7C90A8">unchanged</text>
+    </g>
+
+    <!-- node chips: revision -->
+    <g>
+      <rect x="3100" y="726" width="240" height="80" rx="10" fill="#34D399" fill-opacity="0.10" stroke="#34D399" stroke-opacity="0.45"/>
+      <text class="mono" x="3220" y="762" font-size="19" text-anchor="middle" fill="#D3F5EC">mcp -hold</text>
+      <text class="mono" x="3220" y="788" font-size="17" text-anchor="middle" fill="#7C90A8">hold added</text>
+
+      <rect x="3100" y="896" width="240" height="80" rx="10" fill="#34D399" fill-opacity="0.10" stroke="#34D399" stroke-opacity="0.45"/>
+      <text class="mono" x="3220" y="932" font-size="19" text-anchor="middle" fill="#D3F5EC">groups added</text>
+      <text class="mono" x="3220" y="958" font-size="17" text-anchor="middle" fill="#7C90A8">asynchronous</text>
+
+      <rect x="3100" y="1066" width="240" height="80" rx="10" fill="#FDE68A" fill-opacity="0.10" stroke="#FBBF24" stroke-opacity="0.5"/>
+      <text class="mono" x="3220" y="1102" font-size="19" text-anchor="middle" fill="#F7E3B0">case 1</text>
+      <text class="mono" x="3220" y="1128" font-size="17" text-anchor="middle" fill="#7C90A8">new line</text>
+    </g>
+
+    <!-- interaction edges -->
+    <g fill="none" stroke-linecap="round">
+      <path d="M2000,766 L3100,766" stroke="#34D399" stroke-opacity="0.65" stroke-width="3"/>
+      <path d="M2000,936 L3100,936" stroke="#34D399" stroke-opacity="0.65" stroke-width="3"/>
+      <path d="M2000,1106 L3100,1106" stroke="#FBBF24" stroke-opacity="0.7" stroke-width="3.5"/>
+    </g>
+
+    <!-- edge labels with real rule codes -->
+    <g>
+      <rect x="2180" y="720" width="740" height="92" rx="12" fill="#020409" fill-opacity="0.78" stroke="#34D399" stroke-opacity="0.4"/>
+      <text class="mono" x="2550" y="756" font-size="20" text-anchor="middle" fill="#D3F5EC">resolved in revision</text>
+      <text class="mono" x="2550" y="792" font-size="19" text-anchor="middle" fill="#8A99B5">SDC-021 multicycle without hold fix</text>
+
+      <rect x="2180" y="890" width="740" height="92" rx="12" fill="#020409" fill-opacity="0.78" stroke="#34D399" stroke-opacity="0.4"/>
+      <text class="mono" x="2550" y="926" font-size="20" text-anchor="middle" fill="#D3F5EC">resolved in revision</text>
+      <text class="mono" x="2550" y="962" font-size="19" text-anchor="middle" fill="#8A99B5">SDC-024 multiple clocks without clock groups</text>
+
+      <rect x="2180" y="1060" width="740" height="92" rx="12" fill="#020409" fill-opacity="0.78" stroke="#FBBF24" stroke-opacity="0.5"/>
+      <text class="mono" x="2550" y="1096" font-size="20" text-anchor="middle" fill="#F7E3B0">contradiction introduced</text>
+      <text class="mono" x="2550" y="1132" font-size="19" text-anchor="middle" fill="#8A99B5">SDC-049 contradictory case analysis</text>
+    </g>
+
+    <!-- verdict -->
+    <g>
+      <line x1="1700" y1="1260" x2="3400" y2="1260" stroke="#38BDF8" stroke-opacity="0.16"/>
+      <text class="mono" x="1760" y="1330" font-size="22" letter-spacing="3" fill="#5A7089">INTERACTION VERDICT</text>
+
+      <rect x="1760" y="1360" width="500" height="140" rx="12" fill="#34D399" fill-opacity="0.07" stroke="#34D399" stroke-opacity="0.32"/>
+      <text class="mono" x="1800" y="1408" font-size="20" fill="#7C90A8">resolved by revision</text>
+      <text class="hd" x="1800" y="1472" font-size="44" font-weight="500" fill="#34D399">02</text>
+
+      <rect x="2280" y="1360" width="500" height="140" rx="12" fill="#FBBF24" fill-opacity="0.07" stroke="#FBBF24" stroke-opacity="0.32"/>
+      <text class="mono" x="2320" y="1408" font-size="20" fill="#7C90A8">contradictions</text>
+      <text class="hd" x="2320" y="1472" font-size="44" font-weight="500" fill="#FBBF24">01</text>
+
+      <rect x="2800" y="1360" width="500" height="140" rx="12" fill="#5A7089" fill-opacity="0.10" stroke="#475569" stroke-opacity="0.4"/>
+      <text class="mono" x="2840" y="1408" font-size="20" fill="#7C90A8">regressions</text>
+      <text class="hd" x="2840" y="1472" font-size="44" font-weight="500" fill="#8A99B5">00</text>
+
+      <text class="mono" x="1760" y="1580" font-size="21" fill="#5A7089">Each interaction is classified once and carries the rule that classified it.</text>
+      <text class="mono" x="1760" y="1624" font-size="21" fill="#5A7089">A revision that fixes two warnings and adds one contradiction is not an improvement.</text>
+      <text class="mono" x="1760" y="1668" font-size="21" fill="#5A7089">Both sides are reported, and neither side is collapsed away.</text>
+    </g>
+  </g>
+
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

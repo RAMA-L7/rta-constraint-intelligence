@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>SDC constraint intelligence</title>
+  <desc>Straight-on technical plate: a constraint file under semantic analysis, with
+        rule-code findings and evidence status disclosed beside each affected line.</desc>
+
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0"    stop-color="#020409"/>
+      <stop offset="0.45" stop-color="#04060B"/>
+      <stop offset="1"    stop-color="#020409"/>
+    </linearGradient>
+
+    <!-- straight-on orthographic view: square 56px grid -->
+    <pattern id="grid56" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V56" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="150"/>
+    </filter>
+    <mask id="gridMask">
+      <rect x="220" y="-40" width="3400" height="2240" fill="#ffffff" filter="url(#feather)"/>
+    </mask>
+
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0"    stop-color="#38BDF8" stop-opacity="0.070"/>
+      <stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/>
+      <stop offset="1"    stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0"    stop-color="#FFFFFF" stop-opacity="0.09"/>
+      <stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/>
+      <stop offset="1"    stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"    stop-color="#BAE6FD" stop-opacity="0.62"/>
+      <stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.28"/>
+      <stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.14"/>
+      <stop offset="1"    stop-color="#BAE6FD" stop-opacity="0.42"/>
+    </linearGradient>
+    <linearGradient id="hairline" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#38BDF8" stop-opacity="0.05"/>
+      <stop offset="0.14" stop-color="#38BDF8" stop-opacity="0.38"/>
+      <stop offset="0.86" stop-color="#38BDF8" stop-opacity="0.38"/>
+      <stop offset="1"    stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <radialGradient id="docGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0"    stop-color="#38BDF8" stop-opacity="0.15"/>
+      <stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.05"/>
+      <stop offset="1"    stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#000000" stop-opacity="0.82"/>
+    </radialGradient>
+
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <!-- ================= BACKGROUND ================= -->
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1920" cy="1080" rx="1300" ry="900" fill="url(#docGlow)"/>
+
+  <!-- ================================================================= -->
+  <!-- CENTRE : THE CONSTRAINT FILE                                       -->
+  <!-- ================================================================= -->
+  <g>
+    <rect x="1120" y="500" width="1600" height="1160" rx="16" fill="url(#glass)"/>
+    <rect x="1120" y="500" width="1600" height="1160" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="1120" y="500" width="1600" height="1160" rx="16" fill="url(#sheen)"/>
+
+    <!-- header -->
+    <g>
+      <rect x="1196" y="546" width="20" height="16" rx="3" fill="none" stroke="#7DD3FC" stroke-width="2"/>
+      <path d="M1204,546 v16 M1212,546 v16" stroke="#7DD3FC" stroke-width="1.5" stroke-opacity="0.7"/>
+      <text class="mono" x="1240" y="562" font-size="26" fill="#DCEBFA">constraints.sdc</text>
+      <text class="mono" x="2660" y="562" font-size="21" text-anchor="end" fill="#7C90A8">unsupported 1 &#183; netlist 5</text>
+      <line x1="1120" y1="600" x2="2720" y2="600" stroke="#38BDF8" stroke-opacity="0.20" stroke-width="1.5"/>
+    </g>
+
+    <!-- severity gutter -->
+    <g>
+      <circle cx="1160" cy="682" r="7" fill="#38BDF8" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="744" r="7" fill="#38BDF8" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="806" r="7" fill="#FBBF24" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="868" r="7" fill="#38BDF8" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="930" r="7" fill="#38BDF8" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="992" r="7" fill="#8A99B5"/>
+      <circle cx="1160" cy="1054" r="7" fill="#FBBF24" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="1116" r="7" fill="#FBBF24" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="1178" r="7" fill="#FBBF24" filter="url(#cyanGlow)"/>
+      <circle cx="1160" cy="1240" r="7" fill="#38BDF8" filter="url(#cyanGlow)"/>
+    </g>
+
+    <!-- constraint lines -->
+    <g class="mono" font-size="24">
+      <text class="mono" x="1196" y="690" font-size="24"><tspan fill="#7DD3FC">create_clock</tspan><tspan fill="#C4B5FD"> -name </tspan><tspan fill="#E2E8F0">clk_core</tspan><tspan fill="#C4B5FD"> -period </tspan><tspan fill="#FCD34D">2.000</tspan><tspan fill="#8A99B5"> [get_ports clk]</tspan></text>
+      <text class="mono" x="1196" y="752" font-size="24"><tspan fill="#7DD3FC">create_clock</tspan><tspan fill="#C4B5FD"> -name </tspan><tspan fill="#E2E8F0">clk_slow</tspan><tspan fill="#C4B5FD"> -period </tspan><tspan fill="#FCD34D">8.000</tspan><tspan fill="#8A99B5"> [get_ports clk_slow]</tspan></text>
+      <text class="mono" x="1196" y="814" font-size="24"><tspan fill="#FDE68A">set_clock_groups</tspan><tspan fill="#C4B5FD"> -asynchronous </tspan><tspan fill="#8A99B5">-group {clk_core} -group {</tspan><tspan fill="#FCA5A5">clk_test</tspan><tspan fill="#8A99B5">}</tspan></text>
+      <text class="mono" x="1196" y="876" font-size="24"><tspan fill="#7DD3FC">set_input_delay</tspan><tspan fill="#C4B5FD"> -clock </tspan><tspan fill="#E2E8F0">clk_core</tspan><tspan fill="#C4B5FD"> </tspan><tspan fill="#FCD34D">0.400</tspan><tspan fill="#8A99B5"> [get_ports {d_in[*]}]</tspan></text>
+      <text class="mono" x="1196" y="938" font-size="24"><tspan fill="#7DD3FC">set_output_delay</tspan><tspan fill="#C4B5FD"> -clock </tspan><tspan fill="#E2E8F0">clk_core</tspan><tspan fill="#C4B5FD"> </tspan><tspan fill="#FCD34D">0.350</tspan><tspan fill="#8A99B5"> [get_ports {d_out[*]}]</tspan></text>
+      <text class="mono" x="1196" y="1000" font-size="24" fill="#A9B6C9"><tspan fill="#8A99B5">set_input_delay</tspan><tspan fill="#7C8CA3"> -clock </tspan><tspan fill="#A9B6C9">clk_slow</tspan><tspan fill="#FCD34D" fill-opacity="0.5"> 1.200 </tspan><tspan fill="#A9B6C9">[get_ports {cfg_bus[*]}]</tspan></text>
+      <text class="mono" x="1196" y="1062" font-size="24"><tspan fill="#FDE68A">set_multicycle_path</tspan><tspan fill="#C4B5FD"> 2 -setup -from </tspan><tspan fill="#8A99B5">[get_clocks clk_core] -to [get_clocks clk_slow]</tspan></text>
+      <text class="mono" x="1196" y="1124" font-size="24"><tspan fill="#FDE68A">set_case_analysis</tspan><tspan fill="#C4B5FD"> 0 </tspan><tspan fill="#8A99B5">[get_ports mode]</tspan></text>
+      <text class="mono" x="1196" y="1186" font-size="24"><tspan fill="#FDE68A">set_case_analysis</tspan><tspan fill="#C4B5FD"> 1 </tspan><tspan fill="#8A99B5">[get_ports mode]</tspan></text>
+      <text class="mono" x="1196" y="1248" font-size="24"><tspan fill="#7DD3FC">set_false_path</tspan><tspan fill="#C4B5FD"> -from </tspan><tspan fill="#8A99B5">[get_clocks clk_slow]</tspan></text>
+    </g>
+
+    <!-- contradiction bracket between the two case_analysis lines -->
+    <g fill="none" stroke="#FBBF24" stroke-opacity="0.6" stroke-width="2">
+      <path d="M2660,1116 L2690,1116 L2690,1194 L2660,1194"/>
+    </g>
+
+    <!-- footer tally -->
+    <g>
+      <line x1="1120" y1="1420" x2="2720" y2="1420" stroke="#38BDF8" stroke-opacity="0.18" stroke-width="1.5"/>
+      <g>
+        <rect x="1180" y="1450" width="272" height="140" rx="10" fill="#020409" fill-opacity="0.5" stroke="#38BDF8" stroke-opacity="0.16"/>
+        <text class="mono" x="1204" y="1496" font-size="20" fill="#7C90A8">COMMANDS</text>
+        <text class="hd" x="1204" y="1572" font-size="46" font-weight="500" fill="#38BDF8">10</text>
+      </g>
+      <g>
+        <rect x="1482" y="1450" width="272" height="140" rx="10" fill="#020409" fill-opacity="0.5" stroke="#38BDF8" stroke-opacity="0.16"/>
+        <text class="mono" x="1506" y="1496" font-size="20" fill="#7C90A8">WARNINGS</text>
+        <text class="hd" x="1506" y="1572" font-size="46" font-weight="500" fill="#FBBF24">10</text>
+      </g>
+      <g>
+        <rect x="1784" y="1450" width="272" height="140" rx="10" fill="#020409" fill-opacity="0.5" stroke="#38BDF8" stroke-opacity="0.16"/>
+        <text class="mono" x="1808" y="1496" font-size="20" fill="#7C90A8">ERRORS</text>
+        <text class="hd" x="1808" y="1572" font-size="46" font-weight="500" fill="#5A7089">00</text>
+      </g>
+      <g>
+        <rect x="2086" y="1450" width="272" height="140" rx="10" fill="#020409" fill-opacity="0.5" stroke="#38BDF8" stroke-opacity="0.16"/>
+        <text class="mono" x="2110" y="1496" font-size="20" fill="#7C90A8">NETLIST</text>
+        <text class="hd" x="2110" y="1572" font-size="46" font-weight="500" fill="#8A99B5">05</text>
+      </g>
+      <g>
+        <rect x="2388" y="1450" width="272" height="140" rx="10" fill="#020409" fill-opacity="0.5" stroke="#38BDF8" stroke-opacity="0.16"/>
+        <text class="mono" x="2412" y="1496" font-size="20" fill="#7C90A8">UNSUPPORTED</text>
+        <text class="hd" x="2412" y="1572" font-size="46" font-weight="500" fill="#5A7089">01</text>
+      </g>
+    </g>
+
+    <!-- corner registration -->
+    <g fill="none" stroke="#7DD3FC" stroke-opacity="0.4" stroke-width="2.5">
+      <path d="M1120,546 L1120,500 L1166,500  M2664,500 L2720,500 L2720,546
+               M1120,1614 L1120,1660 L1166,1660 M2664,1660 L2720,1660 L2720,1614"/>
+    </g>
+  </g>
+
+  <!-- ================================================================= -->
+  <!-- LEFT : CONSTRAINT GRAPH                                           -->
+  <!-- ================================================================= -->
+  <g>
+    <rect x="440" y="500" width="600" height="660" rx="16" fill="url(#glass)"/>
+    <rect x="440" y="500" width="600" height="660" rx="16" fill="none" stroke="url(#edge)" stroke-width="1.8"/>
+    <text class="mono" x="480" y="562" font-size="22" letter-spacing="3" fill="#7DD3FC">CONSTRAINT GRAPH</text>
+    <line x1="440" y1="590" x2="1040" y2="590" stroke="#38BDF8" stroke-opacity="0.16"/>
+
+    <!-- edges: orthogonal routing, engineering-drawing style -->
+    <g fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M740,664 L740,690 L600,690 L600,710"  stroke="#38BDF8" stroke-opacity="0.6"/>
+      <path d="M740,664 L740,852"                    stroke="#38BDF8" stroke-opacity="0.6"/>
+      <path d="M740,884 L740,930 L600,930 L600,930"  stroke="#34D399" stroke-opacity="0.55"/>
+      <path d="M600,994 L740,994 L740,1040"           stroke="#34D399" stroke-opacity="0.55"/>
+      <path d="M740,884 L740,1040"                   stroke="#FBBF24" stroke-opacity="0.55"/>
+    </g>
+
+    <!-- nodes -->
+    <g>
+      <rect x="610" y="600" width="260" height="64" rx="10" fill="#38BDF8" fill-opacity="0.10" stroke="#38BDF8" stroke-opacity="0.5"/>
+      <text class="mono" x="740" y="640" font-size="22" text-anchor="middle" fill="#CFEFFF">clk_core</text>
+
+      <rect x="470" y="710" width="260" height="64" rx="10" fill="#38BDF8" fill-opacity="0.08" stroke="#38BDF8" stroke-opacity="0.4"/>
+      <text class="mono" x="600" y="750" font-size="22" text-anchor="middle" fill="#CFEFFF">clk_slow</text>
+
+      <rect x="610" y="820" width="260" height="64" rx="10" fill="#34D399" fill-opacity="0.10" stroke="#34D399" stroke-opacity="0.45"/>
+      <text class="mono" x="740" y="860" font-size="22" text-anchor="middle" fill="#D3F5EC">d_in[*]</text>
+
+      <rect x="470" y="930" width="260" height="64" rx="10" fill="#34D399" fill-opacity="0.08" stroke="#34D399" stroke-opacity="0.35"/>
+      <text class="mono" x="600" y="970" font-size="22" text-anchor="middle" fill="#D3F5EC">d_out[*]</text>
+
+      <rect x="610" y="1040" width="260" height="64" rx="10" fill="#FBBF24" fill-opacity="0.10" stroke="#FBBF24" stroke-opacity="0.45"/>
+      <text class="mono" x="740" y="1080" font-size="22" text-anchor="middle" fill="#F7E3B0">mode</text>
+    </g>
+  </g>
+
+  <!-- subtle framework links into the file -->
+  <g stroke="#38BDF8" stroke-opacity="0.16" stroke-width="1.5" stroke-dasharray="5 9" fill="none">
+    <path d="M1040,700 L1120,700"/>
+    <path d="M1040,1000 L1090,1000 L1090,1240 L1120,1240"/>
+  </g>
+
+  <!-- ================================================================= -->
+  <!-- LEFT LOWER : SEVERITY KEY                                         -->
+  <!-- ================================================================= -->
+  <g>
+    <rect x="440" y="1200" width="600" height="460" rx="16" fill="url(#glass)"/>
+    <rect x="440" y="1200" width="600" height="460" rx="16" fill="none" stroke="url(#edge)" stroke-width="1.8"/>
+    <text class="mono" x="480" y="1262" font-size="22" letter-spacing="3" fill="#7DD3FC">LINE STATE</text>
+    <line x1="440" y1="1290" x2="1040" y2="1290" stroke="#38BDF8" stroke-opacity="0.16"/>
+
+    <g class="mono" font-size="22">
+      <circle cx="502" cy="1352" r="8" fill="#38BDF8" filter="url(#cyanGlow)"/>
+      <text class="mono" x="530" y="1360" font-size="22" fill="#CFE3F5">no finding</text>
+
+      <circle cx="502" cy="1414" r="8" fill="#FBBF24"/>
+      <text class="mono" x="530" y="1422" font-size="22" fill="#CFE3F5">warning raised</text>
+
+      <circle cx="502" cy="1476" r="8" fill="#F87171"/>
+      <text class="mono" x="530" y="1484" font-size="22" fill="#CFE3F5">error raised</text>
+
+      <circle cx="502" cy="1538" r="8" fill="#8A99B5"/>
+      <text class="mono" x="530" y="1546" font-size="22" fill="#CFE3F5">netlist required</text>
+    </g>
+    <text class="mono" x="480" y="1618" font-size="18" fill="#5A7089">gutter dot shows the state of that line</text>
+  </g>
+
+  <!-- ================================================================= -->
+  <!-- RIGHT : FINDINGS AND EVIDENCE                                     -->
+  <!-- ================================================================= -->
+  <g>
+    <text class="mono" x="2800" y="540" font-size="19" letter-spacing="3" fill="#5A7089">RULE FINDINGS &#183; 3 OF 10 WARNINGS</text>
+    <!-- SDC-048 -->
+    <g>
+      <rect x="2800" y="600" width="600" height="96" rx="12" fill="url(#glass)" stroke="#FBBF24" stroke-opacity="0.34"/>
+      <rect x="2800" y="600" width="6" height="96" rx="3" fill="#FBBF24" filter="url(#cyanGlow)"/>
+      <text class="mono" x="2840" y="658" font-size="28" fill="#DCEBFA">SDC-048</text>
+      <text class="mono" x="2840" y="686" font-size="18" fill="#7C90A8">undefined clock in clock groups</text>
+      <rect x="3160" y="628" width="220" height="46" rx="23" fill="#FBBF24" fill-opacity="0.12" stroke="#FBBF24" stroke-opacity="0.45"/>
+      <text class="mono" x="3270" y="658" font-size="19" text-anchor="middle" fill="#F7E3B0">WARNING</text>
+    </g>
+    <!-- SDC-021 -->
+    <g>
+      <rect x="2800" y="726" width="600" height="96" rx="12" fill="url(#glass)" stroke="#FBBF24" stroke-opacity="0.34"/>
+      <rect x="2800" y="726" width="6" height="96" rx="3" fill="#FBBF24" filter="url(#cyanGlow)"/>
+      <text class="mono" x="2840" y="784" font-size="28" fill="#DCEBFA">SDC-021</text>
+      <text class="mono" x="2840" y="812" font-size="18" fill="#7C90A8">multicycle without hold fix</text>
+      <rect x="3160" y="754" width="220" height="46" rx="23" fill="#FBBF24" fill-opacity="0.12" stroke="#FBBF24" stroke-opacity="0.45"/>
+      <text class="mono" x="3270" y="784" font-size="19" text-anchor="middle" fill="#F7E3B0">WARNING</text>
+    </g>
+    <!-- SDC-049 -->
+    <g>
+      <rect x="2800" y="852" width="600" height="96" rx="12" fill="url(#glass)" stroke="#FBBF24" stroke-opacity="0.34"/>
+      <rect x="2800" y="852" width="6" height="96" rx="3" fill="#FBBF24" filter="url(#cyanGlow)"/>
+      <text class="mono" x="2840" y="910" font-size="28" fill="#DCEBFA">SDC-049</text>
+      <text class="mono" x="2840" y="938" font-size="18" fill="#7C90A8">contradictory case analysis</text>
+      <rect x="3160" y="880" width="220" height="46" rx="23" fill="#FBBF24" fill-opacity="0.12" stroke="#FBBF24" stroke-opacity="0.45"/>
+      <text class="mono" x="3270" y="910" font-size="19" text-anchor="middle" fill="#F7E3B0">WARNING</text>
+    </g>
+    <!-- evidence axis, not a rule finding -->
+    <g>
+      <text class="mono" x="2800" y="1006" font-size="19" letter-spacing="3" fill="#5A7089">EVIDENCE STATE &#183; NOT A FINDING</text>
+      <rect x="2800" y="1030" width="600" height="96" rx="12" fill="url(#glass)" stroke="#8A99B5" stroke-opacity="0.30"/>
+      <rect x="2800" y="1030" width="6" height="96" rx="3" fill="#8A99B5"/>
+      <text class="mono" x="2840" y="1088" font-size="28" fill="#DCEBFA">cfg_bus[*]</text>
+      <text class="mono" x="2840" y="1116" font-size="18" fill="#7C90A8">bus width not derivable from sdc</text>
+      <rect x="3140" y="1058" width="240" height="46" rx="23" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.4"/>
+      <text class="mono" x="3260" y="1088" font-size="18" text-anchor="middle" fill="#C3CEDB">NETLIST_REQUIRED</text>
+    </g>
+
+    <!-- elbow connectors from the file -->
+    <g fill="none" stroke-width="2">
+      <path d="M2720,806 L2760,806 L2760,648 L2800,648"  stroke="#FBBF24" stroke-opacity="0.55"/>
+      <path d="M2720,1054 L2772,1054 L2772,774 L2800,774" stroke="#FBBF24" stroke-opacity="0.55"/>
+      <path d="M2720,1116 L2748,1116 L2748,900 L2800,900" stroke="#FBBF24" stroke-opacity="0.55"/>
+      <path d="M2720,992 L2790,992 L2790,1078 L2800,1078" stroke="#8A99B5" stroke-opacity="0.5"/>
+    </g>
+    <g>
+      <rect x="2694" y="800" width="26" height="6" rx="3" fill="#FBBF24"/>
+      <rect x="2694" y="1048" width="26" height="6" rx="3" fill="#FBBF24"/>
+      <rect x="2694" y="1110" width="26" height="6" rx="3" fill="#FBBF24"/>
+      <rect x="2694" y="986" width="26" height="6" rx="3" fill="#8A99B5"/>
+    </g>
+  </g>
+
+  <!-- ================================================================= -->
+  <!-- RIGHT LOWER : RULE LIBRARY                                        -->
+  <!-- ================================================================= -->
+  <g>
+    <rect x="2800" y="1200" width="600" height="460" rx="16" fill="url(#glass)"/>
+    <rect x="2800" y="1200" width="600" height="460" rx="16" fill="none" stroke="url(#edge)" stroke-width="1.8"/>
+    <text class="hd" x="2840" y="1320" font-size="96" font-weight="500" letter-spacing="-2" fill="#38BDF8">119</text>
+    <text class="mono" x="2840" y="1362" font-size="22" letter-spacing="3" fill="#7C90A8">SEMANTIC CHECKS</text>
+    <line x1="2800" y1="1392" x2="3400" y2="1392" stroke="#38BDF8" stroke-opacity="0.16"/>
+
+    <g class="mono" font-size="20">
+      <text class="mono" x="2840" y="1452" font-size="20" fill="#FBBF24">warning</text>
+      <text class="mono" x="3360" y="1452" font-size="20" text-anchor="end" fill="#5A7089">53</text>
+      <rect x="2840" y="1462" width="360" height="14" rx="7" fill="#FFFFFF" fill-opacity="0.05"/>
+      <rect x="2840" y="1462" width="360" height="14" rx="7" fill="#FBBF24" fill-opacity="0.8"/>
+
+      <text class="mono" x="2840" y="1512" font-size="20" fill="#38BDF8">info</text>
+      <text class="mono" x="3360" y="1512" font-size="20" text-anchor="end" fill="#5A7089">45</text>
+      <rect x="2840" y="1522" width="360" height="14" rx="7" fill="#FFFFFF" fill-opacity="0.05"/>
+      <rect x="2840" y="1522" width="306" height="14" rx="7" fill="#38BDF8" fill-opacity="0.7"/>
+
+      <text class="mono" x="2840" y="1572" font-size="20" fill="#F87171">error</text>
+      <text class="mono" x="3360" y="1572" font-size="20" text-anchor="end" fill="#5A7089">15</text>
+      <rect x="2840" y="1582" width="360" height="14" rx="7" fill="#FFFFFF" fill-opacity="0.05"/>
+      <rect x="2840" y="1582" width="102" height="14" rx="7" fill="#F87171" fill-opacity="0.85"/>
+
+      <text class="mono" x="2840" y="1632" font-size="20" fill="#F43F5E">fatal</text>
+      <text class="mono" x="3360" y="1632" font-size="20" text-anchor="end" fill="#5A7089">06</text>
+      <rect x="2840" y="1642" width="360" height="14" rx="7" fill="#FFFFFF" fill-opacity="0.05"/>
+      <rect x="2840" y="1642" width="41" height="14" rx="7" fill="#F43F5E" fill-opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- ================= FINISHING ================= -->
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

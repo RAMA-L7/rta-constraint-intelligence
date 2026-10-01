@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>Trust status hierarchy</title>
+  <desc>Six trust statuses in strict precedence beside a constraint fragment whose
+        every part is disclosed with the status that governs it.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1200" cy="1060" rx="1100" ry="820" fill="url(#pool)"/>
+  <ellipse cx="2560" cy="1060" rx="1000" ry="800" fill="url(#pool)"/>
+
+  <!-- ================= PRECEDENCE RAIL ================= -->
+  <g>
+    <line x1="452" y1="500" x2="452" y2="1626" stroke="#38BDF8" stroke-opacity="0.35" stroke-width="2"/>
+    <path d="M440,1614 L452,1638 L464,1614" fill="none" stroke="#38BDF8" stroke-opacity="0.6" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- ================= TRUST LADDER ================= -->
+  <g>
+    <!-- UNSUPPORTED -->
+    <g>
+      <rect x="480" y="456" width="1120" height="44" fill="url(#glassTop)"/>
+      <rect x="480" y="500" width="1120" height="148" rx="14" fill="url(#glass)"/>
+      <rect x="480" y="500" width="1120" height="148" rx="14" fill="none" stroke="#F87171" stroke-opacity="0.42" stroke-width="2"/>
+      <rect x="480" y="500" width="1120" height="148" rx="14" fill="url(#sheen)"/>
+      <rect x="480" y="500" width="8" height="148" rx="4" fill="#F87171" filter="url(#cyanGlow)"/>
+      <text class="mono" x="540" y="570" font-size="30" fill="#FECACA">UNSUPPORTED</text>
+      <text class="mono" x="540" y="608" font-size="20" fill="#7C90A8">construct outside the supported language</text>
+      <circle cx="1520" cy="574" r="16" fill="none" stroke="#F87171" stroke-width="2.5"/>
+    </g>
+    <!-- TCL_EXECUTION_REQUIRED -->
+    <g>
+      <rect x="480" y="652" width="1120" height="44" fill="url(#glassTop)"/>
+      <rect x="480" y="696" width="1120" height="148" rx="14" fill="url(#glass)"/>
+      <rect x="480" y="696" width="1120" height="148" rx="14" fill="none" stroke="#FBBF24" stroke-opacity="0.38" stroke-width="2"/>
+      <rect x="480" y="696" width="1120" height="148" rx="14" fill="url(#sheen)"/>
+      <rect x="480" y="696" width="8" height="148" rx="4" fill="#FBBF24"/>
+      <text class="mono" x="540" y="766" font-size="30" fill="#F7E3B0">TCL_EXECUTION_REQUIRED</text>
+      <text class="mono" x="540" y="804" font-size="20" fill="#7C90A8">value only exists after the interpreter runs</text>
+      <circle cx="1520" cy="770" r="16" fill="none" stroke="#FBBF24" stroke-width="2.5"/>
+    </g>
+    <!-- PARTIALLY_VALIDATED -->
+    <g>
+      <rect x="480" y="848" width="1120" height="44" fill="url(#glassTop)"/>
+      <rect x="480" y="892" width="1120" height="148" rx="14" fill="url(#glass)"/>
+      <rect x="480" y="892" width="1120" height="148" rx="14" fill="none" stroke="#38BDF8" stroke-opacity="0.34" stroke-width="2"/>
+      <rect x="480" y="892" width="1120" height="148" rx="14" fill="url(#sheen)"/>
+      <rect x="480" y="892" width="8" height="148" rx="4" fill="#38BDF8"/>
+      <text class="mono" x="540" y="962" font-size="30" fill="#CFEFFF">PARTIALLY_VALIDATED</text>
+      <text class="mono" x="540" y="1000" font-size="20" fill="#7C90A8">structure checked, options not value-analyzed</text>
+      <circle cx="1520" cy="966" r="16" fill="none" stroke="#38BDF8" stroke-width="2.5"/>
+    </g>
+    <!-- NETLIST_REQUIRED -->
+    <g>
+      <rect x="480" y="1044" width="1120" height="44" fill="url(#glassTop)"/>
+      <rect x="480" y="1088" width="1120" height="148" rx="14" fill="url(#glass)"/>
+      <rect x="480" y="1088" width="1120" height="148" rx="14" fill="none" stroke="#8A99B5" stroke-opacity="0.36" stroke-width="2"/>
+      <rect x="480" y="1088" width="1120" height="148" rx="14" fill="url(#sheen)"/>
+      <rect x="480" y="1088" width="8" height="148" rx="4" fill="#8A99B5"/>
+      <text class="mono" x="540" y="1158" font-size="30" fill="#C3CEDB">NETLIST_REQUIRED</text>
+      <text class="mono" x="540" y="1196" font-size="20" fill="#7C90A8">object references need design context to resolve</text>
+      <circle cx="1520" cy="1162" r="16" fill="none" stroke="#8A99B5" stroke-width="2.5"/>
+    </g>
+    <!-- VALIDATED -->
+    <g>
+      <rect x="480" y="1240" width="1120" height="44" fill="url(#glassTop)"/>
+      <rect x="480" y="1284" width="1120" height="148" rx="14" fill="url(#glass)"/>
+      <rect x="480" y="1284" width="1120" height="148" rx="14" fill="none" stroke="#34D399" stroke-opacity="0.40" stroke-width="2"/>
+      <rect x="480" y="1284" width="1120" height="148" rx="14" fill="url(#sheen)"/>
+      <rect x="480" y="1284" width="8" height="148" rx="4" fill="#34D399" filter="url(#cyanGlow)"/>
+      <text class="mono" x="540" y="1354" font-size="30" fill="#D3F5EC">VALIDATED</text>
+      <text class="mono" x="540" y="1392" font-size="20" fill="#7C90A8">fully analyzed against available evidence</text>
+      <path d="M1504,1362 l11,12 l22,-26" fill="none" stroke="#34D399" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <!-- NOT_VALIDATED -->
+    <g>
+      <rect x="480" y="1436" width="1120" height="44" fill="url(#glassTop)"/>
+      <rect x="480" y="1480" width="1120" height="148" rx="14" fill="url(#glass)"/>
+      <rect x="480" y="1480" width="1120" height="148" rx="14" fill="none" stroke="#475569" stroke-opacity="0.55" stroke-width="2"/>
+      <rect x="480" y="1480" width="1120" height="148" rx="14" fill="url(#sheen)"/>
+      <rect x="480" y="1480" width="8" height="148" rx="4" fill="#475569"/>
+      <text class="mono" x="540" y="1550" font-size="30" fill="#8A99B5">NOT_VALIDATED</text>
+      <text class="mono" x="540" y="1588" font-size="20" fill="#5A7089">no claim made, nothing implied</text>
+      <circle cx="1520" cy="1554" r="16" fill="none" stroke="#475569" stroke-width="2.5"/>
+    </g>
+
+    <!-- precedence chevrons in the gaps -->
+    <g fill="none" stroke="#38BDF8" stroke-opacity="0.4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1028,672 L1040,684 L1052,672"/>
+      <path d="M1028,868 L1040,880 L1052,868"/>
+      <path d="M1028,1064 L1040,1076 L1052,1064"/>
+      <path d="M1028,1260 L1040,1272 L1052,1260"/>
+      <path d="M1028,1456 L1040,1468 L1052,1456"/>
+    </g>
+  </g>
+
+  <!-- ================= FRAGMENT PANEL ================= -->
+  <g>
+    <rect x="1720" y="456" width="1680" height="44" fill="url(#glassTop)"/>
+    <rect x="1720" y="500" width="1680" height="1128" rx="16" fill="url(#glass)"/>
+    <rect x="1720" y="500" width="1680" height="1128" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="1720" y="500" width="1680" height="1128" rx="16" fill="url(#sheen)"/>
+
+    <text class="mono" x="1780" y="566" font-size="24" letter-spacing="4" fill="#7DD3FC">CONSTRAINT FRAGMENT</text>
+    <text class="mono" x="3380" y="566" font-size="20" text-anchor="end" fill="#7C90A8">every part carries the status that governs it</text>
+    <line x1="1720" y1="596" x2="3400" y2="596" stroke="#38BDF8" stroke-opacity="0.20" stroke-width="1.5"/>
+
+    <g class="mono" font-size="24">
+      <text class="mono" x="1780" y="662" font-size="24"><tspan fill="#7DD3FC">set sdc_version</tspan><tspan fill="#FCD34D"> 2.2</tspan></text>
+      <rect x="3060" y="632" width="320" height="46" rx="23" fill="#34D399" fill-opacity="0.10" stroke="#34D399" stroke-opacity="0.4"/>
+      <text class="mono" x="3220" y="662" font-size="19" text-anchor="middle" fill="#D3F5EC">VALIDATED</text>
+
+      <text class="mono" x="1780" y="734" font-size="24"><tspan fill="#7DD3FC">set_max_area</tspan><tspan fill="#FCD34D"> 1000</tspan></text>
+      <rect x="3060" y="704" width="320" height="46" rx="23" fill="#34D399" fill-opacity="0.10" stroke="#34D399" stroke-opacity="0.4"/>
+      <text class="mono" x="3220" y="734" font-size="19" text-anchor="middle" fill="#D3F5EC">VALIDATED</text>
+
+      <text class="mono" x="1780" y="806" font-size="24"><tspan fill="#7DD3FC">set_multicycle_path</tspan><tspan fill="#FCD34D"> 2</tspan><tspan fill="#C4B5FD"> -setup </tspan><tspan fill="#8A99B5">[get_clocks clk_core]</tspan></text>
+      <rect x="3060" y="776" width="320" height="46" rx="23" fill="#FBBF24" fill-opacity="0.12" stroke="#FBBF24" stroke-opacity="0.45"/>
+      <text class="mono" x="3220" y="806" font-size="19" text-anchor="middle" fill="#F7E3B0">PARTIALLY_VALIDATED</text>
+
+      <text class="mono" x="1780" y="878" font-size="24"><tspan fill="#7DD3FC">set_input_delay</tspan><tspan fill="#C4B5FD"> -clock </tspan><tspan fill="#E2E8F0">clk_core</tspan><tspan fill="#C4B5FD"> </tspan><tspan fill="#FCD34D">0.400</tspan><tspan fill="#8A99B5"> [get_ports {d_in[*]}]</tspan></text>
+      <rect x="3060" y="848" width="320" height="46" rx="23" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.4"/>
+      <text class="mono" x="3220" y="878" font-size="19" text-anchor="middle" fill="#C3CEDB">NETLIST_REQUIRED</text>
+
+      <text class="mono" x="1780" y="950" font-size="24"><tspan fill="#7DD3FC">set_case_analysis</tspan><tspan fill="#C4B5FD"> 0 </tspan><tspan fill="#8A99B5">[get_ports mode]</tspan></text>
+      <rect x="3060" y="920" width="320" height="46" rx="23" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.4"/>
+      <text class="mono" x="3220" y="950" font-size="19" text-anchor="middle" fill="#C3CEDB">NETLIST_REQUIRED</text>
+
+      <text class="mono" x="1780" y="1022" font-size="24" fill="#4E5A6B">[get_ports {cfg_bus[*]}]</text>
+      <line x1="1780" y1="1036" x2="2180" y2="1036" stroke="#4E5A6B" stroke-width="1.5" stroke-dasharray="6 8"/>
+      <rect x="3120" y="992" width="260" height="46" rx="23" fill="#F87171" fill-opacity="0.10" stroke="#F87171" stroke-opacity="0.4"/>
+      <text class="mono" x="3250" y="1022" font-size="19" text-anchor="middle" fill="#FECACA">UNSUPPORTED</text>
+    </g>
+
+    <!-- legend -->
+    <line x1="1720" y1="1080" x2="3400" y2="1080" stroke="#38BDF8" stroke-opacity="0.16"/>
+    <text class="mono" x="1780" y="1122" font-size="19" letter-spacing="3" fill="#5A7089">STATUSES PRESENT IN THIS FRAGMENT</text>
+    <g class="mono" font-size="19">
+      <rect x="1780" y="1148" width="760" height="52" rx="26" fill="#34D399" fill-opacity="0.10" stroke="#34D399" stroke-opacity="0.4"/><circle cx="1814" cy="1174" r="7" fill="#34D399"/><text class="mono" x="1836" y="1182" font-size="19" fill="#D3F5EC">VALIDATED</text>
+      <rect x="2600" y="1148" width="760" height="52" rx="26" fill="#FBBF24" fill-opacity="0.10" stroke="#FBBF24" stroke-opacity="0.4"/><circle cx="2634" cy="1174" r="7" fill="#FBBF24"/><text class="mono" x="2656" y="1182" font-size="19" fill="#F7E3B0">PARTIALLY_VALIDATED</text>
+      <rect x="1780" y="1216" width="760" height="52" rx="26" fill="#8A99B5" fill-opacity="0.09" stroke="#8A99B5" stroke-opacity="0.35"/><circle cx="1814" cy="1242" r="7" fill="#8A99B5"/><text class="mono" x="1836" y="1250" font-size="19" fill="#C3CEDB">NETLIST_REQUIRED</text>
+      <rect x="2600" y="1216" width="760" height="52" rx="26" fill="#F87171" fill-opacity="0.10" stroke="#F87171" stroke-opacity="0.4"/><circle cx="2634" cy="1242" r="7" fill="#F87171"/><text class="mono" x="2656" y="1250" font-size="19" fill="#FECACA">UNSUPPORTED</text>
+    </g>
+
+    <!-- statement -->
+    <g>
+      <rect x="1780" y="1270" width="1540" height="290" rx="14" fill="#020409" fill-opacity="0.45" stroke="#38BDF8" stroke-opacity="0.20"/>
+      <text class="mono" x="1840" y="1348" font-size="22" letter-spacing="3" fill="#5A7089">DISCLOSURE</text>
+      <text class="hd" x="1840" y="1424" font-size="52" font-weight="500" fill="#E8F4FF">The engine discloses, never invents.</text>
+      <text class="mono" x="1840" y="1484" font-size="21" fill="#7C90A8">A silent gap is a defect. Every unsupported construct is named,</text>
+      <text class="mono" x="1840" y="1522" font-size="21" fill="#7C90A8">not skipped &#183; every unresolved reference is marked, not assumed.</text>
+    </g>
+  </g>
+<rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <title>Design context resolution</title>
+  <desc>Structural design hierarchy beside the trust status that results from resolving
+        every reference against it.</desc>
+  <style>
+    .hd  { font-family:'Space Grotesk','Inter',system-ui,'Segoe UI',Helvetica,Arial,sans-serif; }
+    .mono{ font-family:'JetBrains Mono','SFMono-Regular',Consolas,'Courier New',monospace; }
+  </style>
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#020409"/><stop offset="0.45" stop-color="#04060B"/><stop offset="1" stop-color="#020409"/>
+    </linearGradient>
+    <pattern id="grid56" width="56" height="48.5" patternUnits="userSpaceOnUse">
+      <path d="M56,0 H0 V48.5" fill="none" stroke="#38BDF8" stroke-opacity="0.075" stroke-width="1"/>
+    </pattern>
+    <filter id="feather" x="-15%" y="-15%" width="130%" height="130%"><feGaussianBlur stdDeviation="150"/></filter>
+    <mask id="gridMask"><rect x="200" y="-40" width="3440" height="2240" fill="#ffffff" filter="url(#feather)"/></mask>
+    <linearGradient id="glass" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.070"/><stop offset="0.35" stop-color="#7DD3FC" stop-opacity="0.030"/><stop offset="1" stop-color="#0B1220" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="glassTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.20"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.09"/><stop offset="0.35" stop-color="#FFFFFF" stop-opacity="0.015"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#BAE6FD" stop-opacity="0.58"/><stop offset="0.32" stop-color="#38BDF8" stop-opacity="0.26"/><stop offset="0.78" stop-color="#38BDF8" stop-opacity="0.13"/><stop offset="1" stop-color="#BAE6FD" stop-opacity="0.40"/>
+    </linearGradient>
+    <radialGradient id="pool" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#38BDF8" stop-opacity="0.12"/><stop offset="0.55" stop-color="#38BDF8" stop-opacity="0.04"/><stop offset="1" stop-color="#38BDF8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vig" cx="0.5" cy="0.48" r="0.64">
+      <stop offset="0.48" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.82"/>
+    </radialGradient>
+    <filter id="cyanGlow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="5"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="3840" height="2160" fill="url(#bgGrad)"/>
+  <rect width="3840" height="2160" fill="url(#grid56)" mask="url(#gridMask)"/>
+  <ellipse cx="1300" cy="1060" rx="1100" ry="820" fill="url(#pool)"/>
+  <ellipse cx="2850" cy="1060" rx="750" ry="760" fill="url(#pool)"/>
+
+  <!-- ================= HIERARCHY ================= -->
+  <g>
+    <rect x="460" y="496" width="1700" height="44" fill="url(#glassTop)"/>
+    <rect x="460" y="540" width="1700" height="1080" rx="16" fill="url(#glass)"/>
+    <rect x="460" y="540" width="1700" height="1080" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="460" y="540" width="1700" height="1080" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="520" y="606" font-size="22" letter-spacing="4" fill="#7DD3FC">DESIGN HIERARCHY</text>
+    <text class="mono" x="2100" y="606" font-size="19" text-anchor="end" fill="#7C90A8">cells, ports, pins</text>
+    <line x1="460" y1="636" x2="2160" y2="636" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <!-- nets -->
+    <g fill="none" stroke-width="2.5" stroke-linecap="round" stroke-opacity="0.55">
+      <path d="M700,760 L700,700 L950,700" stroke="#38BDF8"/>
+      <path d="M700,760 L700,700 L1670,700" stroke="#38BDF8"/>
+      <path d="M1920,760 L1920,700 L1670,700" stroke="#38BDF8"/>
+      <path d="M1010,800 L1010,860" stroke="#38BDF8"/>
+      <path d="M1300,800 L1300,860" stroke="#38BDF8"/>
+      <path d="M1590,800 L1590,860" stroke="#38BDF8"/>
+      <path d="M1010,1000 L1010,1130" stroke="#34D399"/>
+      <path d="M1590,1000 L1590,1090 L1510,1090 L1510,1130" stroke="#8A99B5" stroke-dasharray="10 8"/>
+      <path d="M734,1060 L820,1060 L820,1150 L895,1150" stroke="#34D399"/>
+      <path d="M1886,1060 L1800,1060 L1800,1195 L1635,1195" stroke="#34D399"/>
+    </g>
+
+    <!-- pins -->
+    <g fill="#7DD3FC">
+      <rect x="1000" y="780" width="20" height="20" rx="3"/>
+      <rect x="1290" y="780" width="20" height="20" rx="3"/>
+      <rect x="1580" y="780" width="20" height="20" rx="3"/>
+    </g>
+    <g fill="#5EEAD4">
+      <rect x="1000" y="980" width="20" height="20" rx="3"/>
+      <rect x="1290" y="980" width="20" height="20" rx="3"/>
+      <rect x="1580" y="980" width="20" height="20" rx="3"/>
+    </g>
+    <g fill="#8A99B5">
+      <rect x="1000" y="1120" width="20" height="20" rx="3"/>
+      <rect x="1500" y="1120" width="20" height="20" rx="3"/>
+    </g>
+
+    <!-- cells -->
+    <g>
+      <rect x="950" y="700" width="720" height="90" rx="10" fill="#38BDF8" fill-opacity="0.10" stroke="#38BDF8" stroke-opacity="0.5"/>
+      <text class="mono" x="1310" y="756" font-size="26" text-anchor="middle" fill="#CFEFFF">MY_CHIP</text>
+    </g>
+    <g>
+      <rect x="895" y="860" width="250" height="130" rx="10" fill="#38BDF8" fill-opacity="0.08" stroke="#38BDF8" stroke-opacity="0.38"/>
+      <text class="mono" x="1020" y="936" font-size="24" text-anchor="middle" fill="#CFEFFF">u_core</text>
+    </g>
+    <g>
+      <rect x="1185" y="860" width="250" height="130" rx="10" fill="#34D399" fill-opacity="0.08" stroke="#34D399" stroke-opacity="0.35"/>
+      <text class="mono" x="1310" y="936" font-size="24" text-anchor="middle" fill="#D3F5EC">u_mem</text>
+    </g>
+    <g>
+      <rect x="1475" y="860" width="250" height="130" rx="10" fill="#8A99B5" fill-opacity="0.08" stroke="#8A99B5" stroke-opacity="0.35"/>
+      <text class="mono" x="1600" y="936" font-size="24" text-anchor="middle" fill="#C3CEDB">u_cfg</text>
+    </g>
+    <g>
+      <rect x="895" y="1130" width="250" height="130" rx="10" fill="#34D399" fill-opacity="0.07" stroke="#34D399" stroke-opacity="0.30"/>
+      <text class="mono" x="1020" y="1206" font-size="24" text-anchor="middle" fill="#D3F5EC">u_io</text>
+    </g>
+    <g>
+      <rect x="1385" y="1130" width="250" height="130" rx="10" fill="#8A99B5" fill-opacity="0.07" stroke="#8A99B5" stroke-opacity="0.30"/>
+      <text class="mono" x="1510" y="1206" font-size="24" text-anchor="middle" fill="#C3CEDB">u_pads</text>
+    </g>
+
+    <!-- ports -->
+    <g>
+      <circle cx="700" cy="760" r="34" fill="#020409" fill-opacity="0.6" stroke="#38BDF8" stroke-opacity="0.6" stroke-width="2.5"/>
+      <text class="mono" x="700" y="770" font-size="20" text-anchor="middle" fill="#CFEFFF">clk</text>
+      <circle cx="1920" cy="760" r="34" fill="#020409" fill-opacity="0.6" stroke="#38BDF8" stroke-opacity="0.6" stroke-width="2.5"/>
+      <text class="mono" x="1920" y="770" font-size="20" text-anchor="middle" fill="#CFEFFF">rst_n</text>
+      <circle cx="700" cy="1060" r="34" fill="#020409" fill-opacity="0.6" stroke="#34D399" stroke-opacity="0.5" stroke-width="2.5"/>
+      <text class="mono" x="700" y="1070" font-size="19" text-anchor="middle" fill="#D3F5EC">d_in</text>
+      <circle cx="1920" cy="1060" r="34" fill="#020409" fill-opacity="0.6" stroke="#34D399" stroke-opacity="0.5" stroke-width="2.5"/>
+      <text class="mono" x="1920" y="1070" font-size="19" text-anchor="middle" fill="#D3F5EC">d_out</text>
+    </g>
+
+    <!-- key -->
+    <g class="mono" font-size="19">
+      <rect x="520" y="1360" width="1500" height="200" rx="12" fill="#020409" fill-opacity="0.45" stroke="#38BDF8" stroke-opacity="0.18"/>
+      <text class="mono" x="570" y="1414" font-size="20" letter-spacing="3" fill="#5A7089">RESOLVABLE REFERENCE</text>
+      <circle cx="580" cy="1462" r="8" fill="#38BDF8"/><text class="mono" x="606" y="1470" font-size="20" fill="#CFE3F5">cell and port names the netlist declares</text>
+      <circle cx="580" cy="1512" r="8" fill="#8A99B5"/><text class="mono" x="606" y="1520" font-size="20" fill="#C3CEDB">bus widths, generated names, flattened nets</text>
+      <text class="mono" x="1960" y="1470" font-size="20" text-anchor="end" fill="#5A7089">structure only,</text>
+      <text class="mono" x="1960" y="1506" font-size="20" text-anchor="end" fill="#5A7089">never timing values</text>
+    </g>
+  </g>
+
+  <!-- ================= RESOLUTION RESULT ================= -->
+  <g>
+    <rect x="2260" y="496" width="1140" height="44" fill="url(#glassTop)"/>
+    <rect x="2260" y="540" width="1140" height="1080" rx="16" fill="url(#glass)"/>
+    <rect x="2260" y="540" width="1140" height="1080" rx="16" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    <rect x="2260" y="540" width="1140" height="1080" rx="16" fill="url(#sheen)"/>
+    <text class="mono" x="2320" y="606" font-size="22" letter-spacing="4" fill="#7DD3FC">RESOLUTION RESULT</text>
+    <line x1="2260" y1="636" x2="3400" y2="636" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <!-- verdict badge -->
+    <rect x="2320" y="680" width="1020" height="150" rx="14" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.42"/>
+    <rect x="2320" y="680" width="8" height="150" rx="4" fill="#8A99B5"/>
+    <text class="mono" x="2370" y="742" font-size="30" fill="#C3CEDB">NETLIST_REQUIRED</text>
+    <text class="mono" x="2370" y="790" font-size="20" fill="#7C90A8">two references remain netlist-dependent</text>
+    <text class="hd" x="3300" y="770" font-size="52" font-weight="500" text-anchor="end" fill="#8A99B5">2</text>
+
+    <!-- reference rows -->
+    <g class="mono" font-size="20">
+      <text class="mono" x="2320" y="900" font-size="19" letter-spacing="3" fill="#5A7089">REFERENCES &#183; 3 RESOLVED, 2 NETLIST_REQUIRED</text>
+
+      <text class="mono" x="2320" y="952" font-size="20" fill="#CFE3F5">get_ports clk</text>
+      <rect x="3120" y="922" width="220" height="42" rx="21" fill="#38BDF8" fill-opacity="0.14" stroke="#38BDF8" stroke-opacity="0.45"/>
+      <text class="mono" x="3230" y="950" font-size="18" text-anchor="middle" fill="#CFEFFF">RESOLVED</text>
+
+      <text class="mono" x="2320" y="1012" font-size="20" fill="#CFE3F5">u_core/u_clk</text>
+      <rect x="3120" y="982" width="220" height="42" rx="21" fill="#38BDF8" fill-opacity="0.14" stroke="#38BDF8" stroke-opacity="0.45"/>
+      <text class="mono" x="3230" y="1010" font-size="18" text-anchor="middle" fill="#CFEFFF">RESOLVED</text>
+
+      <text class="mono" x="2320" y="1072" font-size="20" fill="#CFE3F5">u_pads/d_out</text>
+      <rect x="3120" y="1042" width="220" height="42" rx="21" fill="#38BDF8" fill-opacity="0.14" stroke="#38BDF8" stroke-opacity="0.45"/>
+      <text class="mono" x="3230" y="1070" font-size="18" text-anchor="middle" fill="#CFEFFF">RESOLVED</text>
+
+      <text class="mono" x="2320" y="1132" font-size="20" fill="#CFE3F5">get_ports {d_in[*]}</text>
+      <rect x="3060" y="1102" width="280" height="42" rx="21" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.4"/>
+      <text class="mono" x="3200" y="1130" font-size="18" text-anchor="middle" fill="#C3CEDB">NETLIST_REQUIRED</text>
+
+      <text class="mono" x="2320" y="1192" font-size="20" fill="#CFE3F5">get_pins {cfg_bus[*]}</text>
+      <rect x="3060" y="1162" width="280" height="42" rx="21" fill="#8A99B5" fill-opacity="0.10" stroke="#8A99B5" stroke-opacity="0.4"/>
+      <text class="mono" x="3200" y="1190" font-size="18" text-anchor="middle" fill="#C3CEDB">NETLIST_REQUIRED</text>
+    </g>
+
+    <line x1="2260" y1="1240" x2="3400" y2="1240" stroke="#38BDF8" stroke-opacity="0.18"/>
+
+    <g>
+      <rect x="2320" y="1270" width="1020" height="300" rx="14" fill="#020409" fill-opacity="0.45" stroke="#38BDF8" stroke-opacity="0.18"/>
+      <text class="mono" x="2370" y="1330" font-size="20" letter-spacing="3" fill="#5A7089">WHAT DESIGN CONTEXT BUYS</text>
+      <text class="mono" x="2370" y="1392" font-size="21" fill="#CFE3F5">Object references become provable.</text>
+      <text class="mono" x="2370" y="1432" font-size="21" fill="#CFE3F5">Structure becomes checkable.</text>
+      <text class="mono" x="2370" y="1472" font-size="21" fill="#CFE3F5">It never supplies a timing verdict.</text>
+      <line x1="2370" y1="1500" x2="3290" y2="1500" stroke="#38BDF8" stroke-opacity="0.18"/>
+      <text class="mono" x="2370" y="1540" font-size="19" fill="#7C90A8">Bus widths still need a flattened netlist.</text>
+    </g>
+  </g>
+
+  <!-- cross links -->
+  <g fill="none" stroke-width="2">
+    <path d="M2160,760 L2210,760 L2210,952 L2320,952" stroke="#38BDF8" stroke-opacity="0.35"/>
+    <path d="M2160,1060 L2210,1060 L2210,1132 L2320,1132" stroke="#8A99B5" stroke-opacity="0.35"/>
+  </g>
+
+  <rect width="3840" height="2160" fill="url(#vig)" pointer-events="none"/>
+  <rect width="3840" height="2160" filter="url(#grain)" opacity="0.045" style="mix-blend-mode:overlay" pointer-events="none"/>
+</svg>
