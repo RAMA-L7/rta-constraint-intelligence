@@ -12,7 +12,7 @@ Architecture contract:
     ``rta.api.api_server`` and forwards results as MCP tool responses.
   - Deterministic: same input → same tool output.
 
-Tools:
+Engine tools (AUTHORITY — the frozen deterministic backend; unchanged):
     rta_analyze        full analysis pipeline (SDC + optional netlist/baseline)
     rta_lint           lint an SDC
     rta_convert        SDC → JSON / YAML
@@ -21,6 +21,24 @@ Tools:
     rta_diff           V1 vs V2 readiness + constraint diff
     rta_corners        validate corners / build matrix
     rta_rules          rule catalog
+
+Context-source tools (ADVISORY — they add context, never a verdict):
+    rta_sources_health       per-source health, breaker and cache state
+    rta_source_docs_search   search the local documentation corpus
+    rta_source_issues_search search a GitHub issue tracker
+    rta_source_store_query   look up recorded runs and the audit trail
+    rta_source_store_record  record an engine run + provenance (mutating)
+    rta_investigate          engine analysis + matching docs and issues
+
+Access control: every call passes a role check (``rta/api/access.py``) before
+it runs. Roles: ``reader`` (default) < ``engineer`` < ``maintainer``; tools
+appear in no role are denied for everybody, and mutating tools additionally
+require ``RTA_MCP_ALLOW_MUTATIONS=1``. Denied calls return a tool error with
+code ``FORBIDDEN`` and are recorded in the audit trail.
+
+Authority rule: sources are advisory. A verdict is only ever produced by the
+engine, and ``rta_investigate`` returns the engine payload verbatim alongside
+source context so the two can never be confused.
 
 Run:
     python -m rta.api.mcp_server
@@ -34,6 +52,7 @@ from __future__ import annotations
 
 import json
 import sys
+import time
 import traceback
 
 # The visible brand is Ṛta (U+1E5A). On Windows the console defaults to the
@@ -55,7 +74,7 @@ PROTOCOL_VERSION = "2024-11-05"
 try:
     from rules_registry import APP_VERSION as SERVER_VERSION
 except Exception:  # pragma: no cover - defensive for partial installs
-    SERVER_VERSION = "1.5.11"
+    SERVER_VERSION = "1.5.12"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -87,11 +106,17 @@ def _tool_lint(args: dict):
 
 
 def _tool_convert(args: dict):
-    from rta.api.api_server import convert_sdc_json, require_sdc
+    from rta.api.api_server import convert_sdc_json, require_sdc, _SDCSyntaxError
     sdc_text, err = require_sdc(args, "tools/call:rta_convert")
     if err is not None:
         return err
-    return convert_sdc_json(sdc_text, fmt=args.get("format", "json"))
+    try:
+        return convert_sdc_json(sdc_text, fmt=args.get("format", "json"))
+    except _SDCSyntaxError as syn:
+        # Release-gate remediation (B-C08-06): syntactically invalid input is
+        # returned as an explicit tool error carrying the diagnostics — the
+        # generic handler would only produce a bare engine-failure string.
+        return syn.body
 
 
 def _tool_generate(args: dict):
@@ -130,6 +155,156 @@ def _tool_corners(args: dict):
 def _tool_rules(_args: dict):
     from rta.api.api_server import rules_json
     return rules_json()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CONTEXT-SOURCE TOOLS — advisory only; these never produce a verdict
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _as_int(value, default: int) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _tool_sources_health(_args: dict):
+    """Per-source diagnostics. Touches no network — safe to call any time."""
+    from rta.api import access
+    from rta.sources import health_all
+    payload = health_all()
+    payload["access"] = access.describe_role(access.resolve_role())
+    return payload
+
+
+def _tool_source_docs_search(args: dict):
+    from rta.sources import get_sources
+    query = args.get("query", "")
+    if not isinstance(query, str) or not query.strip():
+        return {"error": "field 'query' must be a non-empty string",
+                "code": "MISSING_QUERY"}
+    adapter = get_sources()["corpus"]
+    return adapter.search(query,
+                          limit=_as_int(args.get("limit"), 8),
+                          path_filter=str(args.get("path_filter", "")))
+
+
+def _tool_source_issues_search(args: dict):
+    from rta.sources import get_sources
+    adapter = get_sources()["github"]
+    return adapter.search(
+        query=str(args.get("query", "")),
+        state=str(args.get("state", "open")),
+        labels=str(args.get("labels", "")),
+        limit=_as_int(args.get("limit"), 10),
+        include_pull_requests=bool(args.get("include_pull_requests", False)),
+    )
+
+
+def _tool_source_store_query(args: dict):
+    from rta.sources import get_sources
+    store = get_sources()["store"]
+    if bool(args.get("audit", False)):
+        return store.query_audit(limit=_as_int(args.get("limit"), 20),
+                                 tool=str(args.get("tool", "")))
+    return store.query_runs(limit=_as_int(args.get("limit"), 10),
+                            verdict=str(args.get("verdict", "")),
+                            rule_id=str(args.get("rule_id", "")),
+                            run_id=str(args.get("run_id", "")))
+
+
+def _tool_source_store_record(args: dict):
+    """Record a run. The engine computes the payload here — the caller cannot
+    supply a verdict, so a fabricated PASS can never be persisted."""
+    from rta.api import access
+    from rta.api.api_server import require_sdc
+    from rta.sources import get_sources, new_run_id
+    from rta.sources.store import engine_facts
+
+    sdc_text, err = require_sdc(args, "tools/call:rta_source_store_record")
+    if err is not None:
+        return err
+    analysis = _tool_analyze(args)
+    if isinstance(analysis, dict) and analysis.get("error"):
+        return analysis
+    facts = engine_facts(analysis)
+    run_id = str(args.get("run_id") or new_run_id("run"))
+    store = get_sources()["store"]
+    written = store.record_run(
+        run_id=run_id, sdc_text=sdc_text, analysis=analysis,
+        tool="rta_source_store_record", role=access.resolve_role(),
+        engine_version=SERVER_VERSION)
+    evidence_written = []
+    for item in (args.get("evidence") or []):
+        if not isinstance(item, dict) or not item.get("ref"):
+            continue
+        evidence_written.append(store.record_evidence(
+            run_id=run_id,
+            source=str(item.get("source", "manual")),
+            ref=str(item.get("ref")),
+            content_hash=str(item.get("content_hash", "")),
+            fetched_at=str(item.get("fetched_at", "")),
+            freshness=str(item.get("freshness", "")),
+            note=str(item.get("note", ""))))
+    return {
+        "authority": "engine",
+        "run_id": run_id,
+        "recorded": written,
+        "evidence": evidence_written,
+        "engine_facts": facts,
+        "note": ("verdict and counts above were computed by the engine, "
+                 "not supplied"),
+    }
+
+
+def _tool_investigate(args: dict):
+    """The composite: engine verdict + matching local docs + matching issues.
+
+    The engine payload is returned verbatim under ``engine`` so a consumer can
+    diff it against a plain ``rta_analyze`` call, and source context lives in a
+    separate ``context`` object. Sources are advisory: they can add a
+    reference, never change the verdict.
+    """
+    from rta.sources import SOURCE_NAMES, get_sources
+
+    analysis = _tool_analyze(args)
+    if isinstance(analysis, dict) and analysis.get("error"):
+        return analysis
+
+    try:
+        from rta.sources.store import engine_facts
+        facts = engine_facts(analysis)
+    except Exception:                                # noqa: BLE001 - advisory
+        facts = {"rule_ids": [], "verdict": None}
+
+    rule_ids = [str(r) for r in facts.get("rule_ids", [])][:5]
+    query = " ".join(rule_ids)
+    doc_limit = max(1, min(_as_int(args.get("context_limit"), 3),
+                           get_sources()["policy"].max_items))
+    issue_limit = max(1, min(_as_int(args.get("issue_limit"), 3),
+                             get_sources()["policy"].max_items))
+
+    corpus = get_sources()["corpus"]
+    github = get_sources()["github"]
+    docs = corpus.search(query or "signoff readiness", limit=doc_limit)
+    issues = github.search(query=query, state="open", limit=issue_limit)
+
+    sources_used = [name for name in SOURCE_NAMES
+                    if name != "store"]  # store is queried by its own tool
+    degraded = bool(docs.get("degraded")) or bool(issues.get("degraded"))
+
+    return {
+        "authority": "engine",
+        "engine": analysis,
+        "engine_facts": facts,
+        "context": {"docs": docs, "issues": issues},
+        "sources_used": sources_used,
+        "degraded": degraded,
+        "advisory_note": (
+            "Context sources are advisory. The verdict above was produced "
+            "only by the deterministic engine; no source can change it."
+        ),
+    }
 
 
 _SDC_SCHEMA = {
@@ -252,6 +427,147 @@ TOOLS = [
         "description": "List the full Ṛta validation rule catalog.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    # ── Context sources (advisory; never produce a verdict) ────────────────
+    {
+        "name": "rta_sources_health",
+        "description": (
+            "Report per-source health for the advisory context sources "
+            "(local docs corpus, GitHub issues, SQLite store): configuration, "
+            "circuit-breaker state, cache stats and the active access role. "
+            "Makes no network call."
+        ),
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    {
+        "name": "rta_source_docs_search",
+        "description": (
+            "Search the local Ṛta documentation corpus (feature docs, product "
+            "docs, samples, engineer test kit, changelog). Offline, "
+            "deterministic, no credential. Advisory context only."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string",
+                          "description": "Search terms — a rule id (SDC-068), "
+                                         "a feature name, or a phrase"},
+                "limit": {"type": "integer",
+                          "description": "Maximum matches (default 8)"},
+                "path_filter": {"type": "string",
+                                "description": "Optional substring the file "
+                                               "path must contain"},
+            },
+            "required": ["query"],
+        },
+    },
+    {
+        "name": "rta_source_issues_search",
+        "description": (
+            "Search a GitHub repository's issue tracker for open reports "
+            "matching a query — answers 'has this already been reported?'. "
+            "Uses GITHUB_TOKEN when present, otherwise anonymous access "
+            "with a small shared quota. Handles rate limits and degrades to "
+            "the last cached result."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string",
+                          "description": "Search terms (rule id, symptom)"},
+                "state": {"type": "string",
+                          "enum": ["open", "closed", "all"],
+                          "description": "Issue state (default open)"},
+                "labels": {"type": "string",
+                           "description": "Comma-separated label filter"},
+                "limit": {"type": "integer",
+                          "description": "Maximum issues (default 10, "
+                                         "cap 25)"},
+                "include_pull_requests": {
+                    "type": "boolean",
+                    "description": "Include pull requests (default false)"},
+            },
+        },
+    },
+    {
+        "name": "rta_source_store_query",
+        "description": (
+            "Query the local SQLite store: previously recorded engine runs "
+            "(verdict, counts, findings, source evidence) or the MCP audit "
+            "trail. Read-only. Recorded verdicts were written by the engine."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "limit": {"type": "integer", "description": "Max rows"},
+                "verdict": {"type": "string",
+                            "description": "Filter runs by engine verdict"},
+                "rule_id": {"type": "string",
+                            "description": "Only runs containing this "
+                                           "rule id"},
+                "run_id": {"type": "string", "description": "Exact run id"},
+                "audit": {"type": "boolean",
+                          "description": "Return the audit trail instead "
+                                         "of runs"},
+                "tool": {"type": "string",
+                         "description": "Audit filter: tool name"},
+            },
+        },
+    },
+    {
+        "name": "rta_source_store_record",
+        "description": (
+            "Record one engine run (verdict, counts, findings) plus optional "
+            "provenance rows into the local SQLite store. MUTATING: requires "
+            "the maintainer role and RTA_MCP_ALLOW_MUTATIONS=1. The engine "
+            "computes the analysis — a caller cannot supply a verdict."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "sdc": {"type": "string", "description": "SDC file contents"},
+                "netlist": {"type": "string",
+                            "description": "Optional Verilog netlist text"},
+                "top": {"type": "string", "description": "Top module name"},
+                "run_id": {"type": "string",
+                           "description": "Optional explicit run id"},
+                "evidence": {
+                    "type": "array",
+                    "items": {"type": "object"},
+                    "description": ("Optional provenance rows "
+                                    "{source, ref, content_hash, fetched_at, "
+                                    "freshness, note}"),
+                },
+            },
+            "required": ["sdc"],
+        },
+    },
+    {
+        "name": "rta_investigate",
+        "description": (
+            "Composite investigation in one call: runs the deterministic "
+            "engine on an SDC/module, then attaches matching local "
+            "documentation and matching open GitHub issues for the rules that "
+            "fired. The engine payload is returned verbatim under 'engine'; "
+            "context sources are advisory and can never change the verdict."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "sdc": {"type": "string", "description": "SDC file contents"},
+                "netlist": {"type": "string",
+                            "description": "Optional Verilog netlist text"},
+                "top": {"type": "string", "description": "Top module name"},
+                "baseline": {"type": "string",
+                             "description": "Optional baseline snapshot JSON"},
+                "gate": {"type": "string", "description": "Optional CI gate"},
+                "context_limit": {"type": "integer",
+                                  "description": "Doc matches (default 3)"},
+                "issue_limit": {"type": "integer",
+                                "description": "Issue matches (default 3)"},
+            },
+            "required": ["sdc"],
+        },
+    },
 ]
 
 _TOOL_IMPLS = {
@@ -263,7 +579,56 @@ _TOOL_IMPLS = {
     "rta_diff": _tool_diff,
     "rta_corners": _tool_corners,
     "rta_rules": _tool_rules,
+    # Advisory context sources
+    "rta_sources_health": _tool_sources_health,
+    "rta_source_docs_search": _tool_source_docs_search,
+    "rta_source_issues_search": _tool_source_issues_search,
+    "rta_source_store_query": _tool_source_store_query,
+    "rta_source_store_record": _tool_source_store_record,
+    "rta_investigate": _tool_investigate,
 }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ACCESS CONTROL + AUDIT
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _guard(tool: str) -> dict:
+    """Capability check for one tool call (see ``rta/api/access.py``)."""
+    from rta.api import access
+    return access.check(access.resolve_role(), tool)
+
+
+def _sources_used(payload) -> list:
+    """Best-effort extraction of which sources contributed to a response."""
+    if not isinstance(payload, dict):
+        return []
+    explicit = payload.get("sources_used")
+    if isinstance(explicit, list):
+        return [str(s) for s in explicit]
+    context = payload.get("context")
+    if isinstance(context, dict):
+        return [str(k) for k in context.keys()]
+    if payload.get("source"):
+        return [str(payload["source"])]
+    return []
+
+
+def _audit(tool: str, args: dict, payload, started_at=None,
+           outcome: str = "OK") -> None:
+    """Record an audited call. Never raises, never stores argument values."""
+    try:
+        from rta.api import access
+        degraded = bool(isinstance(payload, dict)
+                        and (payload.get("degraded")
+                             or (payload.get("sources_used")
+                                 and payload.get("degraded"))))
+        access.audit(tool, access.resolve_role(), args, outcome=outcome,
+                     started_at=started_at, degraded=degraded,
+                     sources_used=_sources_used(payload))
+    except Exception as exc:                         # noqa: BLE001 - non-fatal
+        print(f"[mcp_server] audit failed for {tool}: "
+              f"{type(exc).__name__}: {exc}", file=sys.stderr)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -321,17 +686,41 @@ def handle_request(req: dict) -> dict | None:
         impl = _TOOL_IMPLS.get(name)
         if impl is None:
             return _error(req_id, -32602, f"unknown tool: {name}")
+
+        # Capability boundary: the role is resolved per call so an operator can
+        # widen or narrow it via the environment without restarting the server.
+        decision = _guard(name)
+        if not decision.get("allowed"):
+            _audit(name, args, payload=None, outcome="FORBIDDEN")
+            return _result(req_id, {
+                "content": [{"type": "text",
+                             "text": json.dumps({
+                                 "error": "tool not permitted for the "
+                                          "configured role",
+                                 "code": "FORBIDDEN",
+                                 "decision": decision,
+                                 "hint": ("set RTA_MCP_ROLE=engineer (or "
+                                          "maintainer) to enable source "
+                                          "tools"),
+                             }, ensure_ascii=False)}],
+                "isError": True,
+            })
+
+        started_at = time.monotonic()
         try:
             payload = impl(args)
         except Exception as exc:  # noqa: BLE001 - report as tool error, never crash
             tb = traceback.format_exc()[-2000:]
             print(f"[mcp_server] {name} failed: {tb}", file=sys.stderr)
+            _audit(name, args, payload=None, started_at=started_at,
+                   outcome="ERROR")
             return _result(req_id, {
                 "content": [{"type": "text",
                              "text": f"engine failure: "
                                      f"{type(exc).__name__}: {exc}"}],
                 "isError": True,
             })
+        _audit(name, args, payload=payload, started_at=started_at)
         return _result(req_id, {
             "content": [{"type": "text",
                          "text": json.dumps(payload, ensure_ascii=False,

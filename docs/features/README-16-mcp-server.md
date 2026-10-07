@@ -6,7 +6,9 @@ copy-pasting SDC files into a chat, your assistant runs `rta_analyze`,
 `rta_lint`, `rta_diff` and friends natively — with the same engine, rules,
 and evidence guarantees as the CLI and Web UI.
 
-- **What it is** — 8 deterministic tools over stdio (JSON-RPC 2.0)
+- **What it is** — 8 deterministic engine tools over stdio (JSON-RPC 2.0),
+  plus 6 optional **advisory context-source** tools (see
+  [Multi-Source MCP](README-18-mcp-multi-source.md))
 - **Who it's for** — engineers using OpenCode, Claude Desktop/Code, Cursor,
   or any MCP-capable client
 - **Trust boundary** — same frozen backend as `rta check`; no LLM inside the
@@ -196,9 +198,25 @@ merges with `rta check --baseline .rta/baseline.json --gate STRICT` — see
 
 ---
 
+## 6b. Context sources (optional)
+
+Feature 18 adds six advisory tools around the eight engine tools: a local
+documentation corpus, a GitHub issue tracker, an owned SQLite store of recorded
+runs, and `rta_investigate`, which returns the engine payload plus matching docs
+and issues in one call.
+
+They are **off by default for network access**: the default role is `reader`,
+which can reach only the engine tools, `rta_sources_health` and the local docs
+search. Sources never produce or change a verdict — see
+[Multi-Source MCP](README-18-mcp-multi-source.md) and
+`rta/docs/company/ADR_001_mcp_multi_source.md`.
+
+---
+
 ## 7. Related surfaces
 
 - **[Hands-On Exercises](README-17-mcp-exercises.md)** — guided prompts for all 8 tools using the `samples/` files
+- **[Multi-Source MCP](README-18-mcp-multi-source.md)** — advisory context sources (docs corpus, GitHub issues, SQLite store), the role capability boundary, and the per-source failure matrix
 - [CLI User Guide](README-11-cli-user-guide.md) — same features from the terminal
 - [CI Quality Gates](README-14-ci-gate.md) — gate semantics for baselines/gates used by `rta_snapshot` / `rta_analyze`
 - [Rules Registry](README-08-rules-registry.md) — what each rule code means
